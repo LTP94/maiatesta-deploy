@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ContactForm } from "./components/ContactForm";
 import { Footer } from "./components/Footer";
 import { Hero } from "./components/Hero";
+import { LuminescentBanner } from "./components/LuminescentBanner";
 import { ProductRoulette } from "./components/ProductRoulette";
 import { Projects } from "./components/Projects";
 import { Reviews } from "./components/Reviews";
@@ -84,8 +85,10 @@ export default function App() {
         />
         <main>
           <ProductRoulette content={content} />
+          <LuminescentBanner {...content.banners[0]} tone="bronze" />
           <Projects content={content} />
           <Reviews content={content} />
+          <LuminescentBanner {...content.banners[1]} tone="silver" />
           <ContactForm content={content} />
         </main>
         <Footer content={content} />

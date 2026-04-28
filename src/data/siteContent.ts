@@ -35,6 +35,7 @@ export type LocalizedContent = {
     metrics: Array<{ value: string; label: string }>;
   };
   products: Product[];
+  banners: Array<{ eyebrow: string; title: string; body: string }>;
   sections: {
     services: { eyebrow: string; title: string; body: string };
     projects: { eyebrow: string; title: string; body: string };
@@ -152,6 +153,18 @@ export const siteContent = {
           description:
             'Smart Excel, automatic reports, data consolidation, and reduction of manual errors in repetitive processes.',
           accent: 'Turn repetitive work into systems',
+        },
+      ],
+      banners: [
+        {
+          eyebrow: "MAIAtesta signal",
+          title: "Digital systems with a premium graphite and bronze identity.",
+          body: "A sharper visual layer for services that connect sales, operations, AI, and business control.",
+        },
+        {
+          eyebrow: "Intelligent execution",
+          title: "Automation, software, and commerce moving under one visual language.",
+          body: "From first contact to operational dashboards, each solution keeps the brand precise, luminous, and measurable.",
         },
       ],
       sections: {
@@ -367,6 +380,18 @@ export const siteContent = {
           description:
             'Excel inteligente, reportes automáticos, consolidación de datos y reducción de errores manuales en procesos repetitivos.',
           accent: 'Convierte tareas repetitivas en sistemas',
+        },
+      ],
+      banners: [
+        {
+          eyebrow: "Señal MAIAtesta",
+          title: "Sistemas digitales con una identidad grafito y bronce premium.",
+          body: "Una capa visual más precisa para servicios que conectan ventas, operaciones, IA y control del negocio.",
+        },
+        {
+          eyebrow: "Ejecución inteligente",
+          title: "Automatización, software y comercio bajo un mismo lenguaje visual.",
+          body: "Desde el primer contacto hasta dashboards operativos, cada solución mantiene la marca precisa, luminosa y medible.",
         },
       ],
       sections: {

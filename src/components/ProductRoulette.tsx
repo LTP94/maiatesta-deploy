@@ -13,7 +13,7 @@ export function ProductRoulette({ content }: ProductRouletteProps) {
   const [pointerMotion, setPointerMotion] = useState({
     x: 0,
     y: 0,
-    shiftX: 150,
+    shiftX: 0,
     shiftY: 0,
   });
   const activeProduct = products[activeIndex];
@@ -40,13 +40,13 @@ export function ProductRoulette({ content }: ProductRouletteProps) {
   }, [products]);
 
   useEffect(() => {
-    if (isPaused || products.length < 5) {
+    if (isPaused || products.length < 2) {
       return;
     }
 
     const intervalId = window.setInterval(() => {
       setActiveIndex((currentIndex) => (currentIndex + 1) % products.length);
-    }, 4200);
+    }, 3600);
 
     return () => window.clearInterval(intervalId);
   }, [isPaused, products.length]);
@@ -60,10 +60,8 @@ export function ProductRoulette({ content }: ProductRouletteProps) {
       </div>
       <div
         className='roulette-layout'
-        onPointerEnter={() => setIsPaused(true)}
         onPointerMove={handlePointerMove}
         onPointerLeave={() => {
-          setIsPaused(false);
           resetPointerMotion();
         }}
         onFocus={() => setIsPaused(true)}
@@ -132,6 +130,18 @@ export function ProductRoulette({ content }: ProductRouletteProps) {
           </div>
           <div className='service-orbit-shadow' aria-hidden='true' />
           <p className='service-active-summary'>{activeProduct.accent}</p>
+          <div className='service-indicators' aria-label={content.sections.services.title}>
+            {products.map((product, index) => (
+              <button
+                className={index === activeIndex ? 'service-indicator active' : 'service-indicator'}
+                key={product.id}
+                type='button'
+                onClick={() => setActiveIndex(index)}
+                aria-label={product.title}
+                aria-pressed={index === activeIndex}
+              />
+            ))}
+          </div>
         </div>
         <div className='process-list'>
           {content.process.map((step, index) => (
