@@ -6,7 +6,7 @@ type PersonaPortraitProps = {
   alt: string;
 };
 
-const neutralTilt = { x: 500, y: 50 };
+const neutralTilt = { x: 380, y: 50 };
 
 export function PersonaPortrait({ image, alt }: PersonaPortraitProps) {
   const [tilt, setTilt] = useState(neutralTilt);

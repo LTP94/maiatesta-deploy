@@ -355,6 +355,7 @@ textarea {
   --persona-tilt-x: 0deg;
   --persona-tilt-y: 0deg;
   position: relative;
+  object-position: center 30%;
   z-index: 5;
   width: 100%;
   aspect-ratio: 1;
@@ -477,17 +478,17 @@ textarea {
 }
 
 .persona-portrait img {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 158%;
-  height: 158%;
+  position: relative;
+  left: 58%;
+  top: 45.8%;
+  width: 130%;
+  height: 130%;
   object-fit: cover;
-  object-position: 52% 22%;
-  transform: translate(-50%, -42%) translateZ(28px);
+  object-position: 50% 22%;
+  transform: translate(-50%, -48%) translateZ(28px);
   transform-origin: 50% 48%;
   filter: contrast(1.06) saturate(0.9);
-  animation: persona-focus 6800ms ease-in-out infinite;
+  animation: persona-focus 4000ms ease-in-out infinite;
 }
 
 .persona-eye {
