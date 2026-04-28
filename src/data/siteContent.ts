@@ -68,7 +68,7 @@ export const siteContent = {
     personaAlt: 'Malatesta AI persona',
     logo: '/assets/maiatesta-logo.jpg',
     persona: '/assets/malatesta-persona-invertido.jpg',
-    heroVideo: '/assets/maiatesta-hero.mp4',
+    heroVideo: '/assets/maiatesta-page-bg.mp4',
     pageBackgroundVideo: '/assets/maiatesta-page-bg.mp4',
     email: 'maiatesta@gmail.com',
   },

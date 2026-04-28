@@ -64,9 +64,7 @@ textarea {
 
 .hero-section {
   position: relative;
-  top: 50px;
-  /* left: 50px;
-  min-height: 100svh; */
+  min-height: auto;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -86,10 +84,10 @@ textarea {
     linear-gradient(
       180deg,
       transparent 0%,
-      rgba(21, 23, 27, 0.76) 58%,
-      var(--ink) 100%
+      rgba(7, 7, 7, 0.78) 58%,
+      var(--app-ink) 100%
     ),
-    radial-gradient(circle at 50% 100%, rgba(255, 179, 138, 0.24), transparent 45%);
+    radial-gradient(circle at 50% 100%, rgba(255, 179, 138, 0.18), transparent 45%);
 }
 
 .hero-video,
@@ -103,19 +101,20 @@ textarea {
 .hero-video {
   object-fit: cover;
   z-index: -3;
-  filter: saturate(0.9) contrast(1.08);
+  opacity: 0.82;
+  filter: grayscale(0.42) sepia(0.18) saturate(0.78) contrast(1.02) brightness(0.72);
 }
 
 .hero-scrim {
   z-index: -2;
   background:
-    radial-gradient(circle at 80% 34%, rgba(255, 179, 138, 0.28), transparent 24%),
-    radial-gradient(circle at 52% 72%, rgba(201, 239, 85, 0.16), transparent 32%),
+    radial-gradient(circle at 78% 28%, rgba(255, 179, 138, 0.16), transparent 26%),
+    radial-gradient(circle at 52% 72%, rgba(201, 239, 85, 0.08), transparent 34%),
     linear-gradient(
       90deg,
-      rgba(21, 23, 27, 0.94),
-      rgba(21, 23, 27, 0.72) 54%,
-      rgba(21, 23, 27, 0.46)
+      rgba(7, 7, 7, 0.96),
+      rgba(20, 16, 14, 0.78) 54%,
+      rgba(58, 36, 26, 0.5)
     );
 }
 
