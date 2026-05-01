@@ -324,7 +324,7 @@ export const siteContent = {
         title:
           'Soluciones digitales que aumentan ventas, automatizan operaciones y mejoran decisiones.',
         body: 'MaIAtesta diseña desarrollo web, e-commerce, software a medida, inventario inteligente, optimización matemática de compras, automatización con IA y automatización de planillas para empresas listas para crecer.',
-        primaryCta: 'Contactar MaIAtesta',
+        primaryCta: 'Contactar MaiAtesta',
         secondaryCta: 'Ver servicios',
         metrics: [
           { value: '24/7', label: 'atención y oportunidades con IA' },
@@ -401,7 +401,7 @@ export const siteContent = {
         services: {
           eyebrow: 'Servicios',
           title: 'Tecnología diseñada para crecer y rentabilizar tu negocio.',
-          body: 'Elige la solución MaIAtesta que tu empresa necesita ahora: ventas, operaciones, inventario, compras, atención con IA o automatización de procesos.',
+          body: 'Elige la solución MaiAtesta que tu empresa necesita ahora: ventas, operaciones, inventario, compras, atención con IA o automatización de procesos.',
         },
         projects: {
           eyebrow: 'Soluciones',
@@ -410,7 +410,7 @@ export const siteContent = {
           body: 'Desde la primera página web hasta software empresarial a medida, cada solución se diseña para generar impacto operativo y comercial medible.',
         },
         reviews: {
-          eyebrow: 'Por qué MaIAtesta',
+          eyebrow: 'Por qué MaiAtesta',
           title:
             'Soluciones modernas, atención personalizada y automatización real.',
           body: 'Aplicamos tecnología al negocio: más oportunidades de venta, menos tareas manuales, información más clara y mejores resultados.',
@@ -446,19 +446,19 @@ export const siteContent = {
         {
           quote:
             'La tecnología debe servir al negocio: más control, más oportunidades de venta y menos errores manuales.',
-          author: 'MaIAtesta',
+          author: 'MaiAtesta',
           role: 'Tecnología aplicada al negocio',
         },
         {
           quote:
             'La automatización es útil cuando atiende clientes, organiza información y mantiene la operación activa 24/7.',
-          author: 'MaIAtesta',
+          author: 'MaiAtesta',
           role: 'Automatización con IA y operaciones',
         },
         {
           quote:
             'Decidir mejor empieza con datos más limpios, modelos de compra inteligentes y sistemas que muestran lo que ocurre.',
-          author: 'MaIAtesta',
+          author: 'MaiAtesta',
           role: 'Dashboards y optimización',
         },
       ],
@@ -473,7 +473,7 @@ export const siteContent = {
         channels: [
           {
             label: 'Email',
-            value: 'maiatesta@gmail.com',
+            value: 'maiAtesta@gmail.com',
             href: 'mailto:maiatesta@gmail.com',
           },
           {
@@ -493,7 +493,7 @@ export const siteContent = {
           },
           {
             label: 'Instagram',
-            value: 'maiatestatech',
+            value: 'maiAtestatech',
             href: 'https://www.instagram.com/maiatestatech',
           },
         ],
