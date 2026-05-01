@@ -200,7 +200,7 @@ textarea {
   justify-content: center;
   gap: clamp(14px, 3vw, 34px);
   color: var(--steel);
-  font-size: 0.92rem;
+  font-size: 1.2rem;
   font-weight: 700;
 }
 
