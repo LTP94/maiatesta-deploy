@@ -236,7 +236,7 @@ export const siteContent = {
       contact: {
         eyebrow: 'Contact',
         title: 'Tell us what you want to improve, automate, or sell.',
-        body: 'Share your business goal and we will recommend the most practical digital solution: website, online store, custom software, inventory, purchasing optimization, AI chatbot, or spreadsheet automation.',
+        body: '',
         emailSubjectPrefix: 'Project request from',
         submitLabel: 'Send request',
         successMessage:
@@ -244,8 +244,8 @@ export const siteContent = {
         channels: [
           {
             label: 'Email',
-            value: 'maiatesta@gmail.com',
-            href: 'mailto:maiatesta@gmail.com',
+            value: 'maiAtesta@gmail.com',
+            href: 'mailto: maiAtesta@gmail.com',
           },
           {
             label: 'WhatsApp',
@@ -465,7 +465,7 @@ export const siteContent = {
       contact: {
         eyebrow: 'Contacto',
         title: 'Cuéntanos qué quieres mejorar, automatizar o vender.',
-        body: 'Comparte el objetivo de tu negocio y recomendaremos la solución digital más práctica: web, tienda online, software a medida, inventario, optimización de compras, chatbot con IA o automatización de planillas.',
+        body: '',
         emailSubjectPrefix: 'Solicitud de proyecto de',
         submitLabel: 'Enviar solicitud',
         successMessage:
