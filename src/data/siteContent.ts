@@ -255,7 +255,7 @@ export const siteContent = {
           {
             label: 'LinkedIn',
             value: 'MaiAtesta',
-            href: 'https://www.linkedin.com/search/results/all/?keywords=MaiAtesta',
+            href: 'https://www.linkedin.com/search/results/companies/?keywords=MaiAtesta',
           },
           {
             label: 'Web',
