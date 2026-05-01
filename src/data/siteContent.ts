@@ -157,14 +157,15 @@ export const siteContent = {
       ],
       banners: [
         {
-          eyebrow: "MAIAtesta signal",
-          title: "Digital systems with a premium graphite and bronze identity.",
-          body: "A sharper visual layer for services that connect sales, operations, AI, and business control.",
+          eyebrow: 'MAIAtesta signal',
+          title: 'Digital systems with a premium graphite and bronze identity.',
+          body: 'A sharper visual layer for services that connect sales, operations, AI, and business control.',
         },
         {
-          eyebrow: "Intelligent execution",
-          title: "Automation, software, and commerce moving under one visual language.",
-          body: "From first contact to operational dashboards, each solution keeps the brand precise, luminous, and measurable.",
+          eyebrow: 'Intelligent execution',
+          title:
+            'Automation, software, and commerce moving under one visual language.',
+          body: 'From first contact to operational dashboards, each solution keeps the brand precise, luminous, and measurable.',
         },
       ],
       sections: {
@@ -384,14 +385,16 @@ export const siteContent = {
       ],
       banners: [
         {
-          eyebrow: "Señal MAIAtesta",
-          title: "Sistemas digitales con una identidad grafito y bronce premium.",
-          body: "Una capa visual más precisa para servicios que conectan ventas, operaciones, IA y control del negocio.",
+          eyebrow: 'Señal MAIAtesta',
+          title:
+            'Sistemas digitales con una identidad grafito y bronce premium.',
+          body: 'Una capa visual más precisa para servicios que conectan ventas, operaciones, IA y control del negocio.',
         },
         {
-          eyebrow: "Ejecución inteligente",
-          title: "Automatización, software y comercio bajo un mismo lenguaje visual.",
-          body: "Desde el primer contacto hasta dashboards operativos, cada solución mantiene la marca precisa, luminosa y medible.",
+          eyebrow: 'Ejecución inteligente',
+          title:
+            'Automatización, software y comercio bajo un mismo lenguaje visual.',
+          body: 'Desde el primer contacto hasta dashboards operativos, cada solución mantiene la marca precisa, luminosa y medible.',
         },
       ],
       sections: {
@@ -481,7 +484,7 @@ export const siteContent = {
           {
             label: 'LinkedIn',
             value: 'MaiAtesta',
-            href: 'https://www.linkedin.com/search/results/all/?keywords=MaiAtesta',
+            href: 'https://www.linkedin.com/search/results/companies/?keywords=MaiAtesta',
           },
           {
             label: 'Web',
