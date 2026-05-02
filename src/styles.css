@@ -827,6 +827,13 @@ textarea {
   margin: 56px auto 96px;
 }
 
+.service-axis {
+  position: absolute;
+  inset: 0;
+  /* transform: rotateX(-15deg) rotateY(0deg) rotateZ(-15deg); */
+  transform-style: preserve-3d;
+}
+
 .service-deck {
   position: absolute;
   width: 100%;
@@ -846,9 +853,9 @@ textarea {
   flex-direction: column;
   gap: 12px;
   justify-content: space-between;
-  padding: 18px;
+  padding: 28px;
   color: var(--paper);
-  border: 1px solid rgba(248, 248, 248, 0.18);
+  border: 2px solid rgba(248, 248, 248, 0.18);
   background:
     linear-gradient(145deg, rgba(248, 248, 248, 0.12), transparent 36%),
     radial-gradient(
@@ -879,7 +886,7 @@ textarea {
     border-color 180ms ease,
     box-shadow 180ms ease,
     opacity 180ms ease;
-  backface-visibility: hidden;
+  backface-visibility: visible;
 }
 
 .service-card::before,

@@ -1,24 +1,30 @@
-import { useEffect, useMemo, useState } from "react";
-import { ContactForm } from "./components/ContactForm";
-import { Footer } from "./components/Footer";
-import { Hero } from "./components/Hero";
-import { LuminescentBanner } from "./components/LuminescentBanner";
-import { ProductRoulette } from "./components/ProductRoulette";
-import { Projects } from "./components/Projects";
-import { Reviews } from "./components/Reviews";
-import { siteContent } from "./data/siteContent";
-import type { LanguageCode } from "./data/siteContent";
-import { useScrollReveal } from "./hooks/useScrollReveal";
+import { useEffect, useMemo, useState } from 'react';
+import { ContactForm } from './components/ContactForm';
+import { Footer } from './components/Footer';
+import { Hero } from './components/Hero';
+import { LuminescentBanner } from './components/LuminescentBanner';
+import { ProductRoulette } from './components/ProductRoulette';
+import { Projects } from './components/Projects';
+import { Reviews } from './components/Reviews';
+import { siteContent } from './data/siteContent';
+import type { LanguageCode } from './data/siteContent';
+import { useScrollReveal } from './hooks/useScrollReveal';
 
 function getInitialLanguage(): LanguageCode {
-  if (typeof navigator === "undefined") {
-    return "es";
+  if (typeof navigator === 'undefined') {
+    return 'es';
   }
 
-  const browserLanguages = navigator.languages?.length ? navigator.languages : [navigator.language];
-  const detectedLanguage = browserLanguages.find((item) => item.toLowerCase().startsWith("en") || item.toLowerCase().startsWith("es"));
+  const browserLanguages = navigator.languages?.length
+    ? navigator.languages
+    : [navigator.language];
+  const detectedLanguage = browserLanguages.find(
+    (item) =>
+      item.toLowerCase().startsWith('en') ||
+      item.toLowerCase().startsWith('es'),
+  );
 
-  return detectedLanguage?.toLowerCase().startsWith("en") ? "en" : "es";
+  return detectedLanguage?.toLowerCase().startsWith('en') ? 'en' : 'es';
 }
 
 export default function App() {
@@ -26,6 +32,7 @@ export default function App() {
   const [hasScrolled, setHasScrolled] = useState(false);
   const content = useMemo(() => siteContent.locales[language], [language]);
   useScrollReveal(language);
+  const [axisZ, setAxisZ] = useState(0);
 
   useEffect(() => {
     document.documentElement.lang = language;
@@ -36,6 +43,14 @@ export default function App() {
       return;
     }
 
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setAxisZ((prev) => (prev >= 5 ? 0 : prev + 1));
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }, []);
+
     const scrollToHash = () => {
       const target = document.querySelector(window.location.hash);
 
@@ -45,7 +60,7 @@ export default function App() {
 
       window.scrollTo({
         top: target.getBoundingClientRect().top + window.scrollY,
-        behavior: "auto",
+        behavior: 'auto',
       });
     };
 
@@ -65,30 +80,34 @@ export default function App() {
     };
 
     handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
     <>
-      <Hero content={content} language={language} onLanguageChange={setLanguage} />
-      <div className={hasScrolled ? "site-main is-scrolled" : "site-main"}>
+      <Hero
+        content={content}
+        language={language}
+        onLanguageChange={setLanguage}
+      />
+      <div className={hasScrolled ? 'site-main is-scrolled' : 'site-main'}>
         <video
-          className="site-main-video"
+          className='site-main-video'
           src={siteContent.brand.pageBackgroundVideo}
           autoPlay
           muted
           loop
           playsInline
-          aria-hidden="true"
+          aria-hidden='true'
         />
         <main>
           <ProductRoulette content={content} />
-          <LuminescentBanner {...content.banners[0]} tone="bronze" />
+          <LuminescentBanner {...content.banners[0]} tone='bronze' />
           <Projects content={content} />
           <Reviews content={content} />
-          <LuminescentBanner {...content.banners[1]} tone="silver" />
+          <LuminescentBanner {...content.banners[1]} tone='silver' />
           <ContactForm content={content} />
         </main>
         <Footer content={content} />

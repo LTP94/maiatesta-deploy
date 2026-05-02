@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import type { LocalizedContent } from '../data/siteContent';
 
@@ -6,20 +6,76 @@ type ProductRouletteProps = {
   content: LocalizedContent;
 };
 
+const AXIS_MIN_Z = -5;
+const AXIS_MAX_Z = 5;
+const AXIS_MIN_X = -20;
+const AXIS_MAX_X = -10;
+const AXIS_Z_STEP = 1;
+const AXIS_X_STEP = 0.1;
+const AXIS_INTERVAL_MS = 50;
+
 export function ProductRoulette({ content }: ProductRouletteProps) {
   const services = content.products;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [axisZ, setAxisZ] = useState(0);
+  const [axisX, setAxisX] = useState(-15);
+  const axisZDirection = useRef(1);
+  const axisXDirection = useRef(1);
   const cellCount = services.length;
   const cellSize = 240;
-  const theta = 360 / cellCount;
-  const radius = Math.round(cellSize / 2 / Math.tan(Math.PI / cellCount));
-  const activeProduct = services[activeIndex];
+  const theta = cellCount > 0 ? 360 / cellCount : 0;
+  const radius =
+    cellCount > 1
+      ? Math.round(cellSize / 1.7 / Math.tan(Math.PI / cellCount))
+      : 0;
+  const safeActiveIndex = cellCount > 0 ? activeIndex % cellCount : 0;
+  const activeProduct = services[safeActiveIndex];
 
   useEffect(() => {
     setActiveIndex(0);
   }, [services]);
 
+  // movimiento suave en eje
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setAxisZ((prev) => {
+        const next = prev + AXIS_Z_STEP * axisZDirection.current;
+
+        if (next >= AXIS_MAX_Z) {
+          axisZDirection.current = -1;
+          return AXIS_MAX_Z;
+        }
+
+        if (next <= AXIS_MIN_Z) {
+          axisZDirection.current = 1;
+          return AXIS_MIN_Z;
+        }
+
+        return Number(next.toFixed(2));
+      });
+
+      setAxisX((prev) => {
+        const next = prev + AXIS_X_STEP * axisXDirection.current;
+
+        if (next >= AXIS_MAX_X) {
+          axisXDirection.current = -1;
+          return AXIS_MAX_X;
+        }
+
+        if (next <= AXIS_MIN_X) {
+          axisXDirection.current = 1;
+          return AXIS_MIN_X;
+        }
+
+        return Number(next.toFixed(2));
+      });
+    }, AXIS_INTERVAL_MS);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  // rotacion de cartas
   useEffect(() => {
     if (isPaused || cellCount < 2) {
       return;
@@ -27,7 +83,7 @@ export function ProductRoulette({ content }: ProductRouletteProps) {
 
     const intervalId = window.setInterval(() => {
       setActiveIndex((currentIndex) => (currentIndex + 1) % cellCount);
-    }, 3600);
+    }, 1000);
 
     return () => window.clearInterval(intervalId);
   }, [cellCount, isPaused]);
@@ -49,48 +105,57 @@ export function ProductRoulette({ content }: ProductRouletteProps) {
         <div className='service-carousel scroll-reveal'>
           <div className='service-scene'>
             <div
-              className='service-deck'
+              className='service-axis'
               style={{
-                transform: `translateZ(${-radius}px) rotateY(${
-                  -activeIndex * theta
-                }deg)`,
+                transform: `rotateX(${axisX}deg) rotateY(0deg) rotateZ(${axisZ}deg)`,
               }}
-              aria-label={content.sections.services.title}
             >
-              {services.map((service, index) => {
-                const angle = theta * index;
+              <div
+                className='service-deck'
+                style={{
+                  transform: `translateZ(${-radius}px) rotateY(${
+                    -safeActiveIndex * theta
+                  }deg)`,
+                }}
+                aria-label={content.sections.services.title}
+              >
+                {services.map((service, index) => {
+                  const angle = theta * index;
 
-                return (
-                  <button
-                    className={
-                      index === activeIndex
-                        ? 'service-card active'
-                        : 'service-card'
-                    }
-                    key={service.id}
-                    style={
-                      {
-                        transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
-                      } as CSSProperties
-                    }
-                    type='button'
-                    onClick={() => setActiveIndex(index)}
-                    aria-label={service.title}
-                    aria-pressed={index === activeIndex}
-                  >
-                    <span className='service-card-index'>
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <h3>{service.title}</h3>
-                    <p>{service.description}</p>
-                    <strong>{service.accent}</strong>
-                  </button>
-                );
-              })}
+                  return (
+                    <button
+                      className={
+                        index === safeActiveIndex
+                          ? 'service-card active'
+                          : 'service-card'
+                      }
+                      key={service.id}
+                      style={
+                        {
+                          transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
+                        } as CSSProperties
+                      }
+                      type='button'
+                      onClick={() => setActiveIndex(index)}
+                      aria-label={service.title}
+                      aria-pressed={index === safeActiveIndex}
+                    >
+                      <span className='service-card-index'>
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <h3>{service.title}</h3>
+                      <p>{service.description}</p>
+                      <strong>{service.accent}</strong>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
           <div className='service-orbit-shadow' aria-hidden='true' />
-          <p className='service-active-summary'>{activeProduct.accent}</p>
+          {activeProduct ? (
+            <p className='service-active-summary'>{activeProduct.accent}</p>
+          ) : null}
           <div
             className='service-indicators'
             aria-label={content.sections.services.title}
@@ -98,7 +163,7 @@ export function ProductRoulette({ content }: ProductRouletteProps) {
             {services.map((service, index) => (
               <button
                 className={
-                  index === activeIndex
+                  index === safeActiveIndex
                     ? 'service-indicator active'
                     : 'service-indicator'
                 }
@@ -106,7 +171,7 @@ export function ProductRoulette({ content }: ProductRouletteProps) {
                 type='button'
                 onClick={() => setActiveIndex(index)}
                 aria-label={service.title}
-                aria-pressed={index === activeIndex}
+                aria-pressed={index === safeActiveIndex}
               />
             ))}
           </div>
