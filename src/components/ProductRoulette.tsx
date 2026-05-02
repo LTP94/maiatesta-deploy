@@ -10,9 +10,9 @@ const AXIS_MIN_Z = -5;
 const AXIS_MAX_Z = 5;
 const AXIS_MIN_X = -20;
 const AXIS_MAX_X = -10;
-const AXIS_Z_STEP = 1;
-const AXIS_X_STEP = 0.1;
-const AXIS_INTERVAL_MS = 50;
+const AXIS_Z_STEP = 0.015;
+const AXIS_X_STEP = 0.01;
+const AXIS_INTERVAL_MS = 10;
 
 export function ProductRoulette({ content }: ProductRouletteProps) {
   const services = content.products;
@@ -83,7 +83,7 @@ export function ProductRoulette({ content }: ProductRouletteProps) {
 
     const intervalId = window.setInterval(() => {
       setActiveIndex((currentIndex) => (currentIndex + 1) % cellCount);
-    }, 1000);
+    }, 1500);
 
     return () => window.clearInterval(intervalId);
   }, [cellCount, isPaused]);
