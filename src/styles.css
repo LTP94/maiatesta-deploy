@@ -811,86 +811,44 @@ textarea {
 }
 
 .service-carousel {
-  --carousel-tilt-x: 0deg;
-  --carousel-tilt-y: 0deg;
-  --carousel-shift-x: 0px;
-  --carousel-shift-y: 0px;
   position: relative;
   width: min(100%, 760px);
-  min-height: clamp(460px, 48vw, 600px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  perspective: 1200px;
-  filter: drop-shadow(0 28px 80px rgba(0, 0, 0, 0.24));
-  transform: translate3d(var(--carousel-shift-x), var(--carousel-shift-y), 0)
-    rotateX(var(--carousel-tilt-x)) rotateY(var(--carousel-tilt-y));
-  transform-style: preserve-3d;
-  transition:
-    opacity 720ms ease,
-    transform 220ms ease,
-    filter 220ms ease;
-  will-change: transform;
+  min-height: clamp(390px, 48vw, 500px);
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 28px 80px rgba(0, 0, 0, 0.26));
 }
 
-.roulette-layout:hover .service-carousel {
-  filter: drop-shadow(0 36px 90px rgba(0, 0, 0, 0.34))
-    drop-shadow(0 0 36px rgba(255, 179, 138, 0.24))
-    drop-shadow(0 0 18px rgba(201, 239, 85, 0.12));
-}
-
-.service-carousel::before,
-.service-carousel::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(92%, 520px);
-  aspect-ratio: 1.6;
-  border: 1px solid rgba(238, 238, 238, 0.18);
-  border-radius: 50%;
-  transform: translate(-50%, -50%) rotateX(68deg) rotateZ(-18deg);
-  transform-style: preserve-3d;
-  pointer-events: none;
-}
-
-.service-carousel::before {
-  border-style: dashed;
-  animation: service-grid-spin 18000ms linear infinite;
-}
-
-.service-carousel::after {
-  width: min(66%, 360px);
-  border-color: rgba(255, 179, 138, 0.68);
-  animation: pulse-ring 2400ms ease-in-out infinite;
-  box-shadow: 0 0 34px rgba(255, 179, 138, 0.2);
+.service-scene {
+  position: relative;
+  width: 240px;
+  height: 250px;
+  perspective: 1000px;
+  margin: 56px auto 96px;
 }
 
 .service-deck {
   position: absolute;
-  inset: 0;
+  width: 100%;
+  height: 100%;
   transform-style: preserve-3d;
-  transform: translateY(54px) rotateX(58deg) rotateZ(-14deg);
-  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.service-carousel.is-visible .service-deck {
-  animation: service-deck-hover 6800ms ease-in-out infinite;
+  transition: transform 1000ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 .service-card {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: clamp(220px, 25vw, 320px);
-  min-height: clamp(240px, 28vw, 340px);
+  left: 10px;
+  top: 10px;
+  width: 220px;
+  min-height: 220px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   justify-content: space-between;
-  padding: clamp(18px, 2.4vw, 26px);
+  padding: 18px;
   color: var(--paper);
-  border: 1px solid rgba(248, 248, 248, 0.2);
+  border: 1px solid rgba(248, 248, 248, 0.18);
   background:
     linear-gradient(145deg, rgba(248, 248, 248, 0.12), transparent 36%),
     radial-gradient(
@@ -913,23 +871,15 @@ textarea {
   text-align: left;
   cursor: pointer;
   overflow: hidden;
-  opacity: var(--card-opacity);
   box-shadow:
-    0 24px 70px rgba(0, 0, 0, 0.38),
+    0 24px 70px rgba(0, 0, 0, 0.36),
     0 0 22px rgba(255, 179, 138, 0.08);
-  transform: translate(-50%, -50%)
-    translateX(calc(var(--card-offset) * clamp(74px, 11vw, 148px)))
-    translateY(calc(var(--card-distance) * -22px))
-    translateZ(calc((3 - var(--card-distance)) * 58px)) rotateZ(14deg)
-    rotateX(-58deg) rotateY(calc(var(--card-offset) * -8deg))
-    scale(var(--card-scale));
   transform-style: preserve-3d;
   transition:
-    opacity 520ms ease,
-    transform 620ms cubic-bezier(0.22, 1, 0.36, 1),
     border-color 180ms ease,
-    box-shadow 180ms ease;
-  will-change: transform;
+    box-shadow 180ms ease,
+    opacity 180ms ease;
+  backface-visibility: hidden;
 }
 
 .service-card::before,
@@ -978,8 +928,6 @@ textarea {
     0 0 52px rgba(255, 179, 138, 0.38),
     0 0 24px rgba(201, 239, 85, 0.13),
     0 0 1px rgba(248, 248, 248, 0.72);
-  transform: translate(-50%, -50%) translateX(0) translateY(-10px)
-    translateZ(220px) rotateZ(10deg) rotateX(-52deg) scale(1.06);
 }
 
 .service-card-index,
@@ -999,18 +947,19 @@ textarea {
 
 .service-card h3 {
   margin: 0;
-  font-size: clamp(1.55rem, 3vw, 2.35rem);
-  line-height: 1;
+  font-size: 1.2rem;
+  line-height: 1.05;
 }
 
 .service-card p {
   margin: 0;
   color: rgba(248, 248, 248, 0.74);
-  line-height: 1.55;
+  font-size: 0.82rem;
+  line-height: 1.42;
 }
 
 .service-card strong {
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0;
 }
@@ -1715,28 +1664,22 @@ textarea {
   }
 
   .service-carousel {
-    min-height: 430px;
+    min-height: 420px;
     margin-inline: 0;
   }
 
-  .service-card {
-    width: min(74vw, 260px);
-    min-height: 270px;
-    padding: 18px;
-    transform: translate(-50%, -50%) translateX(calc(var(--card-offset) * 66px))
-      translateY(calc(var(--card-distance) * -16px))
-      translateZ(calc((3 - var(--card-distance)) * 42px)) rotateZ(14deg)
-      rotateX(-58deg) rotateY(calc(var(--card-offset) * -7deg))
-      scale(var(--card-scale));
+  .service-scene {
+    margin-top: 38px;
+    margin-bottom: 86px;
   }
 
-  .service-card.active {
-    transform: translate(-50%, -50%) translateX(0) translateY(-8px)
-      translateZ(150px) rotateZ(10deg) rotateX(-52deg) scale(1);
+  .service-card {
+    min-height: 210px;
+    padding: 16px;
   }
 
   .service-card h3 {
-    font-size: 1.46rem;
+    font-size: 1.08rem;
   }
 
   .service-card p {

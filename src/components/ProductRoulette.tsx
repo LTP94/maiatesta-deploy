@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { CSSProperties, PointerEvent } from 'react';
+import type { CSSProperties } from 'react';
 import type { LocalizedContent } from '../data/siteContent';
 
 type ProductRouletteProps = {
@@ -7,49 +7,30 @@ type ProductRouletteProps = {
 };
 
 export function ProductRoulette({ content }: ProductRouletteProps) {
-  const products = content.products;
+  const services = content.products;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [pointerMotion, setPointerMotion] = useState({
-    x: 0,
-    y: 0,
-    shiftX: 0,
-    shiftY: 0,
-  });
-  const activeProduct = products[activeIndex];
-
-  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-
-    setPointerMotion({
-      x: Number((x * 12).toFixed(2)),
-      y: Number((y * -12).toFixed(2)),
-      shiftX: Number((x * 18).toFixed(2)),
-      shiftY: Number((y * 18).toFixed(2)),
-    });
-  };
-
-  const resetPointerMotion = () => {
-    setPointerMotion({ x: 0, y: 0, shiftX: 0, shiftY: 0 });
-  };
+  const cellCount = services.length;
+  const cellSize = 240;
+  const theta = 360 / cellCount;
+  const radius = Math.round(cellSize / 2 / Math.tan(Math.PI / cellCount));
+  const activeProduct = services[activeIndex];
 
   useEffect(() => {
     setActiveIndex(0);
-  }, [products]);
+  }, [services]);
 
   useEffect(() => {
-    if (isPaused || products.length < 2) {
+    if (isPaused || cellCount < 2) {
       return;
     }
 
     const intervalId = window.setInterval(() => {
-      setActiveIndex((currentIndex) => (currentIndex + 1) % products.length);
+      setActiveIndex((currentIndex) => (currentIndex + 1) % cellCount);
     }, 3600);
 
     return () => window.clearInterval(intervalId);
-  }, [isPaused, products.length]);
+  }, [cellCount, isPaused]);
 
   return (
     <section className='section services-section' id='services'>
@@ -60,40 +41,24 @@ export function ProductRoulette({ content }: ProductRouletteProps) {
       </div>
       <div
         className='roulette-layout'
-        onPointerMove={handlePointerMove}
-        onPointerLeave={() => {
-          resetPointerMotion();
-        }}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
         onFocus={() => setIsPaused(true)}
-        onBlur={() => {
-          setIsPaused(false);
-          resetPointerMotion();
-        }}
+        onBlur={() => setIsPaused(false)}
       >
-        <div
-          className='service-carousel scroll-reveal'
-          style={
-            {
-              '--carousel-tilt-x': `${pointerMotion.y}deg`,
-              '--carousel-tilt-y': `${pointerMotion.x}deg`,
-              '--carousel-shift-x': `${pointerMotion.shiftX}px`,
-              '--carousel-shift-y': `${pointerMotion.shiftY}px`,
-            } as CSSProperties
-          }
-        >
-          <div
-            className='service-deck'
-            aria-label={content.sections.services.title}
-          >
-            {products.map((product, index) =>
-              (() => {
-                const wrappedOffset =
-                  (index - activeIndex + products.length) % products.length;
-                const offset =
-                  wrappedOffset > products.length / 2
-                    ? wrappedOffset - products.length
-                    : wrappedOffset;
-                const distance = Math.min(Math.abs(offset), 3);
+        <div className='service-carousel scroll-reveal'>
+          <div className='service-scene'>
+            <div
+              className='service-deck'
+              style={{
+                transform: `translateZ(${-radius}px) rotateY(${
+                  -activeIndex * theta
+                }deg)`,
+              }}
+              aria-label={content.sections.services.title}
+            >
+              {services.map((service, index) => {
+                const angle = theta * index;
 
                 return (
                   <button
@@ -102,42 +67,45 @@ export function ProductRoulette({ content }: ProductRouletteProps) {
                         ? 'service-card active'
                         : 'service-card'
                     }
-                    key={product.id}
+                    key={service.id}
                     style={
                       {
-                        '--card-offset': offset,
-                        '--card-distance': distance,
-                        '--card-scale': 1 - distance * 0.1,
-                        '--card-opacity': 1 - distance * 0.16,
-                        zIndex: 20 - distance,
+                        transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
                       } as CSSProperties
                     }
                     type='button'
                     onClick={() => setActiveIndex(index)}
+                    aria-label={service.title}
                     aria-pressed={index === activeIndex}
-                    aria-label={product.title}
                   >
                     <span className='service-card-index'>
                       {String(index + 1).padStart(2, '0')}
                     </span>
-                    <h3>{product.title}</h3>
-                    <p>{product.description}</p>
-                    <strong>{product.accent}</strong>
+                    <h3>{service.title}</h3>
+                    <p>{service.description}</p>
+                    <strong>{service.accent}</strong>
                   </button>
                 );
-              })(),
-            )}
+              })}
+            </div>
           </div>
           <div className='service-orbit-shadow' aria-hidden='true' />
           <p className='service-active-summary'>{activeProduct.accent}</p>
-          <div className='service-indicators' aria-label={content.sections.services.title}>
-            {products.map((product, index) => (
+          <div
+            className='service-indicators'
+            aria-label={content.sections.services.title}
+          >
+            {services.map((service, index) => (
               <button
-                className={index === activeIndex ? 'service-indicator active' : 'service-indicator'}
-                key={product.id}
+                className={
+                  index === activeIndex
+                    ? 'service-indicator active'
+                    : 'service-indicator'
+                }
+                key={service.id}
                 type='button'
                 onClick={() => setActiveIndex(index)}
-                aria-label={product.title}
+                aria-label={service.title}
                 aria-pressed={index === activeIndex}
               />
             ))}

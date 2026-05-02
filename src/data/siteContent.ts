@@ -63,9 +63,9 @@ export type LocalizedContent = {
 
 export const siteContent = {
   brand: {
-    name: 'MaIAtesta',
-    logoAlt: 'MaIAtesta agency logo',
-    personaAlt: 'Malatesta AI persona',
+    name: 'MaiAtesta',
+    logoAlt: 'MaiAtesta agency logo',
+    personaAlt: 'MaiAtesta AI persona',
     logo: '/assets/maiatesta-logo.jpg',
     persona: '/assets/malatesta-persona-invertido.jpg',
     heroVideo: '/assets/maiatesta-page-bg.mp4',
@@ -157,7 +157,7 @@ export const siteContent = {
       ],
       banners: [
         {
-          eyebrow: 'MAIAtesta signal',
+          eyebrow: 'MaiAtesta signal',
           title: 'Digital systems with a premium graphite and bronze identity.',
           body: 'A sharper visual layer for services that connect sales, operations, AI, and business control.',
         },
