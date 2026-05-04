@@ -10,6 +10,8 @@ import { siteContent } from './data/siteContent';
 import type { LanguageCode } from './data/siteContent';
 import { useScrollReveal } from './hooks/useScrollReveal';
 
+export type PaletteName = 'current' | 'atlantic';
+
 function getInitialLanguage(): LanguageCode {
   if (typeof navigator === 'undefined') {
     return 'es';
@@ -27,29 +29,35 @@ function getInitialLanguage(): LanguageCode {
   return detectedLanguage?.toLowerCase().startsWith('en') ? 'en' : 'es';
 }
 
+function getInitialPalette(): PaletteName {
+  if (typeof window === 'undefined') {
+    return 'current';
+  }
+
+  return window.localStorage.getItem('maiatesta-palette') === 'atlantic'
+    ? 'atlantic'
+    : 'current';
+}
+
 export default function App() {
   const [language, setLanguage] = useState<LanguageCode>(getInitialLanguage);
+  const [palette, setPalette] = useState<PaletteName>(getInitialPalette);
   const [hasScrolled, setHasScrolled] = useState(false);
   const content = useMemo(() => siteContent.locales[language], [language]);
   useScrollReveal(language);
-  const [axisZ, setAxisZ] = useState(0);
 
   useEffect(() => {
     document.documentElement.lang = language;
   }, [language]);
 
   useEffect(() => {
+    window.localStorage.setItem('maiatesta-palette', palette);
+  }, [palette]);
+
+  useEffect(() => {
     if (!window.location.hash) {
       return;
     }
-
-    useEffect(() => {
-      const interval = setInterval(() => {
-        setAxisZ((prev) => (prev >= 5 ? 0 : prev + 1));
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }, []);
 
     const scrollToHash = () => {
       const target = document.querySelector(window.location.hash);
@@ -86,7 +94,7 @@ export default function App() {
   }, []);
 
   return (
-    <>
+    <div className='app-shell' data-palette={palette}>
       <Hero
         content={content}
         language={language}
@@ -103,8 +111,11 @@ export default function App() {
           aria-hidden='true'
         />
         <main>
-          <ProductRoulette content={content} />
-          <LuminescentBanner {...content.banners[0]} tone='bronze' />
+          <ProductRoulette
+            content={content}
+            palette={palette}
+            onPaletteChange={setPalette}
+          />
           <Projects content={content} />
           <Reviews content={content} />
           <LuminescentBanner {...content.banners[1]} tone='silver' />
@@ -112,6 +123,6 @@ export default function App() {
         </main>
         <Footer content={content} />
       </div>
-    </>
+    </div>
   );
 }

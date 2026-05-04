@@ -1,10 +1,27 @@
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import type { LocalizedContent } from '../data/siteContent';
+import type { PaletteName } from '../App';
 
 type ProductRouletteProps = {
   content: LocalizedContent;
+  palette: PaletteName;
+  onPaletteChange: (palette: PaletteName) => void;
 };
+
+const paletteOptions = [
+  {
+    id: 'current',
+    colors: ['#070707', '#ffb38a', '#c9ef55', '#e2ded8'],
+  },
+  {
+    id: 'atlantic',
+    colors: ['#E8EDF2', '#2C3947', '#547A95', '#C2A56D'],
+  },
+] satisfies Array<{
+  id: PaletteName;
+  colors: string[];
+}>;
 
 const AXIS_MIN_Z = -5;
 const AXIS_MAX_Z = 5;
@@ -14,7 +31,11 @@ const AXIS_Z_STEP = 0.015;
 const AXIS_X_STEP = 0.01;
 const AXIS_INTERVAL_MS = 10;
 
-export function ProductRoulette({ content }: ProductRouletteProps) {
+export function ProductRoulette({
+  content,
+  palette,
+  onPaletteChange,
+}: ProductRouletteProps) {
   const services = content.products;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -94,6 +115,39 @@ export function ProductRoulette({ content }: ProductRouletteProps) {
         <p className='eyebrow'>{content.sections.services.eyebrow}</p>
         <h2>{content.sections.services.title}</h2>
         <p>{content.sections.services.body}</p>
+      </div>
+      <div
+        className='palette-switcher scroll-reveal'
+        aria-label={content.ariaLabels.paletteSwitcher}
+      >
+        <span>{content.palette.label}</span>
+        <div className='palette-options'>
+          {paletteOptions.map((option) => (
+            <button
+              className={
+                option.id === palette ? 'palette-option active' : 'palette-option'
+              }
+              key={option.id}
+              type='button'
+              onClick={() => onPaletteChange(option.id)}
+              aria-label={content.palette.options[option.id]}
+              aria-pressed={option.id === palette}
+            >
+              <span className='palette-option-name'>
+                {content.palette.options[option.id]}
+              </span>
+              <span className='palette-swatches' aria-hidden='true'>
+                {option.colors.map((color) => (
+                  <span
+                    className='palette-swatch'
+                    key={color}
+                    style={{ background: color }}
+                  />
+                ))}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
       <div
         className='roulette-layout'
@@ -176,13 +230,16 @@ export function ProductRoulette({ content }: ProductRouletteProps) {
             ))}
           </div>
         </div>
-        <div className='process-list'>
-          {content.process.map((step, index) => (
-            <article className='scroll-reveal' key={step}>
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <p>{step}</p>
-            </article>
-          ))}
+        <div className='process-block'>
+          <h3 className='process-title scroll-reveal'>{content.processTitle}</h3>
+          <div className='process-list'>
+            {content.process.map((step, index) => (
+              <article className='scroll-reveal' key={step}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <p>{step}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>

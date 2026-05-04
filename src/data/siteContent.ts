@@ -24,6 +24,7 @@ export type LocalizedContent = {
   ariaLabels: {
     primaryNavigation: string;
     languageSwitcher: string;
+    paletteSwitcher: string;
   };
   nav: Array<{ label: string; href: string }>;
   hero: {
@@ -34,6 +35,13 @@ export type LocalizedContent = {
     secondaryCta: string;
     metrics: Array<{ value: string; label: string }>;
   };
+  palette: {
+    label: string;
+    options: {
+      current: string;
+      atlantic: string;
+    };
+  };
   products: Product[];
   banners: Array<{ eyebrow: string; title: string; body: string }>;
   sections: {
@@ -42,6 +50,7 @@ export type LocalizedContent = {
     reviews: { eyebrow: string; title: string; body: string };
   };
   process: string[];
+  processTitle: string;
   projects: Array<{ name: string; type: string; result: string }>;
   reviews: Array<{ quote: string; author: string; role: string }>;
   contact: {
@@ -84,6 +93,7 @@ export const siteContent = {
       ariaLabels: {
         primaryNavigation: 'Primary navigation',
         languageSwitcher: 'Language selector',
+        paletteSwitcher: 'Color palette selector',
       },
       nav: [
         { label: 'Services', href: '#services' },
@@ -103,6 +113,13 @@ export const siteContent = {
           { value: '360°', label: 'web, software, commerce, and automation' },
           { value: 'ROI', label: 'technology applied to business results' },
         ],
+      },
+      palette: {
+        label: 'Palette',
+        options: {
+          current: 'Current',
+          atlantic: 'Atlantic',
+        },
       },
       products: [
         {
@@ -193,6 +210,7 @@ export const siteContent = {
         'Build fast, professional systems with clear forms, integrations, dashboards, and business logic.',
         'Launch, measure, and improve results with automation, reports, and better decision tools.',
       ],
+      processTitle: 'Work methodology',
       projects: [
         {
           name: 'Smart Web Presence',
@@ -201,7 +219,7 @@ export const siteContent = {
             'Corporate pages, landing pages, professional portfolios, forms, WhatsApp, and AI integration for stronger digital visibility.',
         },
         {
-          name: 'Sales Engine',
+          name: 'E-commerce',
           type: 'E-commerce and AI chats',
           result:
             'Online stores with catalog, cart, payments, order management, social integration, and automated organic conversations.',
@@ -312,6 +330,7 @@ export const siteContent = {
       ariaLabels: {
         primaryNavigation: 'Navegación principal',
         languageSwitcher: 'Selector de idioma',
+        paletteSwitcher: 'Selector de paleta de colores',
       },
       nav: [
         { label: 'Servicios', href: '#services' },
@@ -331,6 +350,13 @@ export const siteContent = {
           { value: '360°', label: 'web, software, comercio y automatización' },
           { value: 'ROI', label: 'tecnología aplicada al negocio' },
         ],
+      },
+      palette: {
+        label: 'Paleta',
+        options: {
+          current: 'Actual',
+          atlantic: 'Atlantica',
+        },
       },
       products: [
         {
@@ -422,6 +448,7 @@ export const siteContent = {
         'Construimos sistemas rápidos y profesionales con formularios, integraciones, dashboards y lógica de negocio.',
         'Lanzamos, medimos y mejoramos resultados con automatización, reportes y mejores herramientas de decisión.',
       ],
+      processTitle: 'Metodología de trabajo',
       projects: [
         {
           name: 'Presencia Web Inteligente',
@@ -430,7 +457,7 @@ export const siteContent = {
             'Páginas corporativas, landing pages, portafolios profesionales, formularios, WhatsApp e integración con IA para fortalecer tu visibilidad digital.',
         },
         {
-          name: 'Motor de Ventas',
+          name: 'E-commerce',
           type: 'E-commerce y chats con IA',
           result:
             'Tiendas online con catálogo, carrito, pagos, gestión de pedidos, integración social y conversaciones orgánicas automatizadas.',
