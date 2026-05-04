@@ -5,6 +5,7 @@ export type Product = {
   title: string;
   description: string;
   accent: string;
+  previewUrl?: string;
 };
 
 export type FieldContent = {
@@ -79,6 +80,12 @@ export const siteContent = {
     persona: '/assets/malatesta-persona-invertido.jpg',
     heroVideo: '/assets/maiatesta-page-bg.mp4',
     pageBackgroundVideo: '/assets/maiatesta-page-bg.mp4',
+    sectionBackgroundVideos: {
+      services: '/assets/video_cuadrados.mp4',
+      projects: '/assets/video_cuadrados.mp4',
+      reviews: '/assets/video_cuadrados.mp4',
+      contact: '/assets/video_cuadrados.mp4',
+    },
     email: 'maiatesta@gmail.com',
   },
   languageSwitcher: {
@@ -128,6 +135,7 @@ export const siteContent = {
           description:
             'Modern, fast, professional websites: corporate sites, landing pages, portfolios, forms, WhatsApp, and integrated AI.',
           accent: 'Strengthen your digital presence',
+          previewUrl: 'https://arquitectura.ltrueba.com/',
         },
         {
           id: 'e-commerce',
@@ -365,6 +373,7 @@ export const siteContent = {
           description:
             'Páginas modernas, rápidas y profesionales: sitios corporativos, landing pages, portafolios, formularios, WhatsApp e IA integrada.',
           accent: 'Fortalece tu presencia digital',
+          previewUrl: 'https://arquitectura.ltrueba.com/',
         },
         {
           id: 'e-commerce',

@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { siteContent } from "../data/siteContent";
 import type { LocalizedContent } from "../data/siteContent";
+import { SectionBackground } from "./SectionBackground";
 
 type FormState = Record<string, string>;
 
@@ -37,6 +38,7 @@ export function ContactForm({ content }: ContactFormProps) {
 
   return (
     <section className="section contact-section" id="contact">
+      <SectionBackground src={siteContent.brand.sectionBackgroundVideos.contact} />
       <div className="contact-copy scroll-reveal">
         <p className="eyebrow">{content.contact.eyebrow}</p>
         <h2>{content.contact.title}</h2>

@@ -1,4 +1,6 @@
 import type { LocalizedContent } from "../data/siteContent";
+import { siteContent } from "../data/siteContent";
+import { SectionBackground } from "./SectionBackground";
 
 type ProjectsProps = {
   content: LocalizedContent;
@@ -7,6 +9,7 @@ type ProjectsProps = {
 export function Projects({ content }: ProjectsProps) {
   return (
     <section className="section projects-section" id="projects">
+      <SectionBackground src={siteContent.brand.sectionBackgroundVideos.projects} />
       <div className="section-heading scroll-reveal">
         <p className="eyebrow">{content.sections.projects.eyebrow}</p>
         <h2>{content.sections.projects.title}</h2>

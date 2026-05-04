@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
+import { siteContent } from '../data/siteContent';
 import type { LocalizedContent } from '../data/siteContent';
 import type { PaletteName } from '../App';
+import { SectionBackground } from './SectionBackground';
 
 type ProductRouletteProps = {
   content: LocalizedContent;
@@ -111,6 +113,7 @@ export function ProductRoulette({
 
   return (
     <section className='section services-section' id='services'>
+      <SectionBackground src={siteContent.brand.sectionBackgroundVideos.services} />
       <div className='section-heading scroll-reveal'>
         <p className='eyebrow'>{content.sections.services.eyebrow}</p>
         <h2>{content.sections.services.title}</h2>
@@ -197,7 +200,23 @@ export function ProductRoulette({
                       <span className='service-card-index'>
                         {String(index + 1).padStart(2, '0')}
                       </span>
-                      <h3>{service.title}</h3>
+                      {service.previewUrl ? (
+                        <span className='service-card-preview' aria-hidden='true'>
+                          <span className='service-preview-bar'>
+                            <span />
+                            <span />
+                            <span />
+                          </span>
+                          <iframe
+                            src={service.previewUrl}
+                            title={service.title}
+                            tabIndex={-1}
+                            loading='lazy'
+                          />
+                        </span>
+                      ) : (
+                        <h3>{service.title}</h3>
+                      )}
                       <p>{service.description}</p>
                       <strong>{service.accent}</strong>
                     </button>
