@@ -41,6 +41,8 @@ export type LocalizedContent = {
     options: {
       current: string;
       atlantic: string;
+      tropical: string;
+      sunset: string;
     };
   };
   products: Product[];
@@ -126,14 +128,15 @@ export const siteContent = {
         options: {
           current: 'Current',
           atlantic: 'Atlantic',
+          tropical: 'Tropical',
+          sunset: 'Sunset',
         },
       },
       products: [
         {
           id: 'web-development',
           title: 'Web Development',
-          description:
-            'Modern, fast, professional websites: corporate sites, landing pages, portfolios, forms, WhatsApp, and integrated AI.',
+          description: '',
           accent: 'Strengthen your digital presence',
           previewUrl: 'https://arquitectura.ltrueba.com/',
         },
@@ -143,6 +146,7 @@ export const siteContent = {
           description:
             'Online stores ready to sell with product catalog, cart, online payments, order management, social networks, and organic AI chats.',
           accent: 'Sell online with less friction',
+          previewUrl: 'https://my-winery-ecommerce-edjw7vlfl-ltp94.vercel.app/',
         },
         {
           id: 'custom-software',
@@ -229,8 +233,7 @@ export const siteContent = {
         {
           name: 'E-commerce',
           type: 'E-commerce and AI chats',
-          result:
-            'Online stores with catalog, cart, payments, order management, social integration, and automated organic conversations.',
+          result: 'Online stores with catalog and more.',
         },
         {
           name: 'Operations Control',
@@ -364,23 +367,24 @@ export const siteContent = {
         options: {
           current: 'Actual',
           atlantic: 'Atlantica',
+          tropical: 'Tropical',
+          sunset: 'Atardecer',
         },
       },
       products: [
         {
           id: 'web-development',
           title: 'Desarrollo Web',
-          description:
-            'Páginas modernas, rápidas y profesionales: sitios corporativos, landing pages, portafolios, formularios, WhatsApp e IA integrada.',
+          description: '',
           accent: 'Fortalece tu presencia digital',
           previewUrl: 'https://arquitectura.ltrueba.com/',
         },
         {
           id: 'e-commerce',
           title: 'E-Commerce',
-          description:
-            'Tiendas online listas para vender con catálogo, carrito, pagos en línea, gestión de pedidos, redes sociales y chats con IA.',
+          description: 'Tiendas online listas para vender con catálogo.',
           accent: 'Vende online con menos fricción',
+          previewUrl: 'https://my-winery-ecommerce-edjw7vlfl-ltp94.vercel.app/',
         },
         {
           id: 'custom-software',

@@ -1,3 +1,4 @@
+/* Variables base de color, sombras y tipografia usadas por toda la interfaz. */
 :root {
   --paper: #eeeeee;
   --muted: #686d76;
@@ -56,6 +57,7 @@ body {
   background: var(--app-ink);
 }
 
+/* Paleta alternativa: al cambiar data-palette en App.tsx se sustituyen estas variables. */
 .app-shell[data-palette='atlantic'] {
   --paper: #e8edf2;
   --muted: #c2a56d;
@@ -82,6 +84,58 @@ body {
   --app-glow: 0 0 58px rgba(84, 122, 149, 0.34);
 }
 
+.app-shell[data-palette='tropical'] {
+  --paper: #f5e9d8;
+  --muted: #d3bca6;
+  --steel: #3e2c23;
+  --ember: #e76f2e;
+  --ink: #1b1715;
+  --logo-bg: #f5e9d8;
+  --line: rgba(245, 233, 216, 0.18);
+  --panel: rgba(62, 44, 35, 0.78);
+  --shadow: 0 24px 80px rgba(25, 18, 14, 0.42);
+  --app-ink: #1b1715;
+  --app-graphite: #241b17;
+  --app-charcoal: #3e2c23;
+  --app-smoke: #604335;
+  --app-steel: #2fa4d7;
+  --app-silver: #f5e9d8;
+  --app-paper: #fff8ef;
+  --app-bronze: #e76f2e;
+  --app-copper: #e76f2e;
+  --app-olive-signal: #2fa4d7;
+  --app-warm-shadow: #3e2c23;
+  --app-line: rgba(231, 111, 46, 0.3);
+  --app-panel: rgba(62, 44, 35, 0.84);
+  --app-glow: 0 0 58px rgba(47, 164, 215, 0.34);
+}
+
+.app-shell[data-palette='sunset'] {
+  --paper: #fff0be;
+  --muted: #ffd6a6;
+  --steel: #4a2b25;
+  --ember: #ff9a86;
+  --ink: #211412;
+  --logo-bg: #fff0be;
+  --line: rgba(255, 240, 190, 0.2);
+  --panel: rgba(74, 43, 37, 0.78);
+  --shadow: 0 24px 80px rgba(33, 20, 18, 0.42);
+  --app-ink: #211412;
+  --app-graphite: #2c1a17;
+  --app-charcoal: #4a2b25;
+  --app-smoke: #7b4b40;
+  --app-steel: #ffb399;
+  --app-silver: #fff0be;
+  --app-paper: #fff8df;
+  --app-bronze: #ff9a86;
+  --app-copper: #ff9a86;
+  --app-olive-signal: #ffd6a6;
+  --app-warm-shadow: #4a2b25;
+  --app-line: rgba(255, 154, 134, 0.32);
+  --app-panel: rgba(74, 43, 37, 0.84);
+  --app-glow: 0 0 58px rgba(255, 179, 153, 0.34);
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -94,6 +148,7 @@ textarea {
   font: inherit;
 }
 
+/* Hero inicial con video de fondo, degradados y contenido principal de la marca. */
 .hero-section {
   position: relative;
   min-height: auto;
@@ -101,7 +156,7 @@ textarea {
   display: flex;
   flex-direction: column;
   isolation: isolate;
-  padding-top: clamp(102px, 10vw, 118px);
+  padding-top: clamp(136px, 12vw, 156px);
 }
 
 .hero-section::after {
@@ -144,6 +199,7 @@ textarea {
 
 .hero-video,
 .hero-scrim {
+  /* Capas absolutas que cubren todo el hero: video abajo y filtro oscuro encima. */
   position: absolute;
   inset: 0;
   width: 100%;
@@ -151,6 +207,7 @@ textarea {
 }
 
 .hero-video {
+  /* Cambia opacity/filter si quieres que el video se vea mas o menos fuerte. */
   object-fit: cover;
   z-index: -3;
   opacity: 0.82;
@@ -159,6 +216,7 @@ textarea {
 }
 
 .hero-scrim {
+  /* Este overlay mejora la lectura del texto sobre el video. */
   z-index: -2;
   background:
     radial-gradient(
@@ -199,19 +257,23 @@ textarea {
     );
 }
 
+/* Cabecera fija: contiene logo, navegacion, selector de idioma y llamada a la accion. */
 .site-header {
   position: fixed;
   top: 16px;
   left: 50%;
   z-index: 80;
-  width: min(1180px, calc(100% - 32px));
+  /* Ancho maximo del header; subelo si quieres una barra mas larga en desktop. */
+  width: min(1320px, calc(100% - 32px));
   margin: 0;
   display: grid;
-  grid-template-columns: minmax(240px, 33.333%) minmax(0, 1fr) auto;
+  /* Columnas: logo | links | controles. Agranda la primera para dar mas espacio al logo. */
+  grid-template-columns: minmax(300px, 38%) minmax(0, 1fr) auto;
   align-items: center;
-  gap: clamp(18px, 3vw, 36px);
-  min-height: 86px;
-  padding: 10px 16px;
+  gap: clamp(20px, 3.4vw, 44px);
+  /* Alto y padding del header. Si el logo crece, normalmente estos tambien suben. */
+  min-height: 112px;
+  padding: 14px 20px;
   border: 1px solid rgba(21, 23, 27, 0.12);
   background: var(--logo-bg);
   border-radius: 8px;
@@ -220,6 +282,7 @@ textarea {
 }
 
 .brand-mark {
+  /* Contenedor del logo. El overflow permite recortar los efectos animados del brillo. */
   position: relative;
   display: block;
   width: 100%;
@@ -236,6 +299,7 @@ textarea {
 }
 
 .brand-mark::before {
+  /* Barrido luminoso que cruza el logo. */
   z-index: 1;
   background: linear-gradient(
     90deg,
@@ -249,6 +313,7 @@ textarea {
 }
 
 .brand-mark::after {
+  /* Lineas finas sobre el logo para un efecto de scan digital. */
   z-index: 2;
   background: repeating-linear-gradient(
     180deg,
@@ -261,7 +326,8 @@ textarea {
 .brand-mark img {
   display: block;
   width: 100%;
-  height: clamp(50px, 5vw, 64px);
+  /* Tamano principal del logo. Este es el valor que mas probablemente editaras. */
+  height: clamp(72px, 6vw, 92px);
   object-fit: contain;
   object-position: left center;
   filter: contrast(1.08);
@@ -269,11 +335,12 @@ textarea {
 }
 
 .nav-links {
+  /* Menu desktop. En tablet/movil se oculta desde el media query de 920px. */
   display: flex;
   justify-content: center;
   gap: clamp(14px, 3vw, 34px);
   color: var(--steel);
-  font-size: 1.2rem;
+  font-size: 1.32rem;
   font-weight: 700;
 }
 
@@ -293,6 +360,7 @@ textarea {
 }
 
 .header-controls {
+  /* Grupo derecho: selector de idioma y boton de contacto. */
   display: flex;
   align-items: center;
   justify-content: end;
@@ -327,12 +395,13 @@ textarea {
   color: var(--paper);
   background: var(--steel);
   border: 1px solid rgba(55, 58, 64, 0.2);
-  padding: 10px 14px;
+  padding: 13px 18px;
   border-radius: 6px;
   font-weight: 800;
 }
 
 .hero-content {
+  /* Grid del hero: texto a la izquierda y retrato/persona a la derecha. */
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto auto;
   padding: clamp(34px, 5vw, 62px) 0 clamp(38px, 5vw, 68px);
@@ -355,6 +424,7 @@ textarea {
 }
 
 .hero-copy h1 {
+  /* Titulo principal. Usa clamp para no explotar en pantallas pequenas. */
   max-width: 760px;
   font-size: clamp(2.45rem, 4vw, 5.15rem);
   color: var(--paper);
@@ -410,6 +480,7 @@ textarea {
 }
 
 .button {
+  /* Estilo base compartido por los CTAs del hero. */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -450,8 +521,10 @@ textarea {
   background: rgba(238, 238, 238, 0.06);
 }
 
+/* Panel visual del retrato con efectos de escaneo y senales decorativas. */
 .persona-panel {
   --portrait-size: clamp(210px, 24vw, 300px);
+  /* --portrait-size controla el diametro del retrato de la persona. */
   position: relative;
   justify-self: end;
   width: min(100%, 330px);
@@ -467,6 +540,7 @@ textarea {
 .persona-scan-anchor {
   --scan-eye-x: 53.6%;
   --scan-eye-y: 51%;
+  /* Coordenadas desde donde nace el rayo de escaneo del ojo. */
   position: relative;
   z-index: 2;
   width: var(--portrait-size);
@@ -679,8 +753,10 @@ textarea {
   font-size: 1.38rem;
 }
 
+/* Contenedor de secciones: mezcla video ambiental, auras y cambios al hacer scroll. */
 .site-main {
   --main-aura-alpha: 0.24;
+  /* Fondo global despues del hero; App.tsx le agrega .is-scrolled al bajar. */
   position: relative;
   margin-top: -1px;
   overflow: hidden;
@@ -791,12 +867,14 @@ textarea {
     saturate(1.18);
 }
 
+/* Estructura comun para cada seccion: ancho, espaciado, fondos y video interno. */
 .section {
   --section-accent-a: rgba(255, 179, 138, 0.24);
   --section-accent-b: rgba(201, 239, 85, 0.08);
   --section-base-a: rgba(7, 7, 7, 0.92);
   --section-base-b: rgba(20, 16, 14, 0.76);
   --section-video-opacity: 0.22;
+  /* Plantilla general de seccion: ancho, padding vertical y margen para anclas. */
   position: relative;
   z-index: 1;
   width: min(1180px, calc(100% - 32px));
@@ -824,6 +902,7 @@ textarea {
 }
 
 .section::before {
+  /* Fondo extendido a pantalla completa usando width: 100vw en el pseudo-elemento. */
   z-index: -2;
   background:
     radial-gradient(
@@ -858,6 +937,7 @@ textarea {
 }
 
 .section-background-video {
+  /* Video ambiental propio de cada seccion, ubicado detras del contenido. */
   top: 0;
   bottom: 0;
   z-index: -3;
@@ -868,6 +948,7 @@ textarea {
     saturate(1.12);
 }
 
+/* Variantes visuales por seccion; solo ajustan las variables que consume .section. */
 .services-section {
   --section-accent-a: rgba(255, 179, 138, 0.28);
   --section-accent-b: rgba(201, 239, 85, 0.1);
@@ -1048,6 +1129,7 @@ textarea {
   transform: translateY(0) scale(1);
 }
 
+/* Encabezados reutilizables para presentar cada bloque de contenido. */
 .section-heading {
   display: grid;
   gap: 12px;
@@ -1074,6 +1156,7 @@ textarea {
 }
 
 .palette-switcher {
+  /* Barra del selector de paletas. Cambia width para hacerla mas larga/corta. */
   width: min(100%, 760px);
   margin: -10px auto 0;
   display: flex;
@@ -1103,6 +1186,7 @@ textarea {
 }
 
 .palette-option {
+  /* Boton individual de paleta; contiene texto y mini muestras de color. */
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -1145,7 +1229,9 @@ textarea {
   height: 16px;
 }
 
+/* Layout de la ruleta de productos/servicios con panel de texto y carrusel 3D. */
 .roulette-layout {
+  /* Si agregas contenido lateral a la ruleta, este grid es el punto de partida. */
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   justify-items: center;
@@ -1154,7 +1240,9 @@ textarea {
   margin-top: clamp(48px, 7vw, 92px);
 }
 
+/* Carrusel 3D: las tarjetas giran alrededor de un eje y resumen el servicio activo. */
 .service-carousel {
+  /* Caja total de la ruleta. Aumenta width/min-height si las tarjetas se salen. */
   position: relative;
   width: min(100%, 760px);
   min-height: clamp(390px, 48vw, 500px);
@@ -1164,21 +1252,25 @@ textarea {
 }
 
 .service-scene {
+  /* Escenario 3D real. Debe crecer junto con .service-card y cellSize en ProductRoulette.tsx. */
   position: relative;
   width: 240px;
   height: 250px;
+  /* perspective controla la profundidad: menor = efecto 3D mas fuerte. */
   perspective: 1000px;
-  margin: 56px auto 96px;
+  margin: 56px auto 200px;
 }
 
 .service-axis {
+  /* Eje inclinado animado desde ProductRoulette.tsx con rotateX/rotateZ. */
   position: absolute;
-  inset: 0;
+  inset: 10;
   /* transform: rotateX(-15deg) rotateY(0deg) rotateZ(-15deg); */
   transform-style: preserve-3d;
 }
 
 .service-deck {
+  /* Deck giratorio: ProductRoulette.tsx rota este contenedor para mostrar la tarjeta activa. */
   position: absolute;
   width: 100%;
   height: 100%;
@@ -1188,16 +1280,17 @@ textarea {
 }
 
 .service-card {
+  /* Tarjeta individual de servicio. width, min-height, gap y padding definen su tamano. */
   position: absolute;
   left: 10px;
   top: 10px;
-  width: 220px;
-  min-height: 220px;
+  width: 300px;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
   justify-content: space-between;
-  padding: 28px;
+  padding: 40px;
   color: var(--paper);
   border: 2px solid rgba(248, 248, 248, 0.18);
   background:
@@ -1266,6 +1359,7 @@ textarea {
 }
 
 .service-card::before {
+  /* Reflejo diagonal superior de cada tarjeta. */
   inset: 0;
   background:
     linear-gradient(
@@ -1283,6 +1377,7 @@ textarea {
 }
 
 .service-card::after {
+  /* Detalle circular decorativo en la esquina inferior. */
   right: 18px;
   bottom: 18px;
   width: 72px;
@@ -1298,6 +1393,7 @@ textarea {
 }
 
 .service-card.active {
+  /* Estado de la tarjeta al frente de la ruleta. */
   border-color: var(--app-copper);
   box-shadow:
     0 32px 92px rgba(0, 0, 0, 0.48),
@@ -1331,12 +1427,14 @@ textarea {
 }
 
 .service-card h3 {
+  /* Titulo de la tarjeta; se mantiene separado del cuerpo <p>. */
   margin: 0;
   font-size: 1.2rem;
   line-height: 1.05;
 }
 
 .service-card-preview {
+  /* Preview clicable de la web dentro del parrafo de Web Development. */
   display: block;
   width: 100%;
   height: 74px;
@@ -1370,6 +1468,7 @@ textarea {
 }
 
 .service-card-preview iframe {
+  /* Escala una pagina real dentro del preview. Ajusta width/height/scale juntos. */
   display: block;
   width: 640px;
   height: 390px;
@@ -1381,6 +1480,7 @@ textarea {
 }
 
 .service-card p {
+  /* Cuerpo de texto de la tarjeta. Aqui vive tambien el preview cuando hay previewUrl. */
   margin: 0;
   color: rgba(248, 248, 248, 0.74);
   font-size: 0.82rem;
@@ -1394,6 +1494,7 @@ textarea {
 }
 
 .service-orbit-shadow {
+  /* Sombra eliptica falsa para reforzar que la ruleta flota en 3D. */
   position: absolute;
   left: 50%;
   bottom: 13%;
@@ -1411,6 +1512,7 @@ textarea {
 }
 
 .service-active-summary {
+  /* Resumen flotante de la tarjeta activa, debajo de la ruleta. */
   position: absolute;
   left: 50%;
   bottom: clamp(10px, 2vw, 24px);
@@ -1429,6 +1531,7 @@ textarea {
 }
 
 .service-indicators {
+  /* Puntos/barras inferiores para seleccionar una tarjeta sin esperar la rotacion. */
   position: absolute;
   left: 50%;
   bottom: clamp(-28px, -2.4vw, -18px);
@@ -1466,6 +1569,7 @@ textarea {
     0 0 8px rgba(84, 122, 149, 0.28);
 }
 
+/* Bloque de proceso: muestra pasos breves despues de la ruleta de servicios. */
 .process-block {
   display: grid;
   width: 100%;
@@ -1490,10 +1594,12 @@ textarea {
   gap: 14px;
 }
 
+/* Tarjetas reutilizadas por procesos, proyectos, reseñas y formulario de contacto. */
 .process-list article,
 .project-card,
 .review-card,
 .contact-form {
+  /* Base visual compartida: panel oscuro, blur, borde y sombra. */
   position: relative;
   overflow: hidden;
   border: 1px solid var(--app-line);
@@ -1510,6 +1616,7 @@ textarea {
   box-shadow: var(--shadow);
 }
 
+/* Enlaces directos de contacto con estados hover y datos destacados. */
 .contact-channels {
   display: grid;
   gap: 10px;
@@ -1575,6 +1682,7 @@ textarea {
 }
 
 .process-list article {
+  /* Cada paso del proceso: numero a la izquierda y texto a la derecha en desktop. */
   display: grid;
   grid-template-columns: 64px 1fr;
   align-items: center;
@@ -1597,8 +1705,10 @@ textarea {
   line-height: 1.65;
 }
 
+/* Grillas de proyectos y reseñas; se adaptan luego en los media queries. */
 .project-grid,
 .review-track {
+  /* Tres columnas en desktop; los media queries las reducen en pantallas pequenas. */
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
@@ -1661,6 +1771,7 @@ textarea {
   color: var(--app-silver);
 }
 
+/* Seccion de contacto en dos columnas: texto/canales y formulario. */
 .contact-section {
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(320px, 1fr);
@@ -1669,6 +1780,7 @@ textarea {
 }
 
 .contact-form {
+  /* Formulario en dos columnas; textarea y boton ocupan ancho completo. */
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
@@ -1690,6 +1802,7 @@ textarea {
 .contact-form input,
 .contact-form select,
 .contact-form textarea {
+  /* Campos del formulario. El focus de abajo aplica el brillo de la paleta activa. */
   width: 100%;
   color: var(--app-paper);
   border: 1px solid rgba(248, 248, 248, 0.18);
@@ -1721,6 +1834,7 @@ textarea {
   color: rgba(248, 248, 248, 0.74);
 }
 
+/* Pie de pagina con informacion final y separador superior. */
 .site-footer {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
@@ -1737,10 +1851,12 @@ textarea {
   font-size: 1.25rem;
 }
 
+/* Clase aplicada por el hook de reveal para animar elementos al entrar en pantalla. */
 .reveal {
   animation: reveal-up 700ms ease both;
 }
 
+/* Animaciones globales de entrada, brillo, escaneo, carrusel y logo. */
 @keyframes reveal-up {
   from {
     opacity: 0;
@@ -1955,6 +2071,7 @@ textarea {
   }
 }
 
+/* Accesibilidad: reduce transiciones y animaciones para usuarios sensibles al movimiento. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -1969,11 +2086,12 @@ textarea {
   }
 }
 
+/* Tablet: simplifica navegacion y pasa layouts complejos a menos columnas. */
 @media (max-width: 920px) {
   .site-header {
     top: 12px;
-    grid-template-columns: minmax(190px, 1fr) auto;
-    min-height: 76px;
+    grid-template-columns: minmax(240px, 1fr) auto;
+    min-height: 96px;
   }
 
   .nav-links {
@@ -2014,10 +2132,11 @@ textarea {
   }
 }
 
+/* Movil: compacta cabecera, hero, tarjetas y formulario para pantallas estrechas. */
 @media (max-width: 620px) {
   .hero-section {
     min-height: auto;
-    padding-top: 128px;
+    padding-top: 162px;
   }
 
   .hero-scrim {
@@ -2057,7 +2176,7 @@ textarea {
 
   .brand-mark img {
     width: 100%;
-    height: 38px;
+    height: 52px;
     object-position: center;
   }
 

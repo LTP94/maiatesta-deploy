@@ -20,6 +20,14 @@ const paletteOptions = [
     id: 'atlantic',
     colors: ['#E8EDF2', '#2C3947', '#547A95', '#C2A56D'],
   },
+  {
+    id: 'tropical',
+    colors: ['#2FA4D7', '#F5E9D8', '#3E2C23', '#E76F2E'],
+  },
+  {
+    id: 'sunset',
+    colors: ['#FF9A86', '#FFB399', '#FFD6A6', '#FFF0BE'],
+  },
 ] satisfies Array<{
   id: PaletteName;
   colors: string[];
@@ -33,6 +41,9 @@ const AXIS_Z_STEP = 0.015;
 const AXIS_X_STEP = 0.01;
 const AXIS_INTERVAL_MS = 10;
 
+// Para editar el tamano visual de la ruleta, revisa tambien estas clases en styles.css:
+// .service-carousel controla el espacio total; .service-scene el escenario 3D;
+// .service-card el ancho/alto de cada tarjeta; .service-card-preview la imagen web.
 export function ProductRoulette({
   content,
   palette,
@@ -46,8 +57,12 @@ export function ProductRoulette({
   const axisZDirection = useRef(1);
   const axisXDirection = useRef(1);
   const cellCount = services.length;
-  const cellSize = 240;
+  // Tamano base usado para calcular la separacion circular entre tarjetas.
+  // Si haces las tarjetas mas grandes en CSS, sube este valor para abrir la ruleta.
+  const cellSize = 400;
+  // Angulo entre tarjetas: se reparte el circulo completo entre todos los servicios.
   const theta = cellCount > 0 ? 360 / cellCount : 0;
+  // Radio de la ruleta 3D. Un numero mayor separa mas las tarjetas del centro.
   const radius =
     cellCount > 1
       ? Math.round(cellSize / 1.7 / Math.tan(Math.PI / cellCount))
@@ -55,11 +70,23 @@ export function ProductRoulette({
   const safeActiveIndex = cellCount > 0 ? activeIndex % cellCount : 0;
   const activeProduct = services[safeActiveIndex];
 
+  const handleCardKeyDown = (
+    event: React.KeyboardEvent<HTMLElement>,
+    index: number,
+  ) => {
+    if (event.key !== 'Enter' && event.key !== ' ') {
+      return;
+    }
+
+    event.preventDefault();
+    setActiveIndex(index);
+  };
+
   useEffect(() => {
     setActiveIndex(0);
   }, [services]);
 
-  // movimiento suave en eje
+  // Movimiento suave del eje completo: da una inclinacion viva sin cambiar la tarjeta activa.
   useEffect(() => {
     const interval = window.setInterval(() => {
       setAxisZ((prev) => {
@@ -98,7 +125,7 @@ export function ProductRoulette({
     return () => window.clearInterval(interval);
   }, []);
 
-  // rotacion de cartas
+  // Rotacion automatica de cartas. Cambia 1500 para acelerar o reducir la velocidad.
   useEffect(() => {
     if (isPaused || cellCount < 2) {
       return;
@@ -113,7 +140,9 @@ export function ProductRoulette({
 
   return (
     <section className='section services-section' id='services'>
-      <SectionBackground src={siteContent.brand.sectionBackgroundVideos.services} />
+      <SectionBackground
+        src={siteContent.brand.sectionBackgroundVideos.services}
+      />
       <div className='section-heading scroll-reveal'>
         <p className='eyebrow'>{content.sections.services.eyebrow}</p>
         <h2>{content.sections.services.title}</h2>
@@ -128,7 +157,9 @@ export function ProductRoulette({
           {paletteOptions.map((option) => (
             <button
               className={
-                option.id === palette ? 'palette-option active' : 'palette-option'
+                option.id === palette
+                  ? 'palette-option active'
+                  : 'palette-option'
               }
               key={option.id}
               type='button'
@@ -160,6 +191,7 @@ export function ProductRoulette({
         onBlur={() => setIsPaused(false)}
       >
         <div className='service-carousel scroll-reveal'>
+          {/* Contenedor visual de la ruleta; su tamano externo esta en .service-carousel. */}
           <div className='service-scene'>
             <div
               className='service-axis'
@@ -170,6 +202,7 @@ export function ProductRoulette({
               <div
                 className='service-deck'
                 style={{
+                  // translateZ usa el radio calculado para ubicar el carrusel en profundidad.
                   transform: `translateZ(${-radius}px) rotateY(${
                     -safeActiveIndex * theta
                   }deg)`,
@@ -180,7 +213,10 @@ export function ProductRoulette({
                   const angle = theta * index;
 
                   return (
-                    <button
+                    // Cada tarjeta se ubica en el circulo con rotateY + translateZ(radius).
+                    // Para cambiar su tamano manualmente, edita .service-card en styles.css
+                    // y luego ajusta cellSize arriba para mantener la separacion correcta.
+                    <article
                       className={
                         index === safeActiveIndex
                           ? 'service-card active'
@@ -189,37 +225,48 @@ export function ProductRoulette({
                       key={service.id}
                       style={
                         {
+                          // El radio define cuanto se aleja cada tarjeta del centro de la ruleta.
                           transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
                         } as CSSProperties
                       }
-                      type='button'
                       onClick={() => setActiveIndex(index)}
+                      onKeyDown={(event) => handleCardKeyDown(event, index)}
                       aria-label={service.title}
-                      aria-pressed={index === safeActiveIndex}
+                      aria-current={index === safeActiveIndex}
+                      tabIndex={0}
                     >
                       <span className='service-card-index'>
                         {String(index + 1).padStart(2, '0')}
                       </span>
-                      {service.previewUrl ? (
-                        <span className='service-card-preview' aria-hidden='true'>
-                          <span className='service-preview-bar'>
-                            <span />
-                            <span />
-                            <span />
-                          </span>
-                          <iframe
-                            src={service.previewUrl}
-                            title={service.title}
-                            tabIndex={-1}
-                            loading='lazy'
-                          />
-                        </span>
-                      ) : (
-                        <h3>{service.title}</h3>
-                      )}
-                      <p>{service.description}</p>
+                      <h3>{service.title}</h3>
+                      <p>
+                        <span>{service.description}</span>
+                        {service.previewUrl ? (
+                          // Preview clicable dentro del cuerpo del texto de la tarjeta.
+                          <a
+                            className='service-card-preview'
+                            href={service.previewUrl}
+                            target='_blank'
+                            rel='noreferrer'
+                            onClick={(event) => event.stopPropagation()}
+                            aria-label={`${service.title} preview`}
+                          >
+                            <span className='service-preview-bar'>
+                              <span />
+                              <span />
+                              <span />
+                            </span>
+                            <iframe
+                              src={service.previewUrl}
+                              title={service.title}
+                              tabIndex={-1}
+                              loading='lazy'
+                            />
+                          </a>
+                        ) : null}
+                      </p>
                       <strong>{service.accent}</strong>
-                    </button>
+                    </article>
                   );
                 })}
               </div>
@@ -250,7 +297,9 @@ export function ProductRoulette({
           </div>
         </div>
         <div className='process-block'>
-          <h3 className='process-title scroll-reveal'>{content.processTitle}</h3>
+          <h3 className='process-title scroll-reveal'>
+            {content.processTitle}
+          </h3>
           <div className='process-list'>
             {content.process.map((step, index) => (
               <article className='scroll-reveal' key={step}>
