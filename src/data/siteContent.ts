@@ -43,6 +43,7 @@ export type LocalizedContent = {
       atlantic: string;
       tropical: string;
       sunset: string;
+      sand: string;
     };
   };
   products: Product[];
@@ -107,7 +108,6 @@ export const siteContent = {
       nav: [
         { label: 'Services', href: '#services' },
         { label: 'Solutions', href: '#projects' },
-        { label: 'Why us', href: '#reviews' },
         { label: 'Contact', href: '#contact' },
       ],
       hero: {
@@ -130,6 +130,7 @@ export const siteContent = {
           atlantic: 'Atlantic',
           tropical: 'Tropical',
           sunset: 'Sunset',
+          sand: 'Lagoon',
         },
       },
       products: [
@@ -346,7 +347,6 @@ export const siteContent = {
       nav: [
         { label: 'Servicios', href: '#services' },
         { label: 'Soluciones', href: '#projects' },
-        { label: 'Por qué', href: '#reviews' },
         { label: 'Contacto', href: '#contact' },
       ],
       hero: {
@@ -369,6 +369,7 @@ export const siteContent = {
           atlantic: 'Atlantica',
           tropical: 'Tropical',
           sunset: 'Atardecer',
+          sand: 'Laguna',
         },
       },
       products: [

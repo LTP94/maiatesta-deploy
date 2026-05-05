@@ -5,12 +5,16 @@ import { Hero } from './components/Hero';
 import { LuminescentBanner } from './components/LuminescentBanner';
 import { ProductRoulette } from './components/ProductRoulette';
 import { Projects } from './components/Projects';
-import { Reviews } from './components/Reviews';
 import { siteContent } from './data/siteContent';
 import type { LanguageCode } from './data/siteContent';
 import { useScrollReveal } from './hooks/useScrollReveal';
 
-export type PaletteName = 'current' | 'atlantic' | 'tropical' | 'sunset';
+export type PaletteName =
+  | 'current'
+  | 'atlantic'
+  | 'tropical'
+  | 'sunset'
+  | 'sand';
 
 // Detecta el idioma inicial del navegador y limita la app a los idiomas disponibles.
 function getInitialLanguage(): LanguageCode {
@@ -40,7 +44,8 @@ function getInitialPalette(): PaletteName {
 
   return storedPalette === 'atlantic' ||
     storedPalette === 'tropical' ||
-    storedPalette === 'sunset'
+    storedPalette === 'sunset' ||
+    storedPalette === 'sand'
     ? storedPalette
     : 'current';
 }
@@ -123,7 +128,7 @@ export default function App() {
           playsInline
           aria-hidden='true'
         />
-        {/* Composicion principal de la pagina: servicios, proyectos, resenas y contacto. */}
+        {/* Composicion principal de la pagina: servicios, proyectos y contacto. */}
         <main>
           <ProductRoulette
             content={content}
@@ -131,7 +136,6 @@ export default function App() {
             onPaletteChange={setPalette}
           />
           <Projects content={content} />
-          <Reviews content={content} />
           <LuminescentBanner {...content.banners[1]} tone='silver' />
           <ContactForm content={content} />
         </main>

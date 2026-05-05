@@ -86,54 +86,80 @@ body {
 
 .app-shell[data-palette='tropical'] {
   --paper: #f5e9d8;
-  --muted: #d3bca6;
-  --steel: #3e2c23;
+  --muted: #ffbf91;
+  --steel: #f5e9d8;
   --ember: #e76f2e;
-  --ink: #1b1715;
+  --ink: #173f51;
   --logo-bg: #f5e9d8;
-  --line: rgba(245, 233, 216, 0.18);
-  --panel: rgba(62, 44, 35, 0.78);
-  --shadow: 0 24px 80px rgba(25, 18, 14, 0.42);
-  --app-ink: #1b1715;
-  --app-graphite: #241b17;
-  --app-charcoal: #3e2c23;
-  --app-smoke: #604335;
+  --line: rgba(245, 233, 216, 0.22);
+  --panel: rgba(23, 63, 81, 0.8);
+  --shadow: 0 24px 80px rgba(12, 48, 66, 0.42);
+  --app-ink: #173f51;
+  --app-graphite: #1f6888;
+  --app-charcoal: #2fa4d7;
+  --app-smoke: #276f8e;
   --app-steel: #2fa4d7;
   --app-silver: #f5e9d8;
   --app-paper: #fff8ef;
   --app-bronze: #e76f2e;
   --app-copper: #e76f2e;
-  --app-olive-signal: #2fa4d7;
+  --app-olive-signal: #f5e9d8;
   --app-warm-shadow: #3e2c23;
   --app-line: rgba(231, 111, 46, 0.3);
-  --app-panel: rgba(62, 44, 35, 0.84);
+  --app-panel: rgba(23, 63, 81, 0.84);
   --app-glow: 0 0 58px rgba(47, 164, 215, 0.34);
 }
 
 .app-shell[data-palette='sunset'] {
   --paper: #fff0be;
-  --muted: #ffd6a6;
-  --steel: #4a2b25;
-  --ember: #ff9a86;
-  --ink: #211412;
+  --muted: #ffe2af;
+  --steel: #fff0be;
+  --ember: #ffd6a6;
+  --ink: #54251f;
   --logo-bg: #fff0be;
   --line: rgba(255, 240, 190, 0.2);
-  --panel: rgba(74, 43, 37, 0.78);
-  --shadow: 0 24px 80px rgba(33, 20, 18, 0.42);
-  --app-ink: #211412;
-  --app-graphite: #2c1a17;
-  --app-charcoal: #4a2b25;
-  --app-smoke: #7b4b40;
+  --panel: rgba(84, 37, 31, 0.78);
+  --shadow: 0 24px 80px rgba(84, 37, 31, 0.42);
+  --app-ink: #54251f;
+  --app-graphite: #7f3b32;
+  --app-charcoal: #ff9a86;
+  --app-smoke: #b86253;
   --app-steel: #ffb399;
   --app-silver: #fff0be;
   --app-paper: #fff8df;
-  --app-bronze: #ff9a86;
-  --app-copper: #ff9a86;
-  --app-olive-signal: #ffd6a6;
-  --app-warm-shadow: #4a2b25;
-  --app-line: rgba(255, 154, 134, 0.32);
-  --app-panel: rgba(74, 43, 37, 0.84);
-  --app-glow: 0 0 58px rgba(255, 179, 153, 0.34);
+  --app-bronze: #ffd6a6;
+  --app-copper: #ffd6a6;
+  --app-olive-signal: #fff0be;
+  --app-warm-shadow: #54251f;
+  --app-line: rgba(255, 214, 166, 0.34);
+  --app-panel: rgba(84, 37, 31, 0.84);
+  --app-glow: 0 0 58px rgba(255, 154, 134, 0.38);
+}
+
+.app-shell[data-palette='sand'] {
+  --paper: #efe3ca;
+  --muted: #8acbd0;
+  --steel: #170c79;
+  --ember: #56b6c6;
+  --ink: #12095f;
+  --logo-bg: #efe3ca;
+  --line: rgba(239, 227, 202, 0.22);
+  --panel: rgba(23, 12, 121, 0.78);
+  --shadow: 0 24px 80px rgba(18, 9, 95, 0.42);
+  --app-ink: #12095f;
+  --app-graphite: #170c79;
+  --app-charcoal: #24149a;
+  --app-smoke: #3154a8;
+  --app-steel: #56b6c6;
+  --app-silver: #8acbd0;
+  --app-paper: #efe3ca;
+  --app-bronze: #8acbd0;
+  --app-copper: #56b6c6;
+  --app-olive-signal: #efe3ca;
+  --app-warm-shadow: #170c79;
+  --app-line: rgba(86, 182, 198, 0.34);
+  --app-panel: rgba(23, 12, 121, 0.84);
+  --app-glow: 0 0 58px rgba(86, 182, 198, 0.38);
 }
 
 a {
@@ -197,6 +223,23 @@ textarea {
     );
 }
 
+.app-shell[data-palette='tropical'] .hero-section::after,
+.app-shell[data-palette='sunset'] .hero-section::after,
+.app-shell[data-palette='sand'] .hero-section::after {
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      color-mix(in srgb, var(--app-ink) 80%, transparent) 58%,
+      var(--app-ink) 100%
+    ),
+    radial-gradient(
+      circle at 50% 100%,
+      color-mix(in srgb, var(--app-copper) 22%, transparent),
+      transparent 45%
+    );
+}
+
 .hero-video,
 .hero-scrim {
   /* Capas absolutas que cubren todo el hero: video abajo y filtro oscuro encima. */
@@ -254,6 +297,28 @@ textarea {
       rgba(16, 24, 33, 0.96),
       rgba(44, 57, 71, 0.78) 54%,
       rgba(84, 122, 149, 0.5)
+    );
+}
+
+.app-shell[data-palette='tropical'] .hero-scrim,
+.app-shell[data-palette='sunset'] .hero-scrim,
+.app-shell[data-palette='sand'] .hero-scrim {
+  background:
+    radial-gradient(
+      circle at 78% 28%,
+      color-mix(in srgb, var(--app-steel) 28%, transparent),
+      transparent 26%
+    ),
+    radial-gradient(
+      circle at 52% 72%,
+      color-mix(in srgb, var(--app-copper) 14%, transparent),
+      transparent 34%
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--app-ink) 96%, transparent),
+      color-mix(in srgb, var(--app-graphite) 78%, transparent) 54%,
+      color-mix(in srgb, var(--app-charcoal) 50%, transparent)
     );
 }
 
@@ -513,6 +578,21 @@ textarea {
   box-shadow:
     0 16px 38px rgba(84, 122, 149, 0.34),
     0 0 24px rgba(194, 165, 109, 0.18);
+}
+
+.app-shell[data-palette='tropical'] .button-primary,
+.app-shell[data-palette='sunset'] .button-primary,
+.app-shell[data-palette='sand'] .button-primary {
+  color: var(--app-ink);
+  background: linear-gradient(
+    135deg,
+    var(--app-steel),
+    var(--app-copper) 58%,
+    var(--app-paper)
+  );
+  box-shadow:
+    0 16px 38px color-mix(in srgb, var(--app-copper) 34%, transparent),
+    0 0 24px color-mix(in srgb, var(--app-steel) 18%, transparent);
 }
 
 .button-secondary {
@@ -837,6 +917,37 @@ textarea {
     );
 }
 
+.app-shell[data-palette='tropical'] .site-main::before,
+.app-shell[data-palette='sunset'] .site-main::before,
+.app-shell[data-palette='sand'] .site-main::before {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--app-ink) 94%, transparent),
+      color-mix(in srgb, var(--app-charcoal) 72%, transparent) 34%,
+      color-mix(in srgb, var(--app-ink) 90%, transparent)
+    ),
+    linear-gradient(
+      color-mix(in srgb, var(--app-steel) calc(var(--main-aura-alpha) * 100%), transparent),
+      color-mix(in srgb, var(--app-copper) calc(var(--main-aura-alpha) * 38%), transparent)
+    ),
+    radial-gradient(
+      circle at 82% 18%,
+      color-mix(in srgb, var(--app-steel) 34%, transparent),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 16% 52%,
+      color-mix(in srgb, var(--app-paper) 12%, transparent),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 58% 38%,
+      color-mix(in srgb, var(--app-copper) 12%, transparent),
+      transparent 26%
+    );
+}
+
 .site-main::after {
   z-index: -1;
   background:
@@ -965,14 +1076,6 @@ textarea {
   --section-video-opacity: 0.24;
 }
 
-.reviews-section {
-  --section-accent-a: rgba(201, 239, 85, 0.1);
-  --section-accent-b: rgba(255, 179, 138, 0.18);
-  --section-base-a: rgba(12, 12, 12, 0.94);
-  --section-base-b: rgba(58, 36, 26, 0.56);
-  --section-video-opacity: 0.26;
-}
-
 .contact-section {
   --section-accent-a: rgba(255, 179, 138, 0.24);
   --section-accent-b: rgba(226, 222, 216, 0.14);
@@ -1002,18 +1105,20 @@ textarea {
   --section-base-b: rgba(84, 122, 149, 0.52);
 }
 
-.app-shell[data-palette='atlantic'] .reviews-section {
-  --section-accent-a: rgba(194, 165, 109, 0.16);
-  --section-accent-b: rgba(84, 122, 149, 0.24);
-  --section-base-a: rgba(16, 24, 33, 0.95);
-  --section-base-b: rgba(44, 57, 71, 0.6);
-}
-
 .app-shell[data-palette='atlantic'] .contact-section {
   --section-accent-a: rgba(194, 165, 109, 0.2);
   --section-accent-b: rgba(232, 237, 242, 0.13);
   --section-base-a: rgba(16, 24, 33, 0.96);
   --section-base-b: rgba(84, 122, 149, 0.58);
+}
+
+.app-shell[data-palette='tropical'] .section,
+.app-shell[data-palette='sunset'] .section,
+.app-shell[data-palette='sand'] .section {
+  --section-accent-a: color-mix(in srgb, var(--app-steel) 28%, transparent);
+  --section-accent-b: color-mix(in srgb, var(--app-copper) 16%, transparent);
+  --section-base-a: color-mix(in srgb, var(--app-ink) 94%, transparent);
+  --section-base-b: color-mix(in srgb, var(--app-charcoal) 68%, transparent);
 }
 
 .luminescent-banner {
@@ -1351,6 +1456,37 @@ textarea {
     0 0 22px rgba(84, 122, 149, 0.14);
 }
 
+.app-shell[data-palette='tropical'] .service-card,
+.app-shell[data-palette='sunset'] .service-card,
+.app-shell[data-palette='sand'] .service-card {
+  border-color: color-mix(in srgb, var(--app-paper) 22%, transparent);
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--app-paper) 12%, transparent),
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 86% 12%,
+      color-mix(in srgb, var(--app-steel) 34%, transparent),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 14% 86%,
+      color-mix(in srgb, var(--app-copper) 18%, transparent),
+      transparent 32%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--app-charcoal) 96%, transparent),
+      color-mix(in srgb, var(--app-graphite) 98%, transparent) 58%,
+      color-mix(in srgb, var(--app-ink) 96%, transparent)
+    );
+  box-shadow:
+    0 24px 70px color-mix(in srgb, var(--app-ink) 42%, transparent),
+    0 0 22px color-mix(in srgb, var(--app-steel) 16%, transparent);
+}
+
 .service-card::before,
 .service-card::after {
   content: '';
@@ -1408,6 +1544,16 @@ textarea {
     0 0 52px rgba(84, 122, 149, 0.42),
     0 0 24px rgba(194, 165, 109, 0.18),
     0 0 1px rgba(232, 237, 242, 0.72);
+}
+
+.app-shell[data-palette='tropical'] .service-card.active,
+.app-shell[data-palette='sunset'] .service-card.active,
+.app-shell[data-palette='sand'] .service-card.active {
+  box-shadow:
+    0 32px 92px color-mix(in srgb, var(--app-ink) 48%, transparent),
+    0 0 52px color-mix(in srgb, var(--app-steel) 42%, transparent),
+    0 0 24px color-mix(in srgb, var(--app-copper) 20%, transparent),
+    0 0 1px color-mix(in srgb, var(--app-paper) 72%, transparent);
 }
 
 .service-card-index,

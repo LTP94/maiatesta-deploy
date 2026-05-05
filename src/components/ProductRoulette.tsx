@@ -22,11 +22,15 @@ const paletteOptions = [
   },
   {
     id: 'tropical',
-    colors: ['#2FA4D7', '#F5E9D8', '#3E2C23', '#E76F2E'],
+    colors: ['#2FA4D7', '#E76F2E', '#F5E9D8', '#3E2C23'],
   },
   {
     id: 'sunset',
-    colors: ['#FF9A86', '#FFB399', '#FFD6A6', '#FFF0BE'],
+    colors: ['#FF9A86', '#FFF0BE', '#FFD6A6', '#FFB399'],
+  },
+  {
+    id: 'sand',
+    colors: ['#170C79', '#EFE3CA', '#56B6C6', '#8ACBD0'],
   },
 ] satisfies Array<{
   id: PaletteName;
