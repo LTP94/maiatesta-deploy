@@ -5,6 +5,7 @@ import { Hero } from './components/Hero';
 import { LuminescentBanner } from './components/LuminescentBanner';
 import { ProductRoulette } from './components/ProductRoulette';
 import { Projects } from './components/Projects';
+import { TypebotStandardChat } from './components/TypebotStandardChat';
 import { siteContent } from './data/siteContent';
 import type { LanguageCode } from './data/siteContent';
 import { useScrollReveal } from './hooks/useScrollReveal';
@@ -15,6 +16,13 @@ export type PaletteName =
   | 'tropical'
   | 'sunset'
   | 'sand';
+
+// Elige aqui la paleta principal de la web cuando quieres controlarla desde codigo.
+const defaultPalette: PaletteName = 'atlantic';
+
+// Cambia esto a true si quieres que el navegador recuerde la ultima paleta elegida.
+// En false, la web siempre usa defaultPalette al cargar.
+const savePaletteChoice = false;
 
 // Detecta el idioma inicial del navegador y limita la app a los idiomas disponibles.
 function getInitialLanguage(): LanguageCode {
@@ -36,8 +44,8 @@ function getInitialLanguage(): LanguageCode {
 
 // Recupera la paleta guardada para conservar la preferencia visual del usuario.
 function getInitialPalette(): PaletteName {
-  if (typeof window === 'undefined') {
-    return 'current';
+  if (typeof window === 'undefined' || !savePaletteChoice) {
+    return defaultPalette;
   }
 
   const storedPalette = window.localStorage.getItem('maiatesta-palette');
@@ -47,13 +55,15 @@ function getInitialPalette(): PaletteName {
     storedPalette === 'sunset' ||
     storedPalette === 'sand'
     ? storedPalette
-    : 'current';
+    : defaultPalette;
 }
 
 export default function App() {
   // Estados globales de la interfaz: idioma, tema de color y estado de scroll.
   const [language, setLanguage] = useState<LanguageCode>(getInitialLanguage);
   const [palette, setPalette] = useState<PaletteName>(getInitialPalette);
+  const [isPersonaPortraitAligned, setIsPersonaPortraitAligned] =
+    useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
   const content = useMemo(() => siteContent.locales[language], [language]);
   useScrollReveal(language);
@@ -65,6 +75,10 @@ export default function App() {
 
   // Guarda la paleta elegida para que se mantenga al recargar la pagina.
   useEffect(() => {
+    if (!savePaletteChoice) {
+      return;
+    }
+
     window.localStorage.setItem('maiatesta-palette', palette);
   }, [palette]);
 
@@ -109,6 +123,16 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handlePersonaPortraitToggle = () => {
+    setIsPersonaPortraitAligned((currentValue) => {
+      const nextValue = !currentValue;
+
+      setPalette(nextValue ? 'current' : 'atlantic');
+
+      return nextValue;
+    });
+  };
+
   return (
     // data-palette alimenta las variables CSS que cambian la identidad visual.
     <div className='app-shell' data-palette={palette}>
@@ -116,6 +140,8 @@ export default function App() {
         content={content}
         language={language}
         onLanguageChange={setLanguage}
+        isPersonaPortraitAligned={isPersonaPortraitAligned}
+        onPersonaPortraitToggle={handlePersonaPortraitToggle}
       />
       <div className={hasScrolled ? 'site-main is-scrolled' : 'site-main'}>
         {/* Video ambiental de fondo para las secciones posteriores al hero. */}
@@ -128,6 +154,7 @@ export default function App() {
           playsInline
           aria-hidden='true'
         />
+        <TypebotStandardChat />
         {/* Composicion principal de la pagina: servicios, proyectos y contacto. */}
         <main>
           <ProductRoulette

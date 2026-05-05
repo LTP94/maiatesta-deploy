@@ -651,6 +651,12 @@ textarea {
     box-shadow 220ms ease;
   animation: persona-breathe 5200ms ease-in-out infinite;
   will-change: transform;
+  cursor: pointer;
+}
+
+.persona-portrait:focus-visible {
+  outline: 3px solid var(--app-copper);
+  outline-offset: 6px;
 }
 
 .persona-portrait > * {
@@ -928,8 +934,16 @@ textarea {
       color-mix(in srgb, var(--app-ink) 90%, transparent)
     ),
     linear-gradient(
-      color-mix(in srgb, var(--app-steel) calc(var(--main-aura-alpha) * 100%), transparent),
-      color-mix(in srgb, var(--app-copper) calc(var(--main-aura-alpha) * 38%), transparent)
+      color-mix(
+        in srgb,
+        var(--app-steel) calc(var(--main-aura-alpha) * 100%),
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--app-copper) calc(var(--main-aura-alpha) * 38%),
+        transparent
+      )
     ),
     radial-gradient(
       circle at 82% 18%,
@@ -976,6 +990,25 @@ textarea {
   opacity: 0.34;
   filter: grayscale(0.62) sepia(0.24) contrast(1.18) brightness(0.74)
     saturate(1.18);
+}
+
+.site-main-typebot-chat {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100% - 32px));
+  min-height: 600px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(238, 238, 238, 0.2);
+  border-radius: 8px;
+  background: rgba(7, 7, 7, 0.72);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.38),
+    0 0 36px color-mix(in srgb, var(--app-copper) 18%, transparent);
+}
+
+.site-main-typebot-chat typebot-standard {
+  display: block;
 }
 
 /* Estructura comun para cada seccion: ancho, espaciado, fondos y video interno. */
@@ -1347,10 +1380,15 @@ textarea {
 
 /* Carrusel 3D: las tarjetas giran alrededor de un eje y resumen el servicio activo. */
 .service-carousel {
+  --service-summary-bottom: clamp(-56px, -25vw, -24px);
+  --service-indicators-bottom: clamp(-108px, -15vw, -72px);
+  --service-controls-clearance: clamp(120px, 14vw, 180px);
   /* Caja total de la ruleta. Aumenta width/min-height si las tarjetas se salen. */
   position: relative;
   width: min(100%, 760px);
   min-height: clamp(390px, 48vw, 500px);
+  /* Espacio real para que Work methodology empiece debajo del resumen e indicadores. */
+  margin-bottom: var(--service-controls-clearance);
   display: grid;
   place-items: center;
   filter: drop-shadow(0 28px 80px rgba(0, 0, 0, 0.26));
@@ -1359,7 +1397,7 @@ textarea {
 .service-scene {
   /* Escenario 3D real. Debe crecer junto con .service-card y cellSize en ProductRoulette.tsx. */
   position: relative;
-  width: 240px;
+  width: 24px;
   height: 250px;
   /* perspective controla la profundidad: menor = efecto 3D mas fuerte. */
   perspective: 1000px;
@@ -1389,12 +1427,15 @@ textarea {
   position: absolute;
   left: 10px;
   top: 10px;
-  width: 300px;
-  min-height: 400px;
+  width: 350px;
+  min-height: 450px;
   display: flex;
   flex-direction: column;
+  /* Distancia vertical entre numero, titulo, texto/preview y frase final. */
   gap: 20px;
+  /* Distribuye el contenido a lo alto de la tarjeta; usa flex-start si lo quieres mas junto arriba. */
   justify-content: space-between;
+  /* Espacio interno entre el borde de la tarjeta y los textos/imagenes. */
   padding: 40px;
   color: var(--paper);
   border: 2px solid rgba(248, 248, 248, 0.18);
@@ -1583,7 +1624,8 @@ textarea {
   /* Preview clicable de la web dentro del parrafo de Web Development. */
   display: block;
   width: 100%;
-  height: 74px;
+  /* Alto de la imagen/preview dentro de la service card. */
+  height: 150px;
   overflow: hidden;
   border: 1px solid rgba(248, 248, 248, 0.22);
   border-radius: 6px;
@@ -1616,9 +1658,9 @@ textarea {
 .service-card-preview iframe {
   /* Escala una pagina real dentro del preview. Ajusta width/height/scale juntos. */
   display: block;
-  width: 640px;
-  height: 390px;
-  border: 0;
+  width: 800px;
+  height: 400px;
+  border: 2;
   pointer-events: none;
   transform: scale(0.32);
   transform-origin: top left;
@@ -1629,12 +1671,13 @@ textarea {
   /* Cuerpo de texto de la tarjeta. Aqui vive tambien el preview cuando hay previewUrl. */
   margin: 0;
   color: rgba(248, 248, 248, 0.74);
-  font-size: 0.82rem;
+  font-size: 1rem;
+  /* Distancia entre lineas del texto descriptivo de la tarjeta. */
   line-height: 1.42;
 }
 
 .service-card strong {
-  font-size: 0.72rem;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 0;
 }
@@ -1643,7 +1686,7 @@ textarea {
   /* Sombra eliptica falsa para reforzar que la ruleta flota en 3D. */
   position: absolute;
   left: 50%;
-  bottom: 13%;
+  bottom: 0%;
   width: min(78%, 430px);
   height: 72px;
   border-radius: 50%;
@@ -1661,10 +1704,13 @@ textarea {
   /* Resumen flotante de la tarjeta activa, debajo de la ruleta. */
   position: absolute;
   left: 50%;
-  bottom: clamp(10px, 2vw, 24px);
+  /* Mueve el resumen activo desde --service-summary-bottom en .service-carousel. */
+  bottom: var(--service-summary-bottom);
   z-index: 24;
+  /* Ancho maximo del resumen activo. */
   width: min(82%, 360px);
   margin: 0;
+  /* Espacio interno del resumen activo. */
   padding: 12px 14px;
   color: rgba(248, 248, 248, 0.82);
   border: 1px solid rgba(248, 248, 248, 0.14);
@@ -1680,16 +1726,17 @@ textarea {
   /* Puntos/barras inferiores para seleccionar una tarjeta sin esperar la rotacion. */
   position: absolute;
   left: 50%;
-  bottom: clamp(-28px, -2.4vw, -18px);
+  /* Mueve los indicadores desde --service-indicators-bottom en .service-carousel. */
+  bottom: var(--service-indicators-bottom);
   z-index: 24;
   display: flex;
-  gap: 8px;
+  gap: 20px;
   transform: translateX(-50%);
 }
 
 .service-indicator {
   width: 26px;
-  height: 6px;
+  height: 25px;
   padding: 0;
   border: 0;
   border-radius: 999px;
@@ -1713,6 +1760,16 @@ textarea {
   box-shadow:
     0 0 18px rgba(194, 165, 109, 0.44),
     0 0 8px rgba(84, 122, 149, 0.28);
+}
+
+@media (min-width: 921px) {
+  .project-card-package.featured {
+    transform: scale(1.05);
+  }
+
+  .project-card-package.featured:hover {
+    transform: translateY(-8px) scale(1.05);
+  }
 }
 
 /* Bloque de proceso: muestra pasos breves despues de la ruleta de servicios. */
@@ -1884,9 +1941,170 @@ textarea {
     0 0 34px rgba(255, 179, 138, 0.16);
 }
 
+.project-card-package {
+  position: relative;
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  border-color: rgba(55, 65, 81, 0.82);
+  background: rgba(10, 10, 10, 0.3);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.34);
+}
+
+.project-card-package:hover {
+  transform: translateY(-8px);
+  border-color: rgba(107, 114, 128, 0.9);
+}
+
+.project-card-package.featured {
+  z-index: 10;
+  border-color: rgba(6, 182, 212, 0.5);
+  background: rgba(10, 10, 10, 0.5);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 0 30px rgba(6, 182, 212, 0.15),
+    0 22px 58px rgba(0, 0, 0, 0.36);
+}
+
+.project-card-package.featured:hover {
+  border-color: rgba(6, 182, 212, 0.78);
+}
+
+.project-card-badge {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  z-index: 3;
+  padding: 5px 16px;
+  color: #050505;
+  border-radius: 999px;
+  background: #06b6d4;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
 .project-card h3 {
   margin: 38px 0 16px;
   font-size: clamp(1.7rem, 3vw, 2.5rem);
+}
+
+.project-card-package h3 {
+  margin: 8px 0;
+  color: #ffffff;
+  font-size: clamp(1.55rem, 2vw, 2rem);
+}
+
+.project-card-package.featured h3 {
+  color: #06b6d4;
+  text-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+}
+
+.project-card-package p {
+  min-height: 40px;
+  margin-bottom: 24px;
+  color: rgba(156, 163, 175, 0.88);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.project-feature-list {
+  flex: 1;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  color: rgba(209, 213, 219, 0.94);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  list-style: none;
+}
+
+.project-feature-list li {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.project-feature-list li > span:first-child {
+  flex: 0 0 auto;
+  margin-right: 12px;
+  color: var(--app-copper);
+  font-weight: 800;
+}
+
+.project-feature-list li > span:last-child {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.project-feature-list .excluded {
+  color: rgba(75, 85, 99, 0.92);
+}
+
+.project-feature-list .excluded > span:first-child {
+  color: #7f1d1d;
+}
+
+.project-feature-list .emphasized > span:last-child {
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.project-card-cta {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(248, 248, 248, 0.12);
+}
+
+.project-card-cta strong {
+  min-width: 0;
+  color: var(--app-paper);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+}
+
+.project-whatsapp-link {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(37, 211, 102, 0.42);
+  border-radius: 50%;
+  color: #25d366;
+  background: rgba(37, 211, 102, 0.12);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.project-whatsapp-link:hover,
+.project-whatsapp-link:focus-visible {
+  border-color: rgba(37, 211, 102, 0.9);
+  background: rgba(37, 211, 102, 0.2);
+  transform: translateY(-2px);
+}
+
+.project-whatsapp-link svg {
+  width: 25px;
+  height: 25px;
+  fill: currentColor;
 }
 
 .review-card {
@@ -2396,6 +2614,7 @@ textarea {
   .service-carousel {
     min-height: 420px;
     margin-inline: 0;
+    --service-controls-clearance: 140px;
   }
 
   .palette-switcher {

@@ -55,7 +55,15 @@ export type LocalizedContent = {
   };
   process: string[];
   processTitle: string;
-  projects: Array<{ name: string; type: string; result: string }>;
+  projects: Array<{
+    name: string;
+    type: string;
+    result: string;
+    features?: Array<{ label: string; included: boolean; emphasized?: boolean }>;
+    badgeText?: string;
+    featured?: boolean;
+    ctaText?: string;
+  }>;
   reviews: Array<{ quote: string; author: string; role: string }>;
   contact: {
     eyebrow: string;
@@ -137,7 +145,8 @@ export const siteContent = {
         {
           id: 'web-development',
           title: 'Web Development',
-          description: '',
+          description:
+            'Website development to enhance your company’s image and market visibility.',
           accent: 'Strengthen your digital presence',
           previewUrl: 'https://arquitectura.ltrueba.com/',
         },
@@ -226,15 +235,55 @@ export const siteContent = {
       processTitle: 'Work methodology',
       projects: [
         {
-          name: 'Smart Web Presence',
-          type: 'Web development',
+          name: 'Express Web Presence (starting at $200)',
+          type: 'One-time payment',
           result:
-            'Corporate pages, landing pages, professional portfolios, forms, WhatsApp, and AI integration for stronger digital visibility.',
+            'Your professional website ready in 3 to 5 business days. One-time payment, no hidden monthly fees.',
+          features: [
+            {
+              label: 'Professional, fast, and modern website.',
+              included: true,
+            },
+            { label: 'Mobile-optimized design.', included: true },
+            {
+              label: 'Direct contact button to your WhatsApp.',
+              included: true,
+            },
+            { label: 'Guaranteed delivery in record time.', included: true },
+            { label: 'Automatic customer attention.', included: false },
+            { label: 'Database integration.', included: false },
+          ],
+          ctaText: 'Get a quote with us, schedule a call.',
         },
         {
-          name: 'E-commerce',
-          type: 'E-commerce and AI chats',
-          result: 'Online stores with catalog and more.',
+          name: 'AI Automated Chats (starting at US$60)',
+          type: 'Most Popular',
+          result:
+            'Website + a WhatsApp virtual assistant that serves customers while you sleep.',
+          badgeText: 'Most Popular',
+          featured: true,
+          features: [
+            {
+              label: 'Includes the complete Express Web Presence package.',
+              included: true,
+              emphasized: true,
+            },
+            { label: 'Assistant bot for your business (24/7).', included: true },
+            {
+              label: 'Filters casual visitors and sends you only buyers.',
+              included: true,
+            },
+            { label: 'Immediate replies with no waiting.', included: true },
+            {
+              label: 'Phone alerts for ready-to-buy customers.',
+              included: true,
+            },
+            {
+              label: 'Connection to accounting systems/CRM.',
+              included: false,
+            },
+          ],
+          ctaText: 'Get a quote with us, schedule a call.',
         },
         {
           name: 'Operations Control',
@@ -465,16 +514,51 @@ export const siteContent = {
       processTitle: 'Metodología de trabajo',
       projects: [
         {
-          name: 'Presencia Web Inteligente',
-          type: 'Desarrollo web',
+          name: 'Presencia Web Express ( a partir de $200)',
+          type: 'Pago unico',
           result:
-            'Páginas corporativas, landing pages, portafolios profesionales, formularios, WhatsApp e integración con IA para fortalecer tu visibilidad digital.',
+            'Tu pagina web profesional lista en 3 a 5 dias habiles. Pago unico, sin mensualidades ocultas.',
+          features: [
+            { label: 'Web profesional, rapida y moderna.', included: true },
+            { label: 'Diseno optimizado para celulares.', included: true },
+            {
+              label: 'Boton de contacto directo a tu WhatsApp.',
+              included: true,
+            },
+            { label: 'Atencion automatica a clientes.', included: false },
+            { label: 'Integracion con bases de datos.', included: false },
+          ],
+          ctaText: 'Cotiza con nosotros, agenda una cita.',
         },
         {
-          name: 'E-commerce',
-          type: 'E-commerce y chats con IA',
+          name: 'Chats automatizados con IA (a partir de US$ 60)',
+          type: 'Mas Popular',
           result:
-            'Tiendas online con catálogo, carrito, pagos, gestión de pedidos, integración social y conversaciones orgánicas automatizadas.',
+            'Pagina web + un asistente virtual en WhatsApp que atiende clientes mientras duermes.',
+          badgeText: 'Mas Popular',
+          featured: true,
+          features: [
+            {
+              label: 'Incluye Presencia Web Express completa.',
+              included: true,
+              emphasized: true,
+            },
+            { label: 'Robot asistente para tu negocio (24/7).', included: true },
+            {
+              label: 'Filtra curiosos y te envia solo compradores.',
+              included: true,
+            },
+            { label: 'Respuestas inmediatas sin esperas.', included: true },
+            {
+              label: 'Alertas a tu celular de clientes listos.',
+              included: true,
+            },
+            {
+              label: 'Conexion a sistemas contables/CRM.',
+              included: false,
+            },
+          ],
+          ctaText: 'Cotiza con nosotros, agenda una cita.',
         },
         {
           name: 'Control Operativo',

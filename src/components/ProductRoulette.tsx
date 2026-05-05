@@ -11,6 +11,10 @@ type ProductRouletteProps = {
   onPaletteChange: (palette: PaletteName) => void;
 };
 
+// Cambia esto a true si quieres mostrar el selector de paleta en la pagina.
+// Cambialo a false si quieres ocultarlo y controlar la paleta solo desde App.tsx.
+const showPaletteSwitcher = false;
+
 const paletteOptions = [
   {
     id: 'current',
@@ -152,41 +156,43 @@ export function ProductRoulette({
         <h2>{content.sections.services.title}</h2>
         <p>{content.sections.services.body}</p>
       </div>
-      <div
-        className='palette-switcher scroll-reveal'
-        aria-label={content.ariaLabels.paletteSwitcher}
-      >
-        <span>{content.palette.label}</span>
-        <div className='palette-options'>
-          {paletteOptions.map((option) => (
-            <button
-              className={
-                option.id === palette
-                  ? 'palette-option active'
-                  : 'palette-option'
-              }
-              key={option.id}
-              type='button'
-              onClick={() => onPaletteChange(option.id)}
-              aria-label={content.palette.options[option.id]}
-              aria-pressed={option.id === palette}
-            >
-              <span className='palette-option-name'>
-                {content.palette.options[option.id]}
-              </span>
-              <span className='palette-swatches' aria-hidden='true'>
-                {option.colors.map((color) => (
-                  <span
-                    className='palette-swatch'
-                    key={color}
-                    style={{ background: color }}
-                  />
-                ))}
-              </span>
-            </button>
-          ))}
+      {showPaletteSwitcher && (
+        <div
+          className='palette-switcher scroll-reveal'
+          aria-label={content.ariaLabels.paletteSwitcher}
+        >
+          <span>{content.palette.label}</span>
+          <div className='palette-options'>
+            {paletteOptions.map((option) => (
+              <button
+                className={
+                  option.id === palette
+                    ? 'palette-option active'
+                    : 'palette-option'
+                }
+                key={option.id}
+                type='button'
+                onClick={() => onPaletteChange(option.id)}
+                aria-label={content.palette.options[option.id]}
+                aria-pressed={option.id === palette}
+              >
+                <span className='palette-option-name'>
+                  {content.palette.options[option.id]}
+                </span>
+                <span className='palette-swatches' aria-hidden='true'>
+                  {option.colors.map((color) => (
+                    <span
+                      className='palette-swatch'
+                      key={color}
+                      style={{ background: color }}
+                    />
+                  ))}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <div
         className='roulette-layout'
         onMouseEnter={() => setIsPaused(true)}
