@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ContactForm } from './components/ContactForm';
 import { Footer } from './components/Footer';
 import { Hero } from './components/Hero';
@@ -61,6 +61,7 @@ function getInitialPalette(): PaletteName {
 export default function App() {
   // Estados globales de la interfaz: idioma, tema de color y estado de scroll.
   const [language, setLanguage] = useState<LanguageCode>(getInitialLanguage);
+  const isInteractiveLangChange = useRef(false);
   const [palette, setPalette] = useState<PaletteName>(getInitialPalette);
   const [isPersonaPortraitAligned, setIsPersonaPortraitAligned] =
     useState(false);
@@ -83,7 +84,13 @@ export default function App() {
   }, [palette]);
 
   // Si la URL tiene hash, espera a que el layout se estabilice y mueve la vista al destino.
+  // Omite el scroll cuando el cambio de idioma es interactivo (no recarga de pagina).
   useEffect(() => {
+    if (isInteractiveLangChange.current) {
+      isInteractiveLangChange.current = false;
+      return;
+    }
+
     if (!window.location.hash) {
       return;
     }
@@ -123,6 +130,11 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleLanguageChange = (lang: LanguageCode) => {
+    isInteractiveLangChange.current = true;
+    setLanguage(lang);
+  };
+
   const handlePersonaPortraitToggle = () => {
     setIsPersonaPortraitAligned((currentValue) => {
       const nextValue = !currentValue;
@@ -139,9 +151,10 @@ export default function App() {
       <Hero
         content={content}
         language={language}
-        onLanguageChange={setLanguage}
+        onLanguageChange={handleLanguageChange}
         isPersonaPortraitAligned={isPersonaPortraitAligned}
         onPersonaPortraitToggle={handlePersonaPortraitToggle}
+        palette={palette}
       />
       <div className={hasScrolled ? 'site-main is-scrolled' : 'site-main'}>
         {/* Video ambiental de fondo para las secciones posteriores al hero. */}
@@ -154,7 +167,7 @@ export default function App() {
           playsInline
           aria-hidden='true'
         />
-        <TypebotStandardChat />
+        <TypebotStandardChat content={content} />
         {/* Composicion principal de la pagina: servicios, proyectos y contacto. */}
         <main>
           <ProductRoulette

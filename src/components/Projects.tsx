@@ -1,6 +1,14 @@
 import type { LocalizedContent } from '../data/siteContent';
 import { siteContent } from '../data/siteContent';
+import { LuminousText } from './LuminousText';
 import { SectionBackground } from './SectionBackground';
+
+const projectsHighlightPhrases = [
+  'sales, control, and better decisions',
+  'ventas, control y mejores decisiones',
+  'Digital systems',
+  'Sistemas digitales',
+];
 
 type ProjectsProps = {
   content: LocalizedContent;
@@ -18,7 +26,12 @@ export function Projects({ content }: ProjectsProps) {
       />
       <div className='section-heading scroll-reveal'>
         <p className='eyebrow'>{content.sections.projects.eyebrow}</p>
-        <h2>{content.sections.projects.title}</h2>
+        <h2>
+          <LuminousText
+            text={content.sections.projects.title}
+            phrases={projectsHighlightPhrases}
+          />
+        </h2>
         <p>{content.sections.projects.body}</p>
       </div>
       <div className='project-grid'>

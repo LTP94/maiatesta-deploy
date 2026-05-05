@@ -80,6 +80,13 @@ export type LocalizedContent = {
     body: string;
     rights: string;
   };
+  bot: {
+    eyebrow: string;
+    title: string;
+    body: string;
+    badges: string[];
+    trust: string;
+  };
 };
 
 export const siteContent = {
@@ -89,6 +96,7 @@ export const siteContent = {
     personaAlt: 'MaiAtesta AI persona',
     logo: '/assets/maiatesta-logo.jpg',
     persona: '/assets/malatesta-persona-invertido.jpg',
+    atlanticPersona: '/assets/maiatesta-persona-atlantica.png',
     heroVideo: '/assets/maiatesta-page-bg.mp4',
     pageBackgroundVideo: '/assets/maiatesta-page-bg.mp4',
     sectionBackgroundVideos: {
@@ -171,6 +179,7 @@ export const siteContent = {
           description:
             'Smart stock control with entries, exits, low-inventory alerts, automatic reports, multi-user access, history, and traceability.',
           accent: 'Control stock with intelligence',
+          previewUrl: 'https://inventario.kipuxbot.com/recepcion/',
         },
         {
           id: 'purchase-optimization',
@@ -386,6 +395,13 @@ export const siteContent = {
         body: 'Intelligent technology to grow and monetize your business.',
         rights: 'All rights reserved.',
       },
+      bot: {
+        eyebrow: 'Kipux · Live AI',
+        title: 'Describe your business. Get a custom plan.',
+        body: 'No forms. No sales calls. Kipux analyzes your operation in real time and tells you exactly which tools will generate measurable results for your company.',
+        badges: ['Responds in seconds', 'Available 24/7', 'No commitment needed'],
+        trust: 'Over 200 businesses have already talked to Kipux.',
+      },
     },
     es: {
       ariaLabels: {
@@ -449,6 +465,7 @@ export const siteContent = {
           description:
             'Control inteligente de stock con entradas, salidas, alertas de bajo inventario, reportes automáticos, multiusuario, historial y trazabilidad.',
           accent: 'Controla stock con inteligencia',
+          previewUrl: 'https://inventario.kipuxbot.com/recepcion/',
         },
         {
           id: 'purchase-optimization',
@@ -589,7 +606,7 @@ export const siteContent = {
       ],
       contact: {
         eyebrow: 'Contacto',
-        title: 'Cuéntanos qué quieres mejorar, automatizar o vender.',
+        title: 'Cuéntanos qué quieres mejorar, automatizar o vender',
         body: '',
         emailSubjectPrefix: 'Solicitud de proyecto de',
         submitLabel: 'Enviar solicitud',
@@ -660,6 +677,13 @@ export const siteContent = {
         headline: 'MaIAtesta',
         body: 'Tecnología inteligente para crecer y rentabilizar tu negocio.',
         rights: 'Todos los derechos reservados.',
+      },
+      bot: {
+        eyebrow: 'Kipux · IA en vivo',
+        title: 'Describe tu negocio. Obtén un plan a medida.',
+        body: 'Sin formularios. Sin llamadas de ventas. Kipux analiza tu operación en tiempo real y te dice exactamente qué herramientas generarán resultados medibles para tu empresa.',
+        badges: ['Responde en segundos', 'Disponible 24/7', 'Sin compromiso'],
+        trust: 'Más de 200 empresas ya hablaron con Kipux.',
       },
     },
   } satisfies Record<LanguageCode, LocalizedContent>,

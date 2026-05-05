@@ -3,7 +3,15 @@ import type { CSSProperties } from 'react';
 import { siteContent } from '../data/siteContent';
 import type { LocalizedContent } from '../data/siteContent';
 import type { PaletteName } from '../App';
+import { LuminousText } from './LuminousText';
 import { SectionBackground } from './SectionBackground';
+
+const servicesHighlightPhrases = [
+  'grow and monetize your business',
+  'crecer y rentabilizar tu negocio',
+  'Technology',
+  'Tecnología',
+];
 
 type ProductRouletteProps = {
   content: LocalizedContent;
@@ -13,7 +21,7 @@ type ProductRouletteProps = {
 
 // Cambia esto a true si quieres mostrar el selector de paleta en la pagina.
 // Cambialo a false si quieres ocultarlo y controlar la paleta solo desde App.tsx.
-const showPaletteSwitcher = false;
+const showPaletteSwitcher = true;
 
 const paletteOptions = [
   {
@@ -153,7 +161,12 @@ export function ProductRoulette({
       />
       <div className='section-heading scroll-reveal'>
         <p className='eyebrow'>{content.sections.services.eyebrow}</p>
-        <h2>{content.sections.services.title}</h2>
+        <h2>
+          <LuminousText
+            text={content.sections.services.title}
+            phrases={servicesHighlightPhrases}
+          />
+        </h2>
         <p>{content.sections.services.body}</p>
       </div>
       {showPaletteSwitcher && (
