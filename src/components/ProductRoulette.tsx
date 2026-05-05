@@ -169,43 +169,6 @@ export function ProductRoulette({
         </h2>
         <p>{content.sections.services.body}</p>
       </div>
-      {showPaletteSwitcher && (
-        <div
-          className='palette-switcher scroll-reveal'
-          aria-label={content.ariaLabels.paletteSwitcher}
-        >
-          <span>{content.palette.label}</span>
-          <div className='palette-options'>
-            {paletteOptions.map((option) => (
-              <button
-                className={
-                  option.id === palette
-                    ? 'palette-option active'
-                    : 'palette-option'
-                }
-                key={option.id}
-                type='button'
-                onClick={() => onPaletteChange(option.id)}
-                aria-label={content.palette.options[option.id]}
-                aria-pressed={option.id === palette}
-              >
-                <span className='palette-option-name'>
-                  {content.palette.options[option.id]}
-                </span>
-                <span className='palette-swatches' aria-hidden='true'>
-                  {option.colors.map((color) => (
-                    <span
-                      className='palette-swatch'
-                      key={color}
-                      style={{ background: color }}
-                    />
-                  ))}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
       <div
         className='roulette-layout'
         onMouseEnter={() => setIsPaused(true)}
