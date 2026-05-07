@@ -3399,6 +3399,22 @@ textarea {
   .review-track {
     grid-template-columns: 1fr;
   }
+
+  /* Roulette: shrink cards on tablet so they don't overflow medium screens */
+  .service-carousel {
+    width: min(100%, 580px);
+  }
+
+  .service-card {
+    width: clamp(270px, 58vw, 330px);
+    min-height: 400px;
+    padding: 28px;
+  }
+
+  .service-scene {
+    margin-top: 52px;
+    margin-bottom: 200px;
+  }
 }
 
 /* Movil: compacta cabecera, hero, tarjetas y formulario para pantallas estrechas. */
@@ -3515,9 +3531,13 @@ textarea {
   }
 
   .service-carousel {
-    min-height: 420px;
+    min-height: 380px;
     margin-inline: 0;
-    --service-controls-clearance: 140px;
+    --service-controls-clearance: 130px;
+    --service-summary-bottom: -48px;
+    --service-indicators-bottom: -92px;
+    /* Clip side-bleeding cards on narrow phones */
+    overflow: hidden;
   }
 
   .palette-switcher {
@@ -3535,13 +3555,16 @@ textarea {
   }
 
   .service-scene {
-    margin-top: 38px;
-    margin-bottom: 86px;
+    margin-top: 34px;
+    margin-bottom: 80px;
   }
 
   .service-card {
-    min-height: 210px;
-    padding: 16px;
+    /* Narrow cards so they fit on 320-390px phones */
+    width: clamp(225px, 78vw, 275px);
+    min-height: 200px;
+    padding: 20px;
+    gap: 12px;
   }
 
   .service-card-preview {
