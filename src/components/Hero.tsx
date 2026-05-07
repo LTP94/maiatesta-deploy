@@ -36,15 +36,6 @@ export function Hero({
       : siteContent.brand.persona;
   return (
     <section className='hero-section' id='top'>
-      <video
-        className='hero-video'
-        src={siteContent.brand.heroVideo}
-        autoPlay
-        muted
-        loop
-        playsInline
-        aria-hidden='true'
-      />
       <div className='hero-scrim' />
       <Header
         content={content}
@@ -78,6 +69,7 @@ export function Hero({
             image={personaImage}
             alt={siteContent.brand.personaAlt}
             isAligned={isPersonaPortraitAligned}
+            isMirrored={palette === 'atlantic'}
             onToggle={onPersonaPortraitToggle}
           />
         </div>

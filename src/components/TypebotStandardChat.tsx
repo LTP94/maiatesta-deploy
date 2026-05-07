@@ -1,4 +1,4 @@
-import { createElement, useEffect } from 'react';
+import { createElement, useEffect, useRef, useState } from 'react';
 import type { LocalizedContent } from '../data/siteContent';
 
 const typebotScriptId = 'maiatesta-typebot-standard-script';
@@ -59,7 +59,14 @@ function applyTypebotSurfaceStyles() {
 }
 
 export function TypebotStandardChat({ content }: { content: LocalizedContent }) {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [shouldLoadTypebot, setShouldLoadTypebot] = useState(false);
+
   useEffect(() => {
+    if (!shouldLoadTypebot) {
+      return;
+    }
+
     let animationFrameId = 0;
     let retries = 0;
     let observer: MutationObserver | undefined;
@@ -117,10 +124,10 @@ Typebot.initStandard({
       window.cancelAnimationFrame(animationFrameId);
       observer?.disconnect();
     };
-  }, []);
+  }, [shouldLoadTypebot]);
 
   return (
-    <section className='site-main-typebot-chat' aria-label='Kipux chat'>
+    <section ref={sectionRef} className='site-main-typebot-chat' aria-label='Kipux chat'>
       <div className='bot-invite scroll-reveal'>
         <p className='bot-invite__eyebrow'>
           <span className='bot-live-dot' aria-hidden='true' />
@@ -139,10 +146,23 @@ Typebot.initStandard({
         <p className='bot-invite__trust'>{content.bot.trust}</p>
       </div>
       <div className='site-main-typebot-chat__inner'>
-        {createElement('typebot-standard', {
-          className: 'site-main-typebot-chat__embed',
-          style: { width: '100%', height: '600px' },
-        })}
+        {shouldLoadTypebot
+          ? createElement('typebot-standard', {
+              className: 'site-main-typebot-chat__embed',
+              style: { width: '100%', height: '600px' },
+            })
+          : (
+            <button
+              className='site-main-typebot-chat__placeholder'
+              type='button'
+              onClick={() => setShouldLoadTypebot(true)}
+              aria-label='Open Kipux chat'
+            >
+              <span className='site-main-typebot-chat__placeholder-badge'>Kipux</span>
+              <strong>Open live chat</strong>
+              <span>Load the assistant only when you need it.</span>
+            </button>
+          )}
       </div>
     </section>
   );

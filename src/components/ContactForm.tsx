@@ -3,7 +3,6 @@ import type { FormEvent } from "react";
 import { siteContent } from "../data/siteContent";
 import type { LocalizedContent } from "../data/siteContent";
 import { LuminousText } from "./LuminousText";
-import { SectionBackground } from "./SectionBackground";
 
 // Brand icons — keyed by channel label (case-insensitive match)
 const CHANNEL_ICONS: Record<string, JSX.Element> = {
@@ -87,7 +86,6 @@ export function ContactForm({ content }: ContactFormProps) {
 
   return (
     <section className="section contact-section" id="contact">
-      <SectionBackground src={siteContent.brand.sectionBackgroundVideos.contact} />
       <div className="contact-copy scroll-reveal">
         <p className="eyebrow">{content.contact.eyebrow}</p>
         <h2>

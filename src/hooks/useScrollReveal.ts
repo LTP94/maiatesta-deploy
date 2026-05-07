@@ -21,8 +21,8 @@ export function useScrollReveal(dependency: unknown) {
         });
       },
       {
-        rootMargin: "0px 0px -12% 0px",
-        threshold: 0.18,
+        rootMargin: "0px 0px 14% 0px",
+        threshold: 0.04,
       },
     );
 

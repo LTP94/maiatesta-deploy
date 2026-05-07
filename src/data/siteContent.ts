@@ -94,9 +94,9 @@ export const siteContent = {
     name: 'MaiAtesta',
     logoAlt: 'MaiAtesta agency logo',
     personaAlt: 'MaiAtesta AI persona',
-    logo: '/assets/maiatesta-logo.jpg',
-    persona: '/assets/malatesta-persona-invertido.jpg',
-    atlanticPersona: '/assets/maiatesta-persona-atlantica.png',
+    logo: '/assets/maiatesta-logo-optimized-2.jpg',
+    persona: '/assets/maiatesta-persona-hero.png',
+    atlanticPersona: '/assets/maiatesta-persona-hero.png',
     heroVideo: '/assets/maiatesta-page-bg.mp4',
     pageBackgroundVideo: '/assets/maiatesta-page-bg.mp4',
     sectionBackgroundVideos: {

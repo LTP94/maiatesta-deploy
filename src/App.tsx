@@ -157,16 +157,6 @@ export default function App() {
         palette={palette}
       />
       <div className={hasScrolled ? 'site-main is-scrolled' : 'site-main'}>
-        {/* Video ambiental de fondo para las secciones posteriores al hero. */}
-        <video
-          className='site-main-video'
-          src={siteContent.brand.pageBackgroundVideo}
-          autoPlay
-          muted
-          loop
-          playsInline
-          aria-hidden='true'
-        />
         <TypebotStandardChat content={content} />
         {/* Composicion principal de la pagina: servicios, proyectos y contacto. */}
         <main>

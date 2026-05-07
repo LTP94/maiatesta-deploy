@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { siteContent } from '../data/siteContent';
 import type { LocalizedContent } from '../data/siteContent';
 import type { PaletteName } from '../App';
 import { LuminousText } from './LuminousText';
-import { SectionBackground } from './SectionBackground';
 
 const servicesHighlightPhrases = [
   'grow and monetize your business',
@@ -49,14 +48,6 @@ const paletteOptions = [
   colors: string[];
 }>;
 
-const AXIS_MIN_Z = -5;
-const AXIS_MAX_Z = 5;
-const AXIS_MIN_X = -20;
-const AXIS_MAX_X = -10;
-const AXIS_Z_STEP = 0.015;
-const AXIS_X_STEP = 0.01;
-const AXIS_INTERVAL_MS = 10;
-
 // Para editar el tamano visual de la ruleta, revisa tambien estas clases en styles.css:
 // .service-carousel controla el espacio total; .service-scene el escenario 3D;
 // .service-card el ancho/alto de cada tarjeta; .service-card-preview la imagen web.
@@ -68,10 +59,6 @@ export function ProductRoulette({
   const services = content.products;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [axisZ, setAxisZ] = useState(0);
-  const [axisX, setAxisX] = useState(-15);
-  const axisZDirection = useRef(1);
-  const axisXDirection = useRef(1);
   const cellCount = services.length;
   // Tamano base usado para calcular la separacion circular entre tarjetas.
   // Si haces las tarjetas mas grandes en CSS, sube este valor para abrir la ruleta.
@@ -102,45 +89,6 @@ export function ProductRoulette({
     setActiveIndex(0);
   }, [services]);
 
-  // Movimiento suave del eje completo: da una inclinacion viva sin cambiar la tarjeta activa.
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setAxisZ((prev) => {
-        const next = prev + AXIS_Z_STEP * axisZDirection.current;
-
-        if (next >= AXIS_MAX_Z) {
-          axisZDirection.current = -1;
-          return AXIS_MAX_Z;
-        }
-
-        if (next <= AXIS_MIN_Z) {
-          axisZDirection.current = 1;
-          return AXIS_MIN_Z;
-        }
-
-        return Number(next.toFixed(2));
-      });
-
-      setAxisX((prev) => {
-        const next = prev + AXIS_X_STEP * axisXDirection.current;
-
-        if (next >= AXIS_MAX_X) {
-          axisXDirection.current = -1;
-          return AXIS_MAX_X;
-        }
-
-        if (next <= AXIS_MIN_X) {
-          axisXDirection.current = 1;
-          return AXIS_MIN_X;
-        }
-
-        return Number(next.toFixed(2));
-      });
-    }, AXIS_INTERVAL_MS);
-
-    return () => window.clearInterval(interval);
-  }, []);
-
   // Rotacion automatica de cartas. Cambia 1500 para acelerar o reducir la velocidad.
   useEffect(() => {
     if (isPaused || cellCount < 2) {
@@ -156,9 +104,6 @@ export function ProductRoulette({
 
   return (
     <section className='section services-section' id='services'>
-      <SectionBackground
-        src={siteContent.brand.sectionBackgroundVideos.services}
-      />
       <div className='section-heading scroll-reveal'>
         <p className='eyebrow'>{content.sections.services.eyebrow}</p>
         <h2>
@@ -179,12 +124,7 @@ export function ProductRoulette({
         <div className='service-carousel scroll-reveal'>
           {/* Contenedor visual de la ruleta; su tamano externo esta en .service-carousel. */}
           <div className='service-scene'>
-            <div
-              className='service-axis'
-              style={{
-                transform: `rotateX(${axisX}deg) rotateY(0deg) rotateZ(${axisZ}deg)`,
-              }}
-            >
+            <div className='service-axis'>
               <div
                 className='service-deck'
                 style={{

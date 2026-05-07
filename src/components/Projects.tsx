@@ -1,7 +1,5 @@
 import type { LocalizedContent } from '../data/siteContent';
-import { siteContent } from '../data/siteContent';
 import { LuminousText } from './LuminousText';
-import { SectionBackground } from './SectionBackground';
 
 const projectsHighlightPhrases = [
   'sales, control, and better decisions',
@@ -21,9 +19,6 @@ export function Projects({ content }: ProjectsProps) {
 
   return (
     <section className='section projects-section' id='projects'>
-      <SectionBackground
-        src={siteContent.brand.sectionBackgroundVideos.projects}
-      />
       <div className='section-heading scroll-reveal'>
         <p className='eyebrow'>{content.sections.projects.eyebrow}</p>
         <h2>

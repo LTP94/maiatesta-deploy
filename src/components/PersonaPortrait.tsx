@@ -5,6 +5,7 @@ type PersonaPortraitProps = {
   image: string;
   alt: string;
   isAligned: boolean;
+  isMirrored?: boolean;
   onToggle: () => void;
 };
 
@@ -12,6 +13,7 @@ export function PersonaPortrait({
   image,
   alt,
   isAligned,
+  isMirrored = false,
   onToggle,
 }: PersonaPortraitProps) {
   const [isFlipping, setIsFlipping] = useState(false);
@@ -52,7 +54,17 @@ export function PersonaPortrait({
           }
         }}
       >
-        <img src={image} alt={alt} />
+        <span
+          className='persona-portrait-media'
+          style={{ '--persona-image-scale-x': isMirrored ? '-1' : '1' } as CSSProperties}
+        >
+          <img
+            src={image}
+            alt={alt}
+            decoding='async'
+            fetchPriority='high'
+          />
+        </span>
       </div>
     </div>
   );
