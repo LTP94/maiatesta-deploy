@@ -156,11 +156,11 @@ Typebot.initStandard({
               className='site-main-typebot-chat__placeholder'
               type='button'
               onClick={() => setShouldLoadTypebot(true)}
-              aria-label='Open Kipux chat'
+              aria-label={content.bot.chatLabel}
             >
               <span className='site-main-typebot-chat__placeholder-badge'>Kipux</span>
-              <strong>Open live chat</strong>
-              <span>Load the assistant only when you need it.</span>
+              <strong>{content.bot.chatLabel}</strong>
+              <span>{content.bot.chatHint}</span>
             </button>
           )}
       </div>

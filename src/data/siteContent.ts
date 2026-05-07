@@ -86,6 +86,8 @@ export type LocalizedContent = {
     body: string;
     badges: string[];
     trust: string;
+    chatLabel: string;
+    chatHint: string;
   };
 };
 
@@ -393,6 +395,8 @@ export const siteContent = {
         body: 'No forms. No sales calls. Kipux analyzes your operation in real time and tells you exactly which tools will generate measurable results for your company.',
         badges: ['Responds in seconds', 'Available 24/7', 'No commitment needed'],
         trust: 'Over 200 businesses have already talked to Kipux.',
+        chatLabel: 'Open live chat',
+        chatHint: 'Load the assistant only when you need it.',
       },
     },
     es: {
@@ -433,14 +437,14 @@ export const siteContent = {
         {
           id: 'web-development',
           title: 'Desarrollo Web',
-          description: '',
+          description: 'Desarrollo web para potenciar la imagen de tu empresa y tu visibilidad en el mercado.',
           accent: 'Fortalece tu presencia digital',
           previewUrl: 'https://arquitectura.ltrueba.com/',
         },
         {
           id: 'e-commerce',
           title: 'E-Commerce',
-          description: 'Tiendas online listas para vender con catálogo.',
+          description: 'Tiendas online listas para vender con catálogo de productos, carrito, pagos en línea, gestión de pedidos, redes sociales y chats con IA.',
           accent: 'Vende online con menos fricción',
           previewUrl: 'https://my-winery-ecommerce-edjw7vlfl-ltp94.vercel.app/',
         },
@@ -523,28 +527,28 @@ export const siteContent = {
       processTitle: 'Metodología de trabajo',
       projects: [
         {
-          name: 'Presencia Web Express ( a partir de $200)',
-          type: 'Pago unico',
+          name: 'Presencia Web Express (a partir de $200)',
+          type: 'Pago único',
           result:
-            'Tu pagina web profesional lista en 3 a 5 dias habiles. Pago unico, sin mensualidades ocultas.',
+            'Tu página web profesional lista en 3 a 5 días hábiles. Pago único, sin mensualidades ocultas.',
           features: [
-            { label: 'Web profesional, rapida y moderna.', included: true },
-            { label: 'Diseno optimizado para celulares.', included: true },
+            { label: 'Web profesional, rápida y moderna.', included: true },
+            { label: 'Diseño optimizado para celulares.', included: true },
             {
-              label: 'Boton de contacto directo a tu WhatsApp.',
+              label: 'Botón de contacto directo a tu WhatsApp.',
               included: true,
             },
-            { label: 'Atencion automatica a clientes.', included: false },
-            { label: 'Integracion con bases de datos.', included: false },
+            { label: 'Atención automática a clientes.', included: false },
+            { label: 'Integración con bases de datos.', included: false },
           ],
           ctaText: 'Cotiza con nosotros, agenda una cita.',
         },
         {
           name: 'Chats automatizados con IA (a partir de US$ 60)',
-          type: 'Mas Popular',
+          type: 'Más Popular',
           result:
-            'Pagina web + un asistente virtual en WhatsApp que atiende clientes mientras duermes.',
-          badgeText: 'Mas Popular',
+            'Página web + un asistente virtual en WhatsApp que atiende clientes mientras duermes.',
+          badgeText: 'Más Popular',
           featured: true,
           features: [
             {
@@ -554,7 +558,7 @@ export const siteContent = {
             },
             { label: 'Robot asistente para tu negocio (24/7).', included: true },
             {
-              label: 'Filtra curiosos y te envia solo compradores.',
+              label: 'Filtra curiosos y te envía solo compradores.',
               included: true,
             },
             { label: 'Respuestas inmediatas sin esperas.', included: true },
@@ -563,7 +567,7 @@ export const siteContent = {
               included: true,
             },
             {
-              label: 'Conexion a sistemas contables/CRM.',
+              label: 'Conexión a sistemas contables/CRM.',
               included: false,
             },
           ],
@@ -598,7 +602,7 @@ export const siteContent = {
       ],
       contact: {
         eyebrow: 'Contacto',
-        title: 'Cuéntanos qué quieres mejorar, automatizar o vender',
+        title: 'Cuéntanos qué quieres mejorar, automatizar o vender.',
         body: '',
         emailSubjectPrefix: 'Solicitud de proyecto de',
         submitLabel: 'Enviar solicitud',
@@ -676,6 +680,8 @@ export const siteContent = {
         body: 'Sin formularios. Sin llamadas de ventas. Kipux analiza tu operación en tiempo real y te dice exactamente qué herramientas generarán resultados medibles para tu empresa.',
         badges: ['Responde en segundos', 'Disponible 24/7', 'Sin compromiso'],
         trust: 'Más de 200 empresas ya hablaron con Kipux.',
+        chatLabel: 'Abrir chat en vivo',
+        chatHint: 'Carga el asistente solo cuando lo necesites.',
       },
     },
   } satisfies Record<LanguageCode, LocalizedContent>,

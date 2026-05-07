@@ -3536,8 +3536,8 @@ textarea {
     --service-controls-clearance: 130px;
     --service-summary-bottom: -48px;
     --service-indicators-bottom: -92px;
-    /* Clip side-bleeding cards on narrow phones */
-    overflow: hidden;
+    /* clip-path clips 3D-transformed children (overflow:hidden does not) */
+    clip-path: inset(0 0 -220px 0);
   }
 
   .palette-switcher {
