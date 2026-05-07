@@ -21,14 +21,25 @@ export function useScrollReveal(dependency: unknown) {
         });
       },
       {
-        rootMargin: "0px 0px 14% 0px",
-        threshold: 0.04,
+        // Large positive rootMargin so elements trigger well before they enter view.
+        // This prevents fast-scroll from leaving elements invisible.
+        rootMargin: "0px 0px 30% 0px",
+        threshold: 0,
       },
     );
 
     elements.forEach((element, index) => {
       element.style.setProperty("--reveal-index", String(index % 5));
-      observer.observe(element);
+
+      // Immediately reveal elements already in (or near) the viewport.
+      // This is the primary fix for fast-scroll: if the user scrolls past
+      // a section before the observer fires, the element is already visible.
+      const rect = element.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 1.1 && rect.bottom > -window.innerHeight * 0.1) {
+        element.classList.add("is-visible");
+      } else {
+        observer.observe(element);
+      }
     });
 
     return () => observer.disconnect();

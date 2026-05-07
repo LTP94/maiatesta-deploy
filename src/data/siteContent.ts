@@ -97,14 +97,6 @@ export const siteContent = {
     logo: '/assets/maiatesta-logo-optimized-2.jpg',
     persona: '/assets/maiatesta-persona-hero.png',
     atlanticPersona: '/assets/maiatesta-persona-hero.png',
-    heroVideo: '/assets/maiatesta-page-bg.mp4',
-    pageBackgroundVideo: '/assets/maiatesta-page-bg.mp4',
-    sectionBackgroundVideos: {
-      services: '/assets/video_cuadrados.mp4',
-      projects: '/assets/video_cuadrados.mp4',
-      reviews: '/assets/video_cuadrados.mp4',
-      contact: '/assets/video_cuadrados.mp4',
-    },
     email: 'maiatesta@gmail.com',
   },
   languageSwitcher: {
