@@ -53,7 +53,7 @@ export type LocalizedContent = {
     projects: { eyebrow: string; title: string; body: string };
     reviews: { eyebrow: string; title: string; body: string };
   };
-  process: string[];
+  process: Array<{ title: string; body: string }>;
   processTitle: string;
   projects: Array<{
     name: string;
@@ -230,10 +230,10 @@ export const siteContent = {
         },
       },
       process: [
-        'Understand your sales, operations, inventory, purchasing, and reporting needs.',
-        'Design the right digital solution: web, commerce, custom software, AI, or automation.',
-        'Build fast, professional systems with clear forms, integrations, dashboards, and business logic.',
-        'Launch, measure, and improve results with automation, reports, and better decision tools.',
+        { title: 'Analyze', body: 'Understand your sales, operations, inventory, purchasing, and reporting needs.' },
+        { title: 'Design', body: 'Design the right digital solution: web, commerce, custom software, AI, or automation.' },
+        { title: 'Build', body: 'Build fast, professional systems with clear forms, integrations, dashboards, and business logic.' },
+        { title: 'Launch', body: 'Launch, measure, and improve results with automation, reports, and better decision tools.' },
       ],
       processTitle: 'Work methodology',
       projects: [
@@ -519,10 +519,10 @@ export const siteContent = {
         },
       },
       process: [
-        'Entendemos tus necesidades de ventas, operaciones, inventario, compras y reportes.',
-        'Diseñamos la solución digital adecuada: web, comercio, software a medida, IA o automatización.',
-        'Construimos sistemas rápidos y profesionales con formularios, integraciones, dashboards y lógica de negocio.',
-        'Lanzamos, medimos y mejoramos resultados con automatización, reportes y mejores herramientas de decisión.',
+        { title: 'Analizar', body: 'Entendemos tus necesidades de ventas, operaciones, inventario, compras y reportes.' },
+        { title: 'Diseñar', body: 'Diseñamos la solución digital adecuada: web, comercio, software a medida, IA o automatización.' },
+        { title: 'Construir', body: 'Construimos sistemas rápidos y profesionales con formularios, integraciones, dashboards y lógica de negocio.' },
+        { title: 'Lanzar', body: 'Lanzamos, medimos y mejoramos resultados con automatización, reportes y mejores herramientas de decisión.' },
       ],
       processTitle: 'Metodología de trabajo',
       projects: [
@@ -537,8 +537,7 @@ export const siteContent = {
             {
               label: 'Botón de contacto directo a tu WhatsApp.',
               included: true,
-            },
-            { label: 'Atención automática a clientes.', included: false },
+            },            { label: 'Entrega garantizada en tiempo récord.', included: true },            { label: 'Atención automática a clientes.', included: false },
             { label: 'Integración con bases de datos.', included: false },
           ],
           ctaText: 'Cotiza con nosotros, agenda una cita.',

@@ -228,9 +228,12 @@ export function ProductRoulette({
           </h3>
           <div className='process-list'>
             {content.process.map((step, index) => (
-              <article className='scroll-reveal' key={step}>
+              <article className='scroll-reveal' key={step.title}>
                 <span>{String(index + 1).padStart(2, '0')}</span>
-                <p>{step}</p>
+                <div>
+                  <strong>{step.title}</strong>
+                  <p>{step.body}</p>
+                </div>
               </article>
             ))}
           </div>

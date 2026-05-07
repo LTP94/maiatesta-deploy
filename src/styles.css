@@ -2752,12 +2752,21 @@ textarea {
   /* Fixed-width snapping cards — partially reveal next card */
   flex: 0 0 clamp(230px, 28vw, 300px);
   scroll-snap-align: start;
-  /* Keep the internal two-column layout (number + text) */
+  /* Two-column layout: step number | title + description */
   display: grid;
   grid-template-columns: 64px 1fr;
-  align-items: center;
+  align-items: start;
   gap: 18px;
   padding: 18px;
+}
+
+.process-list article strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--paper);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .process-list span,
@@ -2856,7 +2865,8 @@ textarea {
   z-index: 3;
   padding: 5px 16px;
   border-radius: 999px;
-  background: #06b6d4;
+  background: var(--app-copper);
+  color: var(--app-ink);
   font-size: 0.72rem;
   font-weight: 800;
   transform: translateX(-50%);
@@ -2875,8 +2885,8 @@ textarea {
 }
 
 .project-card-package.featured h3 {
-  color: #06b6d4;
-  text-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+  color: var(--app-copper);
+  text-shadow: 0 0 15px rgba(255, 179, 138, 0.5);
 }
 
 .project-card-package p {
