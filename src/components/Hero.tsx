@@ -37,10 +37,19 @@ export function Hero({
   return (
     <section className='hero-section' id='top'>
       {/* Animated CSS background — GPU-only, no videos */}
+      <div className='hero-stars hero-stars--far' aria-hidden='true' />
+      <div className='hero-stars hero-stars--near' aria-hidden='true' />
+      <div className='hero-aurora' aria-hidden='true' />
       <div className='hero-orbs' aria-hidden='true'>
         <div className='hero-orb hero-orb--a' />
         <div className='hero-orb hero-orb--b' />
         <div className='hero-orb hero-orb--c' />
+        <div className='hero-orb hero-orb--d' />
+      </div>
+      <div className='hero-shooting-stars' aria-hidden='true'>
+        <span className='hero-shooting-star hero-shooting-star--a' />
+        <span className='hero-shooting-star hero-shooting-star--b' />
+        <span className='hero-shooting-star hero-shooting-star--c' />
       </div>
       <div className='hero-grain' aria-hidden='true' />
       <div className='hero-scrim' />
