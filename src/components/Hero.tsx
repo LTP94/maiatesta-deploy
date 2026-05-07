@@ -36,6 +36,13 @@ export function Hero({
       : siteContent.brand.persona;
   return (
     <section className='hero-section' id='top'>
+      {/* Animated CSS background — GPU-only, no videos */}
+      <div className='hero-orbs' aria-hidden='true'>
+        <div className='hero-orb hero-orb--a' />
+        <div className='hero-orb hero-orb--b' />
+        <div className='hero-orb hero-orb--c' />
+      </div>
+      <div className='hero-grain' aria-hidden='true' />
       <div className='hero-scrim' />
       <Header
         content={content}
@@ -74,10 +81,16 @@ export function Hero({
           />
         </div>
       </div>
-      <a className='scroll-hint' href='#services' aria-label='Scroll down'>
-        <span className='scroll-hint-mouse' aria-hidden='true' />
-        <span className='scroll-hint-chevron' aria-hidden='true' />
-        <span className='scroll-hint-chevron scroll-hint-chevron--2' aria-hidden='true' />
+      <a className='scroll-cta' href='#services' aria-label='Scroll down to services'>
+        <span className='scroll-cta__label'>{content.hero.secondaryCta}</span>
+        <span className='scroll-cta__track' aria-hidden='true'>
+          <span className='scroll-cta__dot' />
+        </span>
+        <span className='scroll-cta__arrow' aria-hidden='true'>
+          <svg width='16' height='16' viewBox='0 0 16 16' fill='none' aria-hidden='true'>
+            <path d='M8 2v12M3 9l5 5 5-5' stroke='currentColor' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round'/>
+          </svg>
+        </span>
       </a>
     </section>
   );
