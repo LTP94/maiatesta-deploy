@@ -5,6 +5,7 @@ import { Hero } from './components/Hero';
 import { LuminescentBanner } from './components/LuminescentBanner';
 import { ProductRoulette } from './components/ProductRoulette';
 import { Projects } from './components/Projects';
+import { ScrollConstellation } from './components/ScrollConstellation';
 import { StarsBackground } from './components/StarsBackground';
 import { TypebotStandardChat } from './components/TypebotStandardChat';
 import { siteContent } from './data/siteContent';
@@ -150,6 +151,15 @@ export default function App() {
     // data-palette alimenta las variables CSS que cambian la identidad visual.
     <div className='app-shell' data-palette={palette}>
       <StarsBackground />
+      {/* Shooting stars that traverse the entire viewport */}
+      <div className='page-meteors' aria-hidden='true'>
+        <span className='page-meteor page-meteor--a' />
+        <span className='page-meteor page-meteor--b' />
+        <span className='page-meteor page-meteor--c' />
+        <span className='page-meteor page-meteor--d' />
+      </div>
+      {/* Space scroll constellation — right-side comet + section nodes */}
+      <ScrollConstellation />
       <Hero
         content={content}
         language={language}
