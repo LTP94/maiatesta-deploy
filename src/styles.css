@@ -3413,9 +3413,13 @@ textarea {
   /* Roulette: shrink cards on tablet so they don't overflow medium screens */
   .service-carousel {
     width: min(100%, 580px);
+    /* clip 3D children that rotate past the carousel edge */
+    clip-path: inset(0 0 -220px 0);
   }
 
   .service-card {
+    /* Center card on the 3D scene axis (scene is 24px wide, center = 12px) */
+    left: calc(12px - clamp(270px, 58vw, 330px) / 2);
     width: clamp(270px, 58vw, 330px);
     min-height: 400px;
     padding: 28px;
@@ -3571,11 +3575,18 @@ textarea {
   }
 
   .service-card {
-    /* Narrow cards so they fit on 320-390px phones */
+    /* Center card on the 3D scene axis and fit on 320-390px phones */
+    left: calc(12px - clamp(200px, 72vw, 260px) / 2);
     width: clamp(200px, 72vw, 260px);
     min-height: 180px;
     padding: 18px;
     gap: 10px;
+  }
+
+  /* On mobile, hide all non-active cards — only the front card is shown */
+  .service-card:not(.active) {
+    opacity: 0;
+    pointer-events: none;
   }
 
   .service-card-preview {
