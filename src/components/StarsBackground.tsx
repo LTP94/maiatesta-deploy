@@ -7,7 +7,7 @@
  *   - Cercano (1.5–2 px, mas brillante, parpadeo rapido)
  *
  * Ambas capas se renderizan con radial-gradients CSS (GPU-only) y se
- * animan via CSS keyframes. Sin JavaScript de particulas, sin canvas.
+ * animan via CSS keyframes. Sin JavaScript de particulas, sin canvas
  */
 
 export function StarsBackground() {
