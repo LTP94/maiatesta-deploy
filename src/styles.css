@@ -4117,9 +4117,36 @@ textarea {
   }
 }
 
-/* Hide on tablets/phones — content fits without the helper */
+/* Mobile: compact right-edge tracker, no labels */
 @media (max-width: 768px) {
   .scroll-constellation {
+    right: 4px;
+    top: 80px;
+    bottom: 32px;
+    width: 12px;
+  }
+  .scroll-track {
+    width: 1.5px;
+  }
+  .scroll-comet {
+    width: 5px;
+    height: 5px;
+    box-shadow:
+      0 0 4px 2px rgba(160, 210, 255, 0.90),
+      0 0 10px 4px rgba(100, 165, 255, 0.46);
+  }
+  .scroll-comet::before {
+    height: 20px;
+  }
+  .scroll-node {
+    width: 4px;
+    height: 4px;
+  }
+  .scroll-node.is-active {
+    width: 6px;
+    height: 6px;
+  }
+  .scroll-node__label {
     display: none;
   }
 }
