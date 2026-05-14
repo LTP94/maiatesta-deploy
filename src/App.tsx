@@ -1,13 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { ContactForm } from './components/ContactForm';
-import { Footer } from './components/Footer';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Hero } from './components/Hero';
-import { LuminescentBanner } from './components/LuminescentBanner';
-import { ProductRoulette } from './components/ProductRoulette';
-import { Projects } from './components/Projects';
 import { ScrollConstellation } from './components/ScrollConstellation';
 import { StarsBackground } from './components/StarsBackground';
-import { TypebotStandardChat } from './components/TypebotStandardChat';
+
+// Below-fold components — loaded only after the hero has painted
+const TypebotStandardChat = lazy(() => import('./components/TypebotStandardChat').then(m => ({ default: m.TypebotStandardChat })));
+const ProductRoulette      = lazy(() => import('./components/ProductRoulette').then(m => ({ default: m.ProductRoulette })));
+const Projects             = lazy(() => import('./components/Projects').then(m => ({ default: m.Projects })));
+const LuminescentBanner    = lazy(() => import('./components/LuminescentBanner').then(m => ({ default: m.LuminescentBanner })));
+const ContactForm          = lazy(() => import('./components/ContactForm').then(m => ({ default: m.ContactForm })));
+const Footer               = lazy(() => import('./components/Footer').then(m => ({ default: m.Footer })));
 import { siteContent } from './data/siteContent';
 import type { LanguageCode } from './data/siteContent';
 import { useScrollReveal } from './hooks/useScrollReveal';
@@ -169,19 +171,21 @@ export default function App() {
         palette={palette}
       />
       <div className={hasScrolled ? 'site-main is-scrolled' : 'site-main'}>
-        <TypebotStandardChat content={content} />
-        {/* Composicion principal de la pagina: servicios, proyectos y contacto. */}
-        <main>
-          <ProductRoulette
-            content={content}
-            palette={palette}
-            onPaletteChange={setPalette}
-          />
-          <Projects content={content} />
-          <LuminescentBanner {...content.banners[1]} tone='silver' />
-          <ContactForm content={content} />
-        </main>
-        <Footer content={content} />
+        <Suspense fallback={null}>
+          <TypebotStandardChat content={content} />
+          {/* Composicion principal de la pagina: servicios, proyectos y contacto. */}
+          <main>
+            <ProductRoulette
+              content={content}
+              palette={palette}
+              onPaletteChange={setPalette}
+            />
+            <Projects content={content} />
+            <LuminescentBanner {...content.banners[1]} tone='silver' />
+            <ContactForm content={content} />
+          </main>
+          <Footer content={content} />
+        </Suspense>
       </div>
     </div>
   );

@@ -97,8 +97,8 @@ export const siteContent = {
     logoAlt: 'MaiAtesta agency logo',
     personaAlt: 'MaiAtesta AI persona',
     logo: '/assets/maiatesta-logo-optimized-2.jpg',
-    persona: '/assets/maiatesta-persona-hero.png',
-    atlanticPersona: '/assets/maiatesta-persona-hero.png',
+    persona: '/assets/maiatesta-persona-hero.webp',
+    atlanticPersona: '/assets/maiatesta-persona-hero.webp',
     email: 'maiatesta@gmail.com',
   },
   languageSwitcher: {

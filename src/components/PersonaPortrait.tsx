@@ -58,12 +58,15 @@ export function PersonaPortrait({
           className='persona-portrait-media'
           style={{ '--persona-image-scale-x': isMirrored ? '-1' : '1' } as CSSProperties}
         >
-          <img
-            src={image}
-            alt={alt}
-            decoding='async'
-            fetchPriority='high'
-          />
+          <picture>
+            <source srcSet={image} type='image/webp' />
+            <img
+              src={image.replace('.webp', '.png')}
+              alt={alt}
+              decoding='async'
+              fetchPriority='high'
+            />
+          </picture>
         </span>
       </div>
     </div>
