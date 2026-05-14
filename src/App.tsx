@@ -5,6 +5,7 @@ import { Hero } from './components/Hero';
 import { LuminescentBanner } from './components/LuminescentBanner';
 import { ProductRoulette } from './components/ProductRoulette';
 import { Projects } from './components/Projects';
+import { StarsBackground } from './components/StarsBackground';
 import { TypebotStandardChat } from './components/TypebotStandardChat';
 import { siteContent } from './data/siteContent';
 import type { LanguageCode } from './data/siteContent';
@@ -148,6 +149,7 @@ export default function App() {
   return (
     // data-palette alimenta las variables CSS que cambian la identidad visual.
     <div className='app-shell' data-palette={palette}>
+      <StarsBackground />
       <Hero
         content={content}
         language={language}

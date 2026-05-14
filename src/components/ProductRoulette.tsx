@@ -59,10 +59,20 @@ export function ProductRoulette({
   const services = content.products;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1024,
+  );
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const cellCount = services.length;
   // Tamano base usado para calcular la separacion circular entre tarjetas.
-  // Si haces las tarjetas mas grandes en CSS, sube este valor para abrir la ruleta.
-  const cellSize = 400;
+  // Se reduce en movil para que la ruleta quepa en pantallas estrechas.
+  const cellSize = windowWidth <= 390 ? 220 : windowWidth <= 620 ? 260 : 400;
   // Angulo entre tarjetas: se reparte el circulo completo entre todos los servicios.
   const theta = cellCount > 0 ? 360 / cellCount : 0;
   // Radio de la ruleta 3D. Un numero mayor separa mas las tarjetas del centro.
