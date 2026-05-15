@@ -176,7 +176,10 @@ export default function App() {
 
   return (
     // data-palette alimenta las variables CSS que cambian la identidad visual.
-    <div className='app-shell' data-palette={palette}>
+    <div
+      className={hasScrolled ? 'app-shell is-scrolled' : 'app-shell'}
+      data-palette={palette}
+    >
       <Suspense fallback={null}>
         <StarsBackground />
       </Suspense>

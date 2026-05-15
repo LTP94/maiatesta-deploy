@@ -348,10 +348,44 @@ textarea {
 .persona-orbit-ring {
   position: absolute;
   inset: -9%;
-  border: 1px solid rgba(194, 165, 109, 0.38);
+  z-index: 7;
+  border: 1px solid rgba(194, 165, 109, 0.42);
+  border-top-color: rgba(232, 237, 242, 0.78);
+  border-right-color: rgba(84, 122, 149, 0.58);
   border-radius: 50%;
-  opacity: 0.8;
+  opacity: 0.95;
   pointer-events: none;
+  transform: rotate(-18deg);
+  animation: persona-orbit-drift 18s linear infinite;
+  will-change: transform;
+}
+
+.persona-orbit-ring::before,
+.persona-orbit-ring::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.persona-orbit-ring::before {
+  top: 9%;
+  right: 21%;
+  width: 7px;
+  height: 7px;
+  background: #fff;
+  box-shadow:
+    0 0 10px rgba(232, 237, 242, 0.88),
+    0 0 28px rgba(194, 165, 109, 0.48);
+}
+
+.persona-orbit-ring::after {
+  left: 13%;
+  bottom: 7%;
+  width: 4px;
+  height: 4px;
+  background: rgba(232, 237, 242, 0.92);
+  box-shadow: 0 0 16px rgba(84, 122, 149, 0.58);
 }
 
 .persona-orbit-star {
@@ -365,6 +399,7 @@ textarea {
     0 0 10px rgba(232, 237, 242, 0.9),
     0 0 22px rgba(194, 165, 109, 0.48);
   pointer-events: none;
+  animation: persona-star-pulse 4200ms ease-in-out infinite;
 }
 
 .persona-orbit-star--a {
@@ -375,6 +410,7 @@ textarea {
 .persona-orbit-star--b {
   bottom: 16%;
   left: 2%;
+  animation-delay: 900ms;
 }
 
 .persona-orbit-star--c {
@@ -382,6 +418,37 @@ textarea {
   bottom: 28%;
   width: 4px;
   height: 4px;
+  animation-delay: 1800ms;
+}
+
+@keyframes persona-orbit-drift {
+  0%,
+  100% {
+    transform: rotate(-18deg);
+  }
+
+  50% {
+    transform: rotate(342deg);
+  }
+}
+
+@keyframes persona-star-pulse {
+  0%,
+  100% {
+    opacity: 0.44;
+    transform: scale(0.92);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+.app-shell.is-scrolled .site-header:not(.menu-open) {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -132%);
 }
 
 .persona-portrait {

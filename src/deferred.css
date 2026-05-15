@@ -718,6 +718,11 @@ textarea {
   /* box-shadow and background changes on scroll are one-time events — snap is imperceptible */
 }
 
+.app-shell.is-scrolled .site-header:not(.menu-open) {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -132%);
+}
 
 .brand-mark {
   /* Contenedor del logo. El overflow permite recortar los efectos animados del brillo. */
