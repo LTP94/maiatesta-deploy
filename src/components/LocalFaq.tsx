@@ -27,14 +27,17 @@ export function LocalFaq({ content }: LocalFaqProps) {
       </div>
       <div className='local-faq-grid'>
         {content.faqs.items.map((item, index) => (
-          <article
+          <details
             className='local-faq-item scroll-reveal'
             key={item.question}
             style={{ animationDelay: `${index * 70}ms` }}
           >
-            <h3>{item.question}</h3>
+            <summary>
+              <span className='local-faq-question'>{item.question}</span>
+              <span className='local-faq-toggle' aria-hidden='true' />
+            </summary>
             <p>{item.answer}</p>
-          </article>
+          </details>
         ))}
       </div>
     </section>

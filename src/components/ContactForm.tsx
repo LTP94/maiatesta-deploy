@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
-import { siteContent } from "../data/siteContent";
 import type { LocalizedContent } from "../data/siteContent";
 import { LuminousText } from "./LuminousText";
 
@@ -60,6 +59,9 @@ type ContactFormProps = {
 };
 
 export function ContactForm({ content }: ContactFormProps) {
+  const whatsappChannel = content.contact.channels.find(
+    (channel) => channel.label.toLowerCase() === "whatsapp",
+  );
   const initialFormState = useMemo(
     () =>
       content.contact.fields.reduce<FormState>((state, field) => {
@@ -77,12 +79,21 @@ export function ContactForm({ content }: ContactFormProps) {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const subject = encodeURIComponent(`${content.contact.emailSubjectPrefix} ${formState.name || siteContent.brand.name}`);
-    const body = encodeURIComponent(
-      content.contact.fields.map((field) => `${field.label}: ${formState[field.name]}`).join("\n"),
+    const service = formState.service || "chatbot de WhatsApp";
+    const message = encodeURIComponent(
+      [
+        `Hola Maiatesta, vi su web y me interesa automatizar ${service} en mi empresa en Quito.`,
+        `WhatsApp: ${formState.whatsapp || "-"}`,
+        `Necesidad: ${formState.message || "-"}`,
+      ].join("\n"),
     );
+
     setSubmitted(true);
-    window.location.href = `mailto:${siteContent.brand.email}?subject=${subject}&body=${body}`;
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.location.href = `${whatsappChannel?.href ?? "https://wa.me/593963092859"}?text=${message}`;
   };
 
   return (

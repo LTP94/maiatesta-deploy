@@ -34,6 +34,10 @@ export function SectionBackground({ src }: SectionBackgroundProps) {
   }, []);
 
   useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+
     const host = hostRef.current;
 
     if (!host || shouldLoad || !shouldRenderVideo) {

@@ -3,7 +3,33 @@ import type { LocalizedContent } from '../data/siteContent';
 
 const typebotScriptId = 'maiatesta-typebot-standard-script';
 
+function runWhenIdle(callback: () => void) {
+  if (typeof window === 'undefined') {
+    return () => {};
+  }
+
+  const idleWindow = window as Window & {
+    requestIdleCallback?: (
+      callback: IdleRequestCallback,
+      options?: IdleRequestOptions,
+    ) => number;
+    cancelIdleCallback?: (handle: number) => void;
+  };
+
+  if (idleWindow.requestIdleCallback && idleWindow.cancelIdleCallback) {
+    const idleId = idleWindow.requestIdleCallback(callback, { timeout: 1400 });
+    return () => idleWindow.cancelIdleCallback?.(idleId);
+  }
+
+  const timeoutId = window.setTimeout(callback, 1);
+  return () => window.clearTimeout(timeoutId);
+}
+
 function applyTypebotSurfaceStyles() {
+  if (typeof document === 'undefined') {
+    return false;
+  }
+
   const typebot = document.querySelector('typebot-standard');
 
   if (!(typebot instanceof HTMLElement) || !typebot.shadowRoot) {
@@ -63,6 +89,10 @@ export function TypebotStandardChat({ content }: { content: LocalizedContent }) 
   const [shouldLoadTypebot, setShouldLoadTypebot] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return;
+    }
+
     if (!shouldLoadTypebot) {
       return;
     }
@@ -89,10 +119,16 @@ export function TypebotStandardChat({ content }: { content: LocalizedContent }) 
       return;
     }
 
-    const typebotInitScript = document.createElement('script');
-    typebotInitScript.id = typebotScriptId;
-    typebotInitScript.type = 'module';
-    typebotInitScript.innerHTML = `import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js@0/dist/web.js'
+    const cancelIdleLoad = runWhenIdle(() => {
+      if (document.getElementById(typebotScriptId)) {
+        syncTypebotStyles();
+        return;
+      }
+
+      const typebotInitScript = document.createElement('script');
+      typebotInitScript.id = typebotScriptId;
+      typebotInitScript.type = 'module';
+      typebotInitScript.innerHTML = `import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js@0/dist/web.js'
   
 Typebot.initStandard({
   typebot: "my-typebot-fy5w3to",
@@ -106,21 +142,23 @@ Typebot.initStandard({
     }
 });
 `;
-    document.body.append(typebotInitScript);
+      document.body.append(typebotInitScript);
 
-    syncTypebotStyles();
+      syncTypebotStyles();
 
-    const host = document.querySelector('typebot-standard');
+      const host = document.querySelector('typebot-standard');
 
-    if (host instanceof HTMLElement && host.shadowRoot) {
-      observer = new MutationObserver(() => {
-        applyTypebotSurfaceStyles();
-      });
+      if (host instanceof HTMLElement && host.shadowRoot) {
+        observer = new MutationObserver(() => {
+          applyTypebotSurfaceStyles();
+        });
 
-      observer.observe(host.shadowRoot, { childList: true, subtree: true });
-    }
+        observer.observe(host.shadowRoot, { childList: true, subtree: true });
+      }
+    });
 
     return () => {
+      cancelIdleLoad();
       window.cancelAnimationFrame(animationFrameId);
       observer?.disconnect();
     };

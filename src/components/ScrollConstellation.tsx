@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 const SECTIONS = [
   { selector: '.services-section', label: 'Services' },
@@ -6,6 +6,9 @@ const SECTIONS = [
   { selector: '.luminescent-banner', label: 'Featured' },
   { selector: '.contact-section',   label: 'Contact'  },
 ] as const;
+
+const useBrowserLayoutEffect =
+  typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
 export function ScrollConstellation() {
   const nodePositionsRef = useRef<number[]>([]);
@@ -19,6 +22,10 @@ export function ScrollConstellation() {
 
   // ─── Measure section positions as 0-1 ratios along total scrollable range ─
   const measureNodes = useCallback(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return;
+    }
+
     const totalScrollable =
       document.documentElement.scrollHeight - window.innerHeight;
     if (totalScrollable <= 0) return;
@@ -37,9 +44,13 @@ export function ScrollConstellation() {
 
   // ─── Scroll handler — RAF-throttled state update ──────────────────────
   const handleScroll = useCallback(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return;
+    }
+
     if (rafRef.current) return; // already queued for this frame
 
-    rafRef.current = requestAnimationFrame(() => {
+    rafRef.current = window.requestAnimationFrame(() => {
       rafRef.current = 0;
 
       const totalScrollable =
@@ -65,6 +76,10 @@ export function ScrollConstellation() {
 
   // ─── Sparkle burst when the comet reaches a new section star ─────────
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     if (
       activeSectionIndex >= 0 &&
       activeSectionIndex !== prevActiveRef.current
@@ -78,20 +93,35 @@ export function ScrollConstellation() {
   }, [activeSectionIndex]);
 
   // ─── Mount: measure section offsets + re-measure on resize ───────────
-  useEffect(() => {
-    measureNodes();
+  useBrowserLayoutEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const initialMeasureId = window.requestAnimationFrame(() => {
+      measureNodes();
+      handleScroll();
+    });
+
     window.addEventListener('resize', measureNodes);
-    return () => window.removeEventListener('resize', measureNodes);
-  }, [measureNodes]);
+    return () => {
+      window.cancelAnimationFrame(initialMeasureId);
+      window.removeEventListener('resize', measureNodes);
+    };
+  }, [handleScroll, measureNodes]);
 
   // ─── Mount: attach scroll listener ───────────────────────────────────
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     handleScroll(); // set initial position
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', handleScroll);
       if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
+        window.cancelAnimationFrame(rafRef.current);
         rafRef.current = 0; // reset guard so future mounts can queue new RAFs
       }
     };
@@ -99,6 +129,10 @@ export function ScrollConstellation() {
 
   // ─── Click: smooth-scroll to section ─────────────────────────────────
   const jumpTo = (selector: string) => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
     document
       .querySelector<HTMLElement>(selector)
       ?.scrollIntoView({ behavior: 'smooth' });

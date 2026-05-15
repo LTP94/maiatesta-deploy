@@ -6,6 +6,8 @@ export type Product = {
   description: string;
   accent: string;
   previewUrl?: string;
+  previewImage?: string;
+  previewAlt?: string;
 };
 
 export type FieldContent = {
@@ -157,6 +159,8 @@ export const siteContent = {
             'Fast business websites and landing pages for entrepreneurs, service providers, and SMEs that need calls, WhatsApp leads, and local visibility.',
           accent: 'A clear website built to get leads',
           previewUrl: 'https://arquitectura.ltrueba.com/',
+          previewImage: '/assets/previews/desarrollo-web-quito.webp',
+          previewAlt: 'Static preview of a fast website for a Quito business',
         },
         {
           id: 'e-commerce',
@@ -165,6 +169,8 @@ export const siteContent = {
             'Online stores with product catalog, cart, payment options, order management, social media links, and optional AI chat support.',
           accent: 'Sell online without overcomplicating it',
           previewUrl: 'https://my-winery-ecommerce-edjw7vlfl-ltp94.vercel.app/',
+          previewImage: '/assets/previews/tienda-online-ecuador.webp',
+          previewAlt: 'Static preview of an online store for Ecuador',
         },
         {
           id: 'custom-software',
@@ -180,6 +186,8 @@ export const siteContent = {
             'Stock control for small warehouses, shops, restaurants, and distributors with entries, exits, alerts, reports, users, history, and traceability.',
           accent: 'Know what is available before it costs you',
           previewUrl: 'https://inventario.kipuxbot.com/recepcion/',
+          previewImage: '/assets/previews/inventario-pymes-quito.webp',
+          previewAlt: 'Static preview of inventory software for SMEs in Quito',
         },
         {
           id: 'purchase-optimization',
@@ -358,28 +366,10 @@ export const siteContent = {
         ],
         fields: [
           {
-            name: 'name',
-            label: 'Name',
+            name: 'whatsapp',
+            label: 'WhatsApp',
             type: 'text',
-            placeholder: 'Your name',
-          },
-          {
-            name: 'email',
-            label: 'Email',
-            type: 'email',
-            placeholder: 'you@company.com',
-          },
-          {
-            name: 'company',
-            label: 'Company',
-            type: 'text',
-            placeholder: 'Company, business, or brand',
-          },
-          {
-            name: 'location',
-            label: 'City or sector',
-            type: 'text',
-            placeholder: 'Quito Norte, Centro, Sur, Cumbaya, Valle, etc.',
+            placeholder: '+593 99 999 9999',
           },
           {
             name: 'service',
@@ -390,9 +380,9 @@ export const siteContent = {
           {
             name: 'message',
             label: 'Business need',
-            type: 'textarea',
+            type: 'text',
             placeholder:
-              'What do you sell, what do you want to automate, and how soon do you need it?',
+              'Example: chatbot for sales in Quito',
           },
         ],
       },
@@ -479,6 +469,8 @@ export const siteContent = {
           description: 'Páginas web y landing pages rápidas para negocios, profesionales y pymes que necesitan llamadas, WhatsApp y visibilidad local.',
           accent: 'Una web clara para captar clientes',
           previewUrl: 'https://arquitectura.ltrueba.com/',
+          previewImage: '/assets/previews/desarrollo-web-quito.webp',
+          previewAlt: 'Vista previa estática de una página web para negocio en Quito',
         },
         {
           id: 'e-commerce',
@@ -486,6 +478,8 @@ export const siteContent = {
           description: 'E-commerce con catálogo de productos, carrito, opciones de pago, gestión de pedidos, redes sociales y chat con IA opcional.',
           accent: 'Vende online sin complicarte',
           previewUrl: 'https://my-winery-ecommerce-edjw7vlfl-ltp94.vercel.app/',
+          previewImage: '/assets/previews/tienda-online-ecuador.webp',
+          previewAlt: 'Vista previa estática de una tienda online para Ecuador',
         },
         {
           id: 'custom-software',
@@ -501,6 +495,8 @@ export const siteContent = {
             'Control de stock para bodegas pequeñas, tiendas, restaurantes y distribuidores con entradas, salidas, alertas, reportes, usuarios e historial.',
           accent: 'Sabe qué tienes antes de que te cueste',
           previewUrl: 'https://inventario.kipuxbot.com/recepcion/',
+          previewImage: '/assets/previews/inventario-pymes-quito.webp',
+          previewAlt: 'Vista previa estática de software de inventario para pymes en Quito',
         },
         {
           id: 'purchase-optimization',
@@ -677,28 +673,10 @@ export const siteContent = {
         ],
         fields: [
           {
-            name: 'name',
-            label: 'Nombre',
+            name: 'whatsapp',
+            label: 'WhatsApp',
             type: 'text',
-            placeholder: 'Tu nombre',
-          },
-          {
-            name: 'email',
-            label: 'Email',
-            type: 'email',
-            placeholder: 'tu@empresa.com',
-          },
-          {
-            name: 'company',
-            label: 'Empresa',
-            type: 'text',
-            placeholder: 'Empresa, negocio o marca',
-          },
-          {
-            name: 'location',
-            label: 'Ciudad o sector',
-            type: 'text',
-            placeholder: 'Quito Norte, Centro, Sur, Cumbayá, Valle, etc.',
+            placeholder: '+593 99 999 9999',
           },
           {
             name: 'service',
@@ -709,36 +687,46 @@ export const siteContent = {
           {
             name: 'message',
             label: 'Necesidad del negocio',
-            type: 'textarea',
+            type: 'text',
             placeholder:
-              '¿Qué vendes, qué quieres automatizar y para cuándo lo necesitas?',
+              'Ejemplo: chatbot para ventas en Quito',
           },
         ],
       },
       faqs: {
         eyebrow: 'Preguntas locales',
         title: 'Preguntas comunes de negocios en Quito.',
-        body: 'Respuestas cortas para dueños que comparan página web, chatbot, tienda online, inventario y automatización antes de pedir una cotización.',
+        body: 'Respuestas cortas para dueños que comparan chatbot de WhatsApp, página web, tienda online, inventario y automatización antes de pedir una cotización.',
         items: [
           {
-            question: '¿Cuánto cuesta una página web para negocio en Quito?',
+            question: '¿Cuánto cuesta un chatbot de WhatsApp en Ecuador?',
             answer:
-              'Una página web express empieza desde $200, según cantidad de secciones, textos, formularios, botones de WhatsApp, SEO básico e integraciones. La prioridad es lanzar una primera versión rápida que pueda generar contactos.',
+              'Un chatbot básico para WhatsApp empieza desde US$60. El precio sube si necesita flujos avanzados, conexión a CRM, base de datos, inventario, facturación electrónica del SRI o integración con pagos.',
+          },
+          {
+            question: '¿Sirve un chatbot con IA para una pyme de Quito?',
+            answer:
+              'Sí, si el negocio recibe preguntas repetidas por WhatsApp: horarios, precios, disponibilidad, reservas, ubicación, catálogo o seguimiento. En Quito funciona mejor como filtro de ventas, no como reemplazo total del trato humano.',
+          },
+          {
+            question: '¿Puedo conectar mi tienda online con PayPhone o Kushki?',
+            answer:
+              'Sí. Para negocios en Ecuador se puede evaluar integración con botones de pago como PayPhone o pasarelas como Kushki, además de transferencia bancaria y contacto por WhatsApp para cerrar ventas más rápido.',
+          },
+          {
+            question: '¿Un sistema a medida puede ayudar con facturación del SRI?',
+            answer:
+              'Sí. Un software puede preparar datos, órdenes, reportes y conexiones con proveedores de facturación electrónica. La emisión de comprobantes debe cumplir los requisitos del SRI y validarse según el caso del contribuyente.',
+          },
+          {
+            question: '¿Qué es mejor para vender rápido: página web o chatbot?',
+            answer:
+              'Para volumen inmediato en Quito, lo más rentable suele ser una landing page simple con botón de WhatsApp y un chatbot que responda preguntas frecuentes. Primero se captura el lead; luego se mejora el sistema.',
           },
           {
             question: '¿Atiendes negocios del Norte, Centro y Sur de Quito?',
             answer:
-              'Sí. MaiAtesta trabaja con negocios en Quito y Pichincha, incluyendo Quito Norte, Centro, Sur, Cumbayá, Tumbaco y Los Valles. También se puede avanzar de forma remota por WhatsApp o videollamada.',
-          },
-          {
-            question: '¿Qué servicio conviene si necesito clientes rápido?',
-            answer:
-              'Para la mayoría de negocios locales, el punto de partida más rápido es una landing page enfocada, botón de WhatsApp, SEO local básico y un chatbot opcional que responda preguntas frecuentes y filtre prospectos.',
-          },
-          {
-            question: '¿Puedo pedir solo un chatbot de WhatsApp o automatización de Excel?',
-            answer:
-              'Sí. Puedes empezar con una automatización pequeña, chatbot, reporte o herramienta en Excel sin comprar una página completa ni un proyecto grande de software.',
+              'Sí. MaiAtesta trabaja con negocios en Quito y Pichincha, incluyendo Quito Norte, Centro, Sur, Cumbayá, Tumbaco y Los Valles. También se puede avanzar por WhatsApp o videollamada.',
           },
         ],
       },

@@ -2,6 +2,10 @@ import { useEffect } from "react";
 
 export function useScrollReveal(dependency: unknown) {
   useEffect(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") {
+      return;
+    }
+
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let revealIndex = 0;
 

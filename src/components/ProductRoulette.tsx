@@ -4,6 +4,7 @@ import { siteContent } from '../data/siteContent';
 import type { LocalizedContent } from '../data/siteContent';
 import type { PaletteName } from '../App';
 import { LuminousText } from './LuminousText';
+import { ServicePreview } from './ServicePreview';
 
 const servicesHighlightPhrases = [
   'SMEs in Quito',
@@ -48,7 +49,7 @@ const paletteOptions = [
   colors: string[];
 }>;
 
-// Para editar el tamano visual de la ruleta, revisa tambien estas clases en styles.css:
+// Para editar el tamano visual de la ruleta, revisa tambien estas clases en deferred.css:
 // .service-carousel controla el espacio total; .service-scene el escenario 3D;
 // .service-card el ancho/alto de cada tarjeta; .service-card-preview la imagen web.
 export function ProductRoulette({
@@ -64,6 +65,10 @@ export function ProductRoulette({
   );
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -101,6 +106,10 @@ export function ProductRoulette({
 
   // Rotacion automatica de cartas. Cambia 1500 para acelerar o reducir la velocidad.
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     if (isPaused || cellCount < 2) {
       return;
     }
@@ -150,7 +159,7 @@ export function ProductRoulette({
 
                   return (
                     // Cada tarjeta se ubica en el circulo con rotateY + translateZ(radius).
-                    // Para cambiar su tamano manualmente, edita .service-card en styles.css
+                    // Para cambiar su tamano manualmente, edita .service-card en deferred.css
                     // y luego ajusta cellSize arriba para mantener la separacion correcta.
                     <article
                       className={
@@ -178,27 +187,13 @@ export function ProductRoulette({
                       <p>
                         <span>{service.description}</span>
                         {service.previewUrl ? (
-                          // Preview clicable dentro del cuerpo del texto de la tarjeta.
-                          <a
-                            className='service-card-preview'
+                          <ServicePreview
                             href={service.previewUrl}
-                            target='_blank'
-                            rel='noreferrer'
-                            onClick={(event) => event.stopPropagation()}
-                            aria-label={`${service.title} preview`}
-                          >
-                            <span className='service-preview-bar'>
-                              <span />
-                              <span />
-                              <span />
-                            </span>
-                            <iframe
-                              src={service.previewUrl}
-                              title={service.title}
-                              tabIndex={-1}
-                              loading='lazy'
-                            />
-                          </a>
+                            image={service.previewImage}
+                            alt={service.previewAlt}
+                            title={service.title}
+                            isActive={index === safeActiveIndex}
+                          />
                         ) : null}
                       </p>
                       <strong>{service.accent}</strong>

@@ -27,13 +27,13 @@
     <link rel="alternate" hreflang="en" href="https://maiatesta.com/" />
     <link rel="alternate" hreflang="x-default" href="https://maiatesta.com/" />
 
-    <!-- Preconnect to external CDNs used by the chat widget -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-    <link rel="preconnect" href="https://viewer.kipuxbot.com" />
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
-
-    <!-- Preload critical above-the-fold hero image -->
+    <!-- Preload critical above-the-fold brand and hero images only -->
+    <link rel="preload" as="image" href="/assets/maiatesta-logo-optimized-2.jpg" type="image/jpeg" />
     <link rel="preload" as="image" href="/assets/maiatesta-persona-hero.webp" type="image/webp" />
+    <style data-critical-css><!--critical-css--></style>
+    <link rel="preload" as="style" href="/src/deferred.css" />
+    <link rel="stylesheet" href="/src/deferred.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="/src/deferred.css" /></noscript>
 
     <!-- Open Graph (Facebook, WhatsApp, LinkedIn, etc.) -->
     <meta property="og:type" content="website" />
@@ -46,7 +46,7 @@
       property="og:description"
       content="Páginas web accesibles, tiendas online, chatbots de WhatsApp, inventario y automatización para pymes y negocios en Quito, Pichincha."
     />
-    <meta property="og:image" content="https://maiatesta.com/assets/maiatesta-persona-hero.png" />
+    <meta property="og:image" content="https://maiatesta.com/assets/maiatesta-persona-hero.webp" />
     <meta property="og:image:width" content="720" />
     <meta property="og:image:height" content="720" />
     <meta property="og:image:alt" content="MaiAtesta — Agencia digital en Quito, Ecuador" />
@@ -58,7 +58,7 @@
       name="twitter:description"
       content="Páginas web accesibles, tiendas online, chatbots de WhatsApp, inventario y automatización para negocios en Quito."
     />
-    <meta name="twitter:image" content="https://maiatesta.com/assets/maiatesta-persona-hero.png" />
+    <meta name="twitter:image" content="https://maiatesta.com/assets/maiatesta-persona-hero.webp" />
     <meta name="twitter:image:alt" content="MaiAtesta — Agencia digital en Quito, Ecuador" />
 
     <!-- JSON-LD Structured Data -->
@@ -71,7 +71,7 @@
           "@id": "https://maiatesta.com/#localbusiness",
           "name": "MaiAtesta",
           "url": "https://maiatesta.com/",
-          "image": "https://maiatesta.com/assets/maiatesta-persona-hero.png",
+          "image": "https://maiatesta.com/assets/maiatesta-persona-hero.webp",
           "logo": "https://maiatesta.com/assets/maiatesta-logo-optimized-2.jpg",
           "description": "Agencia digital accesible en Quito para desarrollo web, tiendas online, chatbots de WhatsApp, software para pymes, inventario y automatización de Excel.",
           "email": "maiatesta@gmail.com",
@@ -120,9 +120,11 @@
                 "priceCurrency": "USD",
                 "price": "60",
                 "itemOffered": {
-                  "@type": "Service",
+                  "@type": ["Service", "SoftwareApplication"],
                   "name": "Chatbot de WhatsApp con IA",
                   "description": "Asistentes virtuales para responder preguntas frecuentes, capturar leads y filtrar prospectos.",
+                  "applicationCategory": "BusinessApplication",
+                  "operatingSystem": "Web, WhatsApp",
                   "areaServed": { "@type": "AdministrativeArea", "name": "Pichincha" }
                 }
               },
@@ -138,18 +140,22 @@
               {
                 "@type": "Offer",
                 "itemOffered": {
-                  "@type": "Service",
+                  "@type": ["Service", "SoftwareApplication"],
                   "name": "Software para pymes e inventario",
                   "description": "Sistemas internos, control de stock, reportes, usuarios, historial y trazabilidad para negocios en crecimiento.",
+                  "applicationCategory": "BusinessApplication",
+                  "operatingSystem": "Web",
                   "areaServed": { "@type": "City", "name": "Quito" }
                 }
               },
               {
                 "@type": "Offer",
                 "itemOffered": {
-                  "@type": "Service",
+                  "@type": ["Service", "SoftwareApplication"],
                   "name": "Automatización de Excel y reportes",
                   "description": "Automatización de hojas de cálculo, dashboards, consolidación de datos y reportes repetitivos.",
+                  "applicationCategory": "BusinessApplication",
+                  "operatingSystem": "Microsoft Excel, Google Sheets, Web",
                   "areaServed": { "@type": "AdministrativeArea", "name": "Pichincha" }
                 }
               }
@@ -170,7 +176,7 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div id="root"><!--app-html--></div>
+    <script type="module" src="/src/entry-client.tsx"></script>
   </body>
 </html>

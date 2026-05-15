@@ -19,7 +19,7 @@ export function Header({ content, language, onLanguageChange }: HeaderProps) {
   return (
     <header className={`site-header${isMenuOpen ? ' menu-open' : ''}`}>
       <a className="brand-mark" href="#top" aria-label={siteContent.brand.name} onClick={closeMenu}>
-        <img src={siteContent.brand.logo} alt={siteContent.brand.logoAlt} decoding="async" fetchPriority="high" />
+        <img src={siteContent.brand.logo} alt={siteContent.brand.logoAlt} width="460" height="120" decoding="async" loading="eager" />
       </a>
       <nav className="nav-links" aria-label={content.ariaLabels.primaryNavigation}>
         {content.nav.map((item) => (

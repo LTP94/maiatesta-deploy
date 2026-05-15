@@ -1,9 +1,9 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Hero } from './components/Hero';
 import { ScrollConstellation } from './components/ScrollConstellation';
-import { StarsBackground } from './components/StarsBackground';
 
-// Below-fold components — loaded only after the hero has painted
+// Non-critical UI is split away from the hero bundle.
+const StarsBackground     = lazy(() => import('./components/StarsBackground').then(m => ({ default: m.StarsBackground })));
 const TypebotStandardChat = lazy(() => import('./components/TypebotStandardChat').then(m => ({ default: m.TypebotStandardChat })));
 const ProductRoulette      = lazy(() => import('./components/ProductRoulette').then(m => ({ default: m.ProductRoulette })));
 const Projects             = lazy(() => import('./components/Projects').then(m => ({ default: m.Projects })));
@@ -11,6 +11,7 @@ const LuminescentBanner    = lazy(() => import('./components/LuminescentBanner')
 const LocalFaq             = lazy(() => import('./components/LocalFaq').then(m => ({ default: m.LocalFaq })));
 const ContactForm          = lazy(() => import('./components/ContactForm').then(m => ({ default: m.ContactForm })));
 const Footer               = lazy(() => import('./components/Footer').then(m => ({ default: m.Footer })));
+const StickyWhatsAppButton = lazy(() => import('./components/StickyWhatsAppButton').then(m => ({ default: m.StickyWhatsAppButton })));
 import { siteContent } from './data/siteContent';
 import type { LanguageCode } from './data/siteContent';
 import { useScrollReveal } from './hooks/useScrollReveal';
@@ -31,7 +32,7 @@ const savePaletteChoice = false;
 
 // Detecta el idioma inicial del navegador y limita la app a los idiomas disponibles.
 function getInitialLanguage(): LanguageCode {
-  if (typeof navigator === 'undefined') {
+  if (typeof window === 'undefined') {
     return 'es';
   }
 
@@ -76,11 +77,19 @@ export default function App() {
 
   // Sincroniza el atributo lang del documento para accesibilidad y SEO.
   useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
     document.documentElement.lang = language;
   }, [language]);
 
   // Guarda la paleta elegida para que se mantenga al recargar la pagina.
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     if (!savePaletteChoice) {
       return;
     }
@@ -91,6 +100,10 @@ export default function App() {
   // Si la URL tiene hash, espera a que el layout se estabilice y mueve la vista al destino.
   // Omite el scroll cuando el cambio de idioma es interactivo (no recarga de pagina).
   useEffect(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return;
+    }
+
     if (isInteractiveLangChange.current) {
       isInteractiveLangChange.current = false;
       return;
@@ -125,6 +138,10 @@ export default function App() {
 
   // Activa una clase despues de iniciar el scroll para intensificar el fondo principal.
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     const handleScroll = () => {
       setHasScrolled(window.scrollY > 12);
     };
@@ -153,7 +170,9 @@ export default function App() {
   return (
     // data-palette alimenta las variables CSS que cambian la identidad visual.
     <div className='app-shell' data-palette={palette}>
-      <StarsBackground />
+      <Suspense fallback={null}>
+        <StarsBackground />
+      </Suspense>
       {/* Shooting stars that traverse the entire viewport */}
       <div className='page-meteors' aria-hidden='true'>
         <span className='page-meteor page-meteor--a' />
@@ -174,19 +193,34 @@ export default function App() {
       <div className={hasScrolled ? 'site-main is-scrolled' : 'site-main'}>
         <Suspense fallback={null}>
           <TypebotStandardChat content={content} />
-          {/* Composicion principal de la pagina: servicios, proyectos y contacto. */}
-          <main>
+        </Suspense>
+        {/* Composicion principal de la pagina: servicios, proyectos y contacto. */}
+        <main>
+          <Suspense fallback={null}>
             <ProductRoulette
               content={content}
               palette={palette}
               onPaletteChange={setPalette}
             />
+          </Suspense>
+          <Suspense fallback={null}>
             <Projects content={content} />
+          </Suspense>
+          <Suspense fallback={null}>
             <LuminescentBanner {...content.banners[1]} tone='silver' />
+          </Suspense>
+          <Suspense fallback={null}>
             <LocalFaq content={content} />
+          </Suspense>
+          <Suspense fallback={null}>
             <ContactForm content={content} />
-          </main>
+          </Suspense>
+        </main>
+        <Suspense fallback={null}>
           <Footer content={content} />
+        </Suspense>
+        <Suspense fallback={null}>
+          <StickyWhatsAppButton content={content} />
         </Suspense>
       </div>
     </div>

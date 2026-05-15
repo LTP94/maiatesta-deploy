@@ -2550,10 +2550,8 @@ textarea {
 }
 
 .service-card-preview {
-  /* Preview clicable de la web dentro del parrafo de Web Development. */
   display: block;
   width: 100%;
-  /* Alto de la imagen/preview dentro de la service card. */
   height: 150px;
   overflow: hidden;
   border: 1px solid rgba(248, 248, 248, 0.22);
@@ -2562,6 +2560,11 @@ textarea {
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.04),
     0 14px 28px rgba(0, 0, 0, 0.24);
+}
+
+.service-card-preview:hover .service-preview-overlay,
+.service-card-preview:focus-visible .service-preview-overlay {
+  opacity: 1;
 }
 
 .service-preview-bar {
@@ -2584,16 +2587,57 @@ textarea {
   opacity: 0.82;
 }
 
-.service-card-preview iframe {
-  /* Escala una pagina real dentro del preview. Ajusta width/height/scale juntos. */
+.service-preview-frame {
+  position: relative;
   display: block;
-  width: 800px;
-  height: 400px;
-  border: 2;
-  pointer-events: none;
-  transform: scale(0.32);
-  transform-origin: top left;
+  height: calc(100% - 14px);
+  overflow: hidden;
+}
+
+.service-preview-frame img,
+.service-preview-skeleton {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.service-preview-frame img {
+  object-fit: cover;
   filter: saturate(0.94) contrast(1.04) brightness(0.86);
+}
+
+.service-preview-skeleton {
+  background:
+    linear-gradient(90deg, transparent, rgba(248, 248, 248, 0.14), transparent),
+    linear-gradient(135deg, rgba(84, 122, 149, 0.38), rgba(16, 24, 33, 0.86));
+  background-size: 180% 100%, 100% 100%;
+  animation: preview-skeleton 1200ms ease-in-out infinite;
+}
+
+.service-preview-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 4px;
+  padding: 12px;
+  color: #ffffff;
+  background: linear-gradient(180deg, transparent, rgba(7, 14, 22, 0.86));
+  text-align: center;
+  opacity: 0.92;
+  transition: opacity 180ms ease;
+}
+
+.service-preview-overlay strong {
+  color: #ffffff;
+  font-size: 0.86rem;
+  text-transform: none;
+}
+
+.service-preview-overlay small {
+  color: rgba(248, 248, 248, 0.78);
+  font-size: 0.68rem;
+  line-height: 1.2;
 }
 
 .service-card p {
@@ -3146,26 +3190,75 @@ textarea {
 
 .local-faq-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 12px;
+  max-width: 900px;
 }
 
 .local-faq-item {
-  min-height: 220px;
-  padding: clamp(22px, 3vw, 30px);
+  padding: 0;
 }
 
-.local-faq-item h3 {
-  margin: 0 0 14px;
+.local-faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 68px;
+  padding: 18px clamp(18px, 3vw, 26px);
+  cursor: pointer;
+  list-style: none;
+}
+
+.local-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.local-faq-question {
+  min-width: 0;
   color: var(--app-paper);
-  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
-  line-height: 1.18;
+  font-size: clamp(1rem, 1.35vw, 1.18rem);
+  font-weight: 800;
+  line-height: 1.28;
+}
+
+.local-faq-toggle {
+  position: relative;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(248, 248, 248, 0.18);
+  border-radius: 50%;
+  background: rgba(248, 248, 248, 0.08);
+}
+
+.local-faq-toggle::before,
+.local-faq-toggle::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--app-copper);
+  transform: translate(-50%, -50%);
+}
+
+.local-faq-toggle::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.local-faq-item[open] .local-faq-toggle::after {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(0deg);
 }
 
 .local-faq-item p {
   margin: 0;
+  padding: 0 clamp(18px, 3vw, 26px) 22px;
   color: rgba(248, 248, 248, 0.74);
-  line-height: 1.65;
+  line-height: 1.6;
 }
 
 /* Seccion de contacto en dos columnas: texto/canales y formulario. */
@@ -3249,6 +3342,44 @@ textarea {
   font-size: 1.25rem;
 }
 
+.sticky-whatsapp-button {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 16px 0 12px;
+  color: #062412;
+  border: 1px solid rgba(37, 211, 102, 0.62);
+  border-radius: 999px;
+  background: #25d366;
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.34),
+    0 0 28px rgba(37, 211, 102, 0.24);
+  font-size: 0.88rem;
+  font-weight: 900;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.sticky-whatsapp-button:hover,
+.sticky-whatsapp-button:focus-visible {
+  transform: translateY(-3px);
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.42),
+    0 0 34px rgba(37, 211, 102, 0.34);
+}
+
+.sticky-whatsapp-button svg {
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+}
+
 /* Clase aplicada por el hook de reveal para animar elementos al entrar en pantalla. */
 .reveal {
   animation: reveal-up 700ms ease both;
@@ -3264,6 +3395,16 @@ textarea {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes preview-skeleton {
+  from {
+    background-position: 120% 0, 0 0;
+  }
+
+  to {
+    background-position: -80% 0, 0 0;
   }
 }
 
@@ -3550,14 +3691,12 @@ textarea {
   }
 
   .project-grid,
-  .review-track,
-  .local-faq-grid {
+  .review-track {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .project-grid,
-  .review-track,
-  .local-faq-grid {
+  .review-track {
     grid-template-columns: 1fr;
   }
 
@@ -3609,6 +3748,10 @@ textarea {
         rgba(16, 24, 33, 0.98)
       ),
       linear-gradient(90deg, rgba(16, 24, 33, 0.98), rgba(84, 122, 149, 0.72));
+  }
+
+  .hero-aurora {
+    display: none;
   }
 
   .site-header {
@@ -3744,8 +3887,12 @@ textarea {
     height: 68px;
   }
 
-  .service-card-preview iframe {
-    transform: scale(0.29);
+  .service-preview-overlay {
+    padding: 8px;
+  }
+
+  .service-preview-overlay small {
+    display: none;
   }
 
   .service-card h3 {
