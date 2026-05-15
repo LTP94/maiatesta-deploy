@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import type { Plugin } from "vite";
 import react from "@vitejs/plugin-react";
+import { transformSync } from 'esbuild';
 
 declare const process: { argv: string[] };
 
@@ -51,10 +52,12 @@ function htmlPerformanceAssets(isSsrBuild: boolean, command: string): Plugin {
       }
 
       const deferredCssPath = path.join(rootDir, "src", "deferred.css");
+      const rawCss = fs.readFileSync(deferredCssPath, "utf8");
+      const { code: minifiedCss } = transformSync(rawCss, { loader: 'css', minify: true });
       this.emitFile({
         type: "asset",
         fileName: deferredCssFileName,
-        source: fs.readFileSync(deferredCssPath, "utf8"),
+        source: minifiedCss,
       });
     },
   };

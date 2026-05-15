@@ -60,6 +60,8 @@ export function PersonaPortrait({
         >
           <img
             src={image}
+            srcSet={`${image.replace('.webp', '-240.webp')} 240w, ${image.replace('.webp', '-480.webp')} 480w, ${image} 720w`}
+            sizes="(max-width: 620px) 240px, (max-width: 920px) 300px, 474px"
             alt={alt}
             width='720'
             height='720'

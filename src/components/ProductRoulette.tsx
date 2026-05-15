@@ -60,15 +60,16 @@ export function ProductRoulette({
   const services = content.products;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(() =>
-    typeof window !== 'undefined' ? window.innerWidth : 1024,
-  );
+  // Initialize to 1024 (matches SSR) to avoid hydration mismatch.
+  // The useEffect reads the real width after hydration.
+  const [windowWidth, setWindowWidth] = useState(1024);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
       return;
     }
 
+    setWindowWidth(window.innerWidth);
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);

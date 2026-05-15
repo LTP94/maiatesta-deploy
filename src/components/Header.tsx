@@ -19,7 +19,14 @@ export function Header({ content, language, onLanguageChange }: HeaderProps) {
   return (
     <header className={`site-header${isMenuOpen ? ' menu-open' : ''}`}>
       <a className="brand-mark" href="#top" aria-label={siteContent.brand.name} onClick={closeMenu}>
-        <img src={siteContent.brand.logo} alt={siteContent.brand.logoAlt} width="460" height="120" decoding="async" loading="eager" />
+        <picture>
+          <source
+            srcSet="/assets/maiatesta-logo-320.webp 320w, /assets/maiatesta-logo.webp 520w"
+            sizes="(max-width: 620px) 220px, 385px"
+            type="image/webp"
+          />
+          <img src={siteContent.brand.logo} alt={siteContent.brand.logoAlt} width="520" height="66" decoding="async" loading="eager" />
+        </picture>
       </a>
       <nav className="nav-links" aria-label={content.ariaLabels.primaryNavigation}>
         {content.nav.map((item) => (

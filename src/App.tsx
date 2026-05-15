@@ -66,7 +66,8 @@ function getInitialPalette(): PaletteName {
 
 export default function App() {
   // Estados globales de la interfaz: idioma, tema de color y estado de scroll.
-  const [language, setLanguage] = useState<LanguageCode>(getInitialLanguage);
+  // Always start with 'es' to match SSR output; detect browser language in useEffect.
+  const [language, setLanguage] = useState<LanguageCode>('es');
   const isInteractiveLangChange = useRef(false);
   const [palette, setPalette] = useState<PaletteName>(getInitialPalette);
   const [isPersonaPortraitAligned, setIsPersonaPortraitAligned] =
@@ -83,6 +84,12 @@ export default function App() {
 
     document.documentElement.lang = language;
   }, [language]);
+
+  // Detect browser language once after hydration to avoid SSR/client mismatch.
+  useEffect(() => {
+    const detected = getInitialLanguage();
+    if (detected !== 'es') setLanguage(detected);
+  }, []);
 
   // Guarda la paleta elegida para que se mantenga al recargar la pagina.
   useEffect(() => {

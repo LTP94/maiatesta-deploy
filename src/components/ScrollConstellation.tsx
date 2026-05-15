@@ -103,10 +103,35 @@ export function ScrollConstellation() {
       handleScroll();
     });
 
+    // Re-measure once all async resources (including deferred CSS) have loaded.
+    // This guards against measuring an unstyled layout on first paint.
+    const onWindowLoad = () => {
+      measureNodes();
+      handleScroll();
+    };
+
+    if (document.readyState === 'complete') {
+      // Already loaded — queue a rAF so we don't block the current paint.
+      window.requestAnimationFrame(onWindowLoad);
+    } else {
+      window.addEventListener('load', onWindowLoad, { once: true });
+    }
+
+    // ResizeObserver on <html> catches layout shifts caused by late CSS application.
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        measureNodes();
+      });
+      resizeObserver.observe(document.documentElement);
+    }
+
     window.addEventListener('resize', measureNodes);
     return () => {
       window.cancelAnimationFrame(initialMeasureId);
       window.removeEventListener('resize', measureNodes);
+      window.removeEventListener('load', onWindowLoad);
+      resizeObserver?.disconnect();
     };
   }, [handleScroll, measureNodes]);
 
