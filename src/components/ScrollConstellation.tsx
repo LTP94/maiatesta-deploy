@@ -38,8 +38,14 @@ export function ScrollConstellation() {
       return Math.min(1, Math.max(0, ratio));
     });
 
+    // Skip state update when positions haven't meaningfully changed to avoid
+    // cascading re-renders from the ResizeObserver firing repeatedly as CSS loads.
+    const prev = nodePositionsRef.current;
+    const changed =
+      positions.length !== prev.length ||
+      positions.some((p, i) => Math.abs(p - (prev[i] ?? -1)) > 0.001);
     nodePositionsRef.current = positions;
-    setNodePositions(positions);
+    if (changed) setNodePositions(positions);
   }, []);
 
   // ─── Scroll handler — RAF-throttled state update ──────────────────────
@@ -118,10 +124,16 @@ export function ScrollConstellation() {
     }
 
     // ResizeObserver on <html> catches layout shifts caused by late CSS application.
+    // Debounced so we don't fire measureNodes on every pixel change as CSS loads.
     let resizeObserver: ResizeObserver | null = null;
+    let roDebounceId: ReturnType<typeof setTimeout> | null = null;
     if (typeof ResizeObserver !== 'undefined') {
       resizeObserver = new ResizeObserver(() => {
-        measureNodes();
+        if (roDebounceId !== null) clearTimeout(roDebounceId);
+        roDebounceId = setTimeout(() => {
+          roDebounceId = null;
+          measureNodes();
+        }, 150);
       });
       resizeObserver.observe(document.documentElement);
     }
@@ -131,6 +143,7 @@ export function ScrollConstellation() {
       window.cancelAnimationFrame(initialMeasureId);
       window.removeEventListener('resize', measureNodes);
       window.removeEventListener('load', onWindowLoad);
+      if (roDebounceId !== null) clearTimeout(roDebounceId);
       resizeObserver?.disconnect();
     };
   }, [handleScroll, measureNodes]);

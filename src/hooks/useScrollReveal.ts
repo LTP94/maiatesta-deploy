@@ -52,16 +52,31 @@ export function useScrollReveal(dependency: unknown) {
     document.querySelectorAll<HTMLElement>(".scroll-reveal").forEach(processElement);
 
     // Watch for .scroll-reveal elements injected by lazy-loaded chunks.
+    // We batch processing via requestAnimationFrame so that any DOM writes
+    // from the mounting component complete before we force a layout read
+    // with getBoundingClientRect, preventing N synchronous forced reflows.
+    let pendingElements: HTMLElement[] = [];
+    let pendingRafId: number | null = null;
+
+    const flushPending = () => {
+      pendingRafId = null;
+      const batch = pendingElements;
+      pendingElements = [];
+      batch.forEach(processElement);
+    };
+
     const mutationObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((node) => {
           if (!(node instanceof HTMLElement)) return;
-          // The added node itself might be a reveal element.
-          if (node.classList.contains("scroll-reveal")) processElement(node);
-          // Or it may contain reveal elements as descendants.
-          node.querySelectorAll<HTMLElement>(".scroll-reveal").forEach(processElement);
+          if (node.classList.contains("scroll-reveal")) pendingElements.push(node);
+          node.querySelectorAll<HTMLElement>(".scroll-reveal").forEach((el) => pendingElements.push(el));
         });
       });
+      if (pendingElements.length === 0) return;
+      if (pendingRafId === null) {
+        pendingRafId = window.requestAnimationFrame(flushPending);
+      }
     });
 
     mutationObserver.observe(document.body, { childList: true, subtree: true });
@@ -69,6 +84,7 @@ export function useScrollReveal(dependency: unknown) {
     return () => {
       intersectionObserver.disconnect();
       mutationObserver.disconnect();
+      if (pendingRafId !== null) window.cancelAnimationFrame(pendingRafId);
     };
   }, [dependency]);
 }

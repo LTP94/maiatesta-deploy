@@ -715,8 +715,9 @@ textarea {
     0 8px 32px rgba(0, 0, 0, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.62);
   transform: translateX(-50%);
-  transition: box-shadow 280ms ease, background 280ms ease;
+  /* box-shadow and background changes on scroll are one-time events — snap is imperceptible */
 }
+
 
 .brand-mark {
   /* Contenedor del logo. El overflow permite recortar los efectos animados del brillo. */
@@ -784,9 +785,7 @@ textarea {
 .nav-links a,
 .header-action,
 .language-option {
-  transition:
-    color 180ms ease,
-    transform 180ms ease;
+  transition: transform 180ms ease;
 }
 
 .nav-links a:hover,
@@ -891,7 +890,6 @@ textarea {
   color: var(--steel);
   font-weight: 700;
   font-size: 1rem;
-  transition: background 160ms ease, color 160ms ease;
 }
 
 .mobile-nav a:hover {
@@ -1040,10 +1038,7 @@ textarea {
   cursor: pointer;
   transition:
     transform 200ms ease,
-    opacity 200ms ease,
-    box-shadow 200ms ease,
-    border-color 200ms ease,
-    background 200ms ease;
+    opacity 200ms ease;
 }
 
 .button:hover {
@@ -1107,7 +1102,7 @@ textarea {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   animation: scroll-cta-appear 1000ms 1600ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  transition: color 220ms ease;
+  /* color snap on hover — non-layout, but avoids a paint task */
 }
 
 .scroll-cta:hover {
@@ -1221,9 +1216,7 @@ textarea {
   transform: perspective(900px) rotateX(var(--persona-tilt-x))
     rotateY(var(--persona-tilt-y));
   transform-style: preserve-3d;
-  transition:
-    transform 220ms ease,
-    box-shadow 220ms ease;
+  transition: transform 220ms ease;
   will-change: transform;
   cursor: pointer;
 }
@@ -1417,7 +1410,7 @@ textarea {
   overflow: hidden;
   isolation: isolate;
   background: transparent;
-  transition: background 420ms ease;
+  /* background-color snap on scroll — pseudo-element handles visual depth */
 }
 
 .site-main.is-scrolled {
@@ -1460,7 +1453,7 @@ textarea {
       rgba(201, 239, 85, 0.08),
       transparent 26%
     );
-  transition: background 520ms ease;
+  /* background-color snap — composited layers handle the visual blend */
 }
 
 .app-shell[data-palette='atlantic'] .site-main::before {
@@ -1724,11 +1717,7 @@ textarea {
   color: var(--app-paper);
   text-align: center;
   cursor: pointer;
-  transition:
-    transform 180ms ease,
-    border-color 180ms ease,
-    background 180ms ease,
-    box-shadow 180ms ease;
+  transition: transform 180ms ease;
 }
 
 .site-main-typebot-chat__placeholder:hover {
@@ -2204,8 +2193,7 @@ textarea {
   transform: translateY(28px) scale(0.985);
   transition:
     opacity 720ms ease,
-    transform 720ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 180ms ease;
+    transform 720ms cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: calc(var(--reveal-index, 0) * 80ms);
 }
 
@@ -2285,11 +2273,7 @@ textarea {
   border-radius: 6px;
   background: rgba(20, 16, 14, 0.46);
   cursor: pointer;
-  transition:
-    color 180ms ease,
-    border-color 180ms ease,
-    background 180ms ease,
-    transform 180ms ease;
+  transition: transform 180ms ease;
 }
 
 .palette-option:hover,
@@ -2416,10 +2400,7 @@ textarea {
     0 24px 70px rgba(0, 0, 0, 0.36),
     0 0 22px rgba(255, 179, 138, 0.08);
   transform-style: preserve-3d;
-  transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease,
-    opacity 180ms ease;
+  transition: opacity 180ms ease;
   backface-visibility: visible;
 }
 
@@ -2730,6 +2711,7 @@ textarea {
 }
 
 .service-indicator {
+  position: relative;
   width: 26px;
   height: 25px;
   padding: 0;
@@ -2737,18 +2719,31 @@ textarea {
   border-radius: 999px;
   background: rgba(248, 248, 248, 0.24);
   cursor: pointer;
-  transition:
-    width 220ms ease,
-    background 220ms ease,
-    box-shadow 220ms ease;
+  overflow: hidden;
+  /* Width snaps (layout-change without transition is imperceptible here).
+     Background fades via ::after opacity — composited. */
+}
+
+.service-indicator::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--app-copper);
+  opacity: 0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
 }
 
 .service-indicator.active {
   width: 42px;
-  background: var(--app-copper);
   box-shadow:
     0 0 18px rgba(255, 179, 138, 0.52),
     0 0 8px rgba(201, 239, 85, 0.22);
+}
+
+.service-indicator.active::after {
+  opacity: 1;
 }
 
 .app-shell[data-palette='atlantic'] .service-indicator.active {
@@ -2859,11 +2854,7 @@ textarea {
   background: rgba(12, 12, 12, 0.48);
   border-radius: 10px;
   text-decoration: none;
-  transition:
-    border-color 200ms ease,
-    background 200ms ease,
-    transform 200ms ease,
-    box-shadow 200ms ease;
+  transition: transform 200ms ease;
 }
 
 .contact-channels a:hover {
@@ -2893,9 +2884,7 @@ textarea {
   background: color-mix(in srgb, var(--ch-color) 16%, rgba(255, 255, 255, 0.06));
   border: 1px solid color-mix(in srgb, var(--ch-color) 30%, transparent);
   color: var(--ch-color);
-  transition:
-    background 200ms ease,
-    border-color 200ms ease;
+  /* background and border-color snap on hover — composited parent handles depth */
 }
 
 .contact-channel-icon svg {
@@ -2988,9 +2977,7 @@ textarea {
 .review-card {
   min-height: 280px;
   padding: 26px;
-  transition:
-    transform 180ms ease,
-    border-color 180ms ease;
+  transition: transform 180ms ease;
 }
 
 .project-card.is-visible,
@@ -3184,10 +3171,7 @@ textarea {
   border-radius: 50%;
   color: #25d366;
   background: rgba(37, 211, 102, 0.12);
-  transition:
-    transform 180ms ease,
-    border-color 180ms ease,
-    background 180ms ease;
+  transition: transform 180ms ease;
 }
 
 .project-whatsapp-link:hover,
@@ -3343,9 +3327,7 @@ textarea {
   border-radius: 6px;
   padding: 14px;
   outline: none;
-  transition:
-    border-color 180ms ease,
-    box-shadow 180ms ease;
+  /* Focus ring snaps — instant feedback is preferred for a11y */
 }
 
 .contact-form textarea {
@@ -3404,9 +3386,7 @@ textarea {
     0 0 28px rgba(37, 211, 102, 0.24);
   font-size: 0.88rem;
   font-weight: 900;
-  transition:
-    transform 180ms ease,
-    box-shadow 180ms ease;
+  transition: transform 180ms ease;
 }
 
 .sticky-whatsapp-button:hover,
@@ -4200,9 +4180,10 @@ textarea {
 .scroll-node {
   position: absolute;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 6px;
-  height: 6px;
+  /* Always the active (largest) size in layout; scale down to appear smaller.
+     transform: scale() is composited — no layout recalc when toggling active. */
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: rgba(160, 200, 255, 0.36);
   border: 1px solid rgba(180, 220, 255, 0.28);
@@ -4211,12 +4192,9 @@ textarea {
   appearance: none;
   cursor: pointer;
   pointer-events: all;
-  transition:
-    width       280ms ease,
-    height      280ms ease,
-    background  280ms ease,
-    box-shadow  280ms ease,
-    border-color 280ms ease;
+  /* scale(0.667) ≈ 6/9 — visually matches the old 6px inactive size */
+  transform: translate(-50%, -50%) scale(0.667);
+  transition: transform 280ms ease;
 }
 
 /* Enlarged invisible hit area for easy clicking */
@@ -4228,8 +4206,6 @@ textarea {
 }
 
 .scroll-node.is-active {
-  width: 9px;
-  height: 9px;
   background: rgba(210, 235, 255, 0.92);
   border-color: rgba(230, 245, 255, 0.80);
   box-shadow:
@@ -4243,7 +4219,10 @@ textarea {
   position: absolute;
   inset: -10px;
   border-radius: 50%;
+  background: radial-gradient(circle, rgba(200, 230, 255, 0.7) 0%, transparent 65%);
   pointer-events: none;
+  opacity: 0;
+  transform: scale(0);
 }
 
 .scroll-node.is-sparkling .scroll-node__burst {
@@ -4293,24 +4272,16 @@ textarea {
   }
 }
 
+/* node-pulse: transform-only animation on the scale — composited */
 @keyframes node-pulse {
-  0%, 100% {
-    box-shadow:
-      0 0 8px 3px  rgba(150, 210, 255, 0.72),
-      0 0 18px 6px rgba(100, 170, 255, 0.36);
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% {
-    box-shadow:
-      0 0 12px 5px  rgba(170, 225, 255, 0.85),
-      0 0 26px 10px rgba(120, 185, 255, 0.50);
-    transform: translate(-50%, -50%) scale(1.15);
-  }
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%       { transform: translate(-50%, -50%) scale(1.18); }
 }
 
+/* node-sparkle: opacity + scale only (composited) */
 @keyframes node-sparkle {
-  0%   { box-shadow: 0 0 0 0  rgba(200, 230, 255, 0.85); opacity: 1; }
-  100% { box-shadow: 0 0 0 18px rgba(200, 230, 255, 0);  opacity: 0; }
+  0%   { opacity: 0.9; transform: scale(0.2); }
+  100% { opacity: 0;   transform: scale(1); }
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────── */
