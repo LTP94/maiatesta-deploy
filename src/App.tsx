@@ -8,6 +8,7 @@ const TypebotStandardChat = lazy(() => import('./components/TypebotStandardChat'
 const ProductRoulette      = lazy(() => import('./components/ProductRoulette').then(m => ({ default: m.ProductRoulette })));
 const Projects             = lazy(() => import('./components/Projects').then(m => ({ default: m.Projects })));
 const LuminescentBanner    = lazy(() => import('./components/LuminescentBanner').then(m => ({ default: m.LuminescentBanner })));
+const LocalFaq             = lazy(() => import('./components/LocalFaq').then(m => ({ default: m.LocalFaq })));
 const ContactForm          = lazy(() => import('./components/ContactForm').then(m => ({ default: m.ContactForm })));
 const Footer               = lazy(() => import('./components/Footer').then(m => ({ default: m.Footer })));
 import { siteContent } from './data/siteContent';
@@ -182,6 +183,7 @@ export default function App() {
             />
             <Projects content={content} />
             <LuminescentBanner {...content.banners[1]} tone='silver' />
+            <LocalFaq content={content} />
             <ContactForm content={content} />
           </main>
           <Footer content={content} />

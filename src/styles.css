@@ -2011,6 +2011,14 @@ textarea {
   --section-video-opacity: 0.24;
 }
 
+.local-faq-section {
+  --section-accent-a: rgba(194, 165, 109, 0.18);
+  --section-accent-b: rgba(84, 122, 149, 0.16);
+  --section-base-a: rgba(8, 10, 14, 0.86);
+  --section-base-b: rgba(30, 40, 52, 0.56);
+  --section-video-opacity: 0.2;
+}
+
 .contact-section {
   --section-accent-a: rgba(255, 179, 138, 0.24);
   --section-accent-b: rgba(226, 222, 216, 0.14);
@@ -2748,6 +2756,7 @@ textarea {
 .process-list article,
 .project-card,
 .review-card,
+.local-faq-item,
 .contact-form {
   /* Base visual compartida: panel oscuro, blur, borde y sombra. */
   position: relative;
@@ -2839,6 +2848,7 @@ textarea {
 .process-list article::before,
 .project-card::before,
 .review-card::before,
+.local-faq-item::before,
 .contact-form::before {
   content: '';
   position: absolute;
@@ -2857,6 +2867,7 @@ textarea {
 .process-list article.is-visible::before,
 .project-card.is-visible::before,
 .review-card.is-visible::before,
+.local-faq-item.is-visible::before,
 .contact-form.is-visible::before {
   animation: card-sheen 5200ms ease-in-out infinite;
   animation-delay: calc(var(--reveal-index, 0) * 220ms + 800ms);
@@ -3131,6 +3142,30 @@ textarea {
 
 .review-card figcaption span {
   color: var(--app-silver);
+}
+
+.local-faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.local-faq-item {
+  min-height: 220px;
+  padding: clamp(22px, 3vw, 30px);
+}
+
+.local-faq-item h3 {
+  margin: 0 0 14px;
+  color: var(--app-paper);
+  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
+  line-height: 1.18;
+}
+
+.local-faq-item p {
+  margin: 0;
+  color: rgba(248, 248, 248, 0.74);
+  line-height: 1.65;
 }
 
 /* Seccion de contacto en dos columnas: texto/canales y formulario. */
@@ -3515,12 +3550,14 @@ textarea {
   }
 
   .project-grid,
-  .review-track {
+  .review-track,
+  .local-faq-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .project-grid,
-  .review-track {
+  .review-track,
+  .local-faq-grid {
     grid-template-columns: 1fr;
   }
 

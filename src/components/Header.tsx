@@ -10,6 +10,9 @@ type HeaderProps = {
 
 export function Header({ content, language, onLanguageChange }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const whatsappChannel = content.contact.channels.find(
+    (channel) => channel.label.toLowerCase() === 'whatsapp',
+  );
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -39,7 +42,13 @@ export function Header({ content, language, onLanguageChange }: HeaderProps) {
             </button>
           ))}
         </div>
-        <a className="header-action" href="#contact" onClick={closeMenu}>
+        <a
+          className="header-action"
+          href={whatsappChannel?.href ?? "#contact"}
+          target={whatsappChannel ? "_blank" : undefined}
+          rel={whatsappChannel ? "noreferrer" : undefined}
+          onClick={closeMenu}
+        >
           {content.hero.primaryCta}
         </a>
         <button
@@ -61,7 +70,13 @@ export function Header({ content, language, onLanguageChange }: HeaderProps) {
               {item.label}
             </a>
           ))}
-          <a className="mobile-nav-cta" href="#contact" onClick={closeMenu}>
+          <a
+            className="mobile-nav-cta"
+            href={whatsappChannel?.href ?? "#contact"}
+            target={whatsappChannel ? "_blank" : undefined}
+            rel={whatsappChannel ? "noreferrer" : undefined}
+            onClick={closeMenu}
+          >
             {content.hero.primaryCta}
           </a>
         </nav>

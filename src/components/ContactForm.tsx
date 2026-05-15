@@ -48,8 +48,9 @@ function getChannelIcon(label: string): JSX.Element | null {
 }
 
 const contactHighlightPhrases = [
-  'improve, automate, or sell',
-  'mejorar, automatizar o vender',
+  'sell, automate, or control',
+  'Quito',
+  'vender, automatizar o controlar',
 ];
 
 type FormState = Record<string, string>;

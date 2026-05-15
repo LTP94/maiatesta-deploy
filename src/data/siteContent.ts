@@ -75,6 +75,12 @@ export type LocalizedContent = {
     channels: ContactChannel[];
     fields: FieldContent[];
   };
+  faqs: {
+    eyebrow: string;
+    title: string;
+    body: string;
+    items: Array<{ question: string; answer: string }>;
+  };
   footer: {
     headline: string;
     body: string;
@@ -94,8 +100,8 @@ export type LocalizedContent = {
 export const siteContent = {
   brand: {
     name: 'MaiAtesta',
-    logoAlt: 'MaiAtesta agency logo',
-    personaAlt: 'MaiAtesta AI persona',
+    logoAlt: 'MaiAtesta agencia digital en Quito',
+    personaAlt: 'MaiAtesta asistente digital para pymes en Quito',
     logo: '/assets/maiatesta-logo-optimized-2.jpg',
     persona: '/assets/maiatesta-persona-hero.webp',
     atlanticPersona: '/assets/maiatesta-persona-hero.webp',
@@ -117,15 +123,15 @@ export const siteContent = {
       },
       nav: [
         { label: 'Services', href: '#services' },
-        { label: 'Solutions', href: '#projects' },
+        { label: 'Packages', href: '#projects' },
         { label: 'Contact', href: '#contact' },
       ],
       hero: {
-        eyebrow: 'Intelligent technology for profitable growth',
+        eyebrow: 'Accessible digital agency in Quito, Pichincha',
         title:
-          'Digital solutions that increase sales, automate operations, and improve decisions.',
-        body: 'MaiAtesta designs smart websites, e-commerce, custom software, inventory tools, mathematical purchasing optimization, AI automation, and spreadsheet automation for businesses in Quito, Ecuador and beyond.',
-        primaryCta: 'Contact MaiAtesta',
+          'Websites, online stores, and automation for Quito small businesses.',
+        body: 'MaiAtesta helps local shops, restaurants, clinics, professionals, and growing SMEs in Quito Norte, Centro, Sur, and Pichincha get more leads online with clear, affordable web development, e-commerce, WhatsApp chatbots, inventory tools, custom software, and Excel automation.',
+        primaryCta: 'Quote on WhatsApp',
         secondaryCta: 'Explore services',
         metrics: [
           { value: '24/7', label: 'AI-powered customer attention' },
@@ -146,81 +152,81 @@ export const siteContent = {
       products: [
         {
           id: 'web-development',
-          title: 'Web Development',
+          title: 'Web Development in Quito',
           description:
-            'Website development to enhance your company’s image and market visibility.',
-          accent: 'Strengthen your digital presence',
+            'Fast business websites and landing pages for entrepreneurs, service providers, and SMEs that need calls, WhatsApp leads, and local visibility.',
+          accent: 'A clear website built to get leads',
           previewUrl: 'https://arquitectura.ltrueba.com/',
         },
         {
           id: 'e-commerce',
-          title: 'E-Commerce',
+          title: 'E-Commerce for Ecuador',
           description:
-            'Online stores ready to sell with product catalog, cart, online payments, order management, social networks, and organic AI chats.',
-          accent: 'Sell online with less friction',
+            'Online stores with product catalog, cart, payment options, order management, social media links, and optional AI chat support.',
+          accent: 'Sell online without overcomplicating it',
           previewUrl: 'https://my-winery-ecommerce-edjw7vlfl-ltp94.vercel.app/',
         },
         {
           id: 'custom-software',
-          title: 'Custom Software',
+          title: 'Custom Software for SMEs',
           description:
-            'Tailored systems for your company: internal platforms, dashboards, reservations, scheduling, and operational automation.',
-          accent: 'Build around your real process',
+            'Simple internal systems for schedules, bookings, dashboards, forms, reports, and daily processes that no spreadsheet handles well anymore.',
+          accent: 'Turn your real workflow into a system',
         },
         {
           id: 'inventory-software',
           title: 'Inventory Software',
           description:
-            'Smart stock control with entries, exits, low-inventory alerts, automatic reports, multi-user access, history, and traceability.',
-          accent: 'Control stock with intelligence',
+            'Stock control for small warehouses, shops, restaurants, and distributors with entries, exits, alerts, reports, users, history, and traceability.',
+          accent: 'Know what is available before it costs you',
           previewUrl: 'https://inventario.kipuxbot.com/recepcion/',
         },
         {
           id: 'purchase-optimization',
-          title: 'Purchasing Optimization',
+          title: 'Purchasing and Cost Control',
           description:
-            'Mathematical software to compare suppliers, model savings, prioritize purchases, reduce costs, and control budgets.',
-          accent: 'Buy better and reduce costs',
+            'Tools to compare suppliers, organize quotes, model savings, prioritize purchases, reduce costs, and keep budgets under control.',
+          accent: 'Buy better with cleaner numbers',
         },
         {
           id: 'ai-automation',
-          title: 'AI Automation',
+          title: 'AI and WhatsApp Automation',
           description:
-            'Web and WhatsApp chatbots with instant replies, lead capture, FAQs, customer follow-up, and automated scheduling.',
-          accent: 'Generate opportunities 24/7',
+            'Web and WhatsApp chatbots with instant answers, lead capture, FAQs, customer follow-up, and appointment requests.',
+          accent: 'Answer customers even outside business hours',
         },
         {
           id: 'spreadsheet-automation',
-          title: 'Spreadsheet Automation',
+          title: 'Excel and Spreadsheet Automation',
           description:
-            'Smart Excel, automatic reports, data consolidation, and reduction of manual errors in repetitive processes.',
-          accent: 'Turn repetitive work into systems',
+            'Automated Excel files, dashboards, reports, data consolidation, and fewer manual mistakes in repeated administrative work.',
+          accent: 'Stop rebuilding the same report every week',
         },
       ],
       banners: [
         {
-          eyebrow: 'MaiAtesta signal',
-          title: 'Digital systems with a premium graphite and bronze identity.',
-          body: 'A sharper visual layer for services that connect sales, operations, AI, and business control.',
+          eyebrow: 'Local digital execution',
+          title: 'Useful systems for businesses that need leads, control, and faster response.',
+          body: 'A practical layer of websites, automation, software, and reporting for small companies in Quito and Pichincha.',
         },
         {
-          eyebrow: 'Intelligent execution',
+          eyebrow: 'Accessible execution',
           title:
-            'Automation, software, and commerce moving under one visual language.',
-          body: 'From first contact to operational dashboards, each solution keeps the brand precise, luminous, and measurable.',
+            'Web, WhatsApp, software, and commerce connected around your daily operation.',
+          body: 'From first contact to internal dashboards, each solution is built to be understandable, measurable, and realistic for a growing business.',
         },
       ],
       sections: {
         services: {
           eyebrow: 'Services',
-          title: 'Technology designed to grow and monetize your business.',
-          body: 'Choose the MaiAtesta solution your business needs now: sales, operations, inventory, purchasing, AI customer attention, or process automation.',
+          title: 'Accessible digital services for SMEs in Quito.',
+          body: 'Choose the service your business needs now: a professional website, online store, WhatsApp automation, inventory control, purchasing control, custom software, or spreadsheet automation.',
         },
         projects: {
-          eyebrow: 'Solutions',
+          eyebrow: 'Packages',
           title:
-            'Digital systems focused on sales, control, and better decisions.',
-          body: 'From the first website to custom business software, each solution is built to create measurable operational and commercial impact.',
+            'Clear starting points for businesses that need results without enterprise budgets.',
+          body: 'Start small with a website or chatbot, then add inventory, automation, and custom software when the operation needs it.',
         },
         reviews: {
           eyebrow: 'Why MaiAtesta',
@@ -230,18 +236,18 @@ export const siteContent = {
         },
       },
       process: [
-        { title: 'Analyze', body: 'Understand your sales, operations, inventory, purchasing, and reporting needs.' },
-        { title: 'Design', body: 'Design the right digital solution: web, commerce, custom software, AI, or automation.' },
-        { title: 'Build', body: 'Build fast, professional systems with clear forms, integrations, dashboards, and business logic.' },
-        { title: 'Launch', body: 'Launch, measure, and improve results with automation, reports, and better decision tools.' },
+        { title: 'Listen', body: 'Understand what you sell, where your clients come from, and what slows your team down.' },
+        { title: 'Prioritize', body: 'Choose the lowest-friction solution first: website, WhatsApp bot, store, Excel, inventory, or software.' },
+        { title: 'Build', body: 'Create a fast, professional system with clear forms, integrations, reports, and business logic.' },
+        { title: 'Launch', body: 'Publish, test on mobile, connect WhatsApp, and improve using real leads and operational data.' },
       ],
-      processTitle: 'Work methodology',
+      processTitle: 'How projects move',
       projects: [
         {
-          name: 'Express Web Presence (starting at $200)',
+          name: 'Express Website in Quito (from $200)',
           type: 'One-time payment',
           result:
-            'Your professional website ready in 3 to 5 business days. One-time payment, no hidden monthly fees.',
+            'A professional business website ready in 3 to 5 business days. One-time payment, mobile-first, and connected to your WhatsApp.',
           features: [
             {
               label: 'Professional, fast, and modern website.',
@@ -249,25 +255,25 @@ export const siteContent = {
             },
             { label: 'Mobile-optimized design.', included: true },
             {
-              label: 'Direct contact button to your WhatsApp.',
+              label: 'Direct WhatsApp contact button.',
               included: true,
             },
-            { label: 'Guaranteed delivery in record time.', included: true },
+            { label: 'Basic local SEO for Quito and Ecuador.', included: true },
             { label: 'Automatic customer attention.', included: false },
             { label: 'Database integration.', included: false },
           ],
-          ctaText: 'Get a quote with us, schedule a call.',
+          ctaText: 'Request a quick quote on WhatsApp.',
         },
         {
-          name: 'AI Automated Chats (starting at US$60)',
+          name: 'AI WhatsApp Chatbot (from US$60)',
           type: 'Most Popular',
           result:
-            'Website + a WhatsApp virtual assistant that serves customers while you sleep.',
+            'A virtual assistant for WhatsApp or your website that answers common questions and captures leads while you work.',
           badgeText: 'Most Popular',
           featured: true,
           features: [
             {
-              label: 'Includes the complete Express Web Presence package.',
+              label: 'Conversation flow for your service or product.',
               included: true,
               emphasized: true,
             },
@@ -282,17 +288,17 @@ export const siteContent = {
               included: true,
             },
             {
-              label: 'Connection to accounting systems/CRM.',
+              label: 'Custom CRM or accounting connection.',
               included: false,
             },
           ],
-          ctaText: 'Get a quote with us, schedule a call.',
+          ctaText: 'Request a quick quote on WhatsApp.',
         },
         {
-          name: 'Operations Control',
-          type: 'Custom software and inventory',
+          name: 'Operational Control for SMEs',
+          type: 'Custom software, inventory, and Excel',
           result:
-            'Internal systems, dashboards, scheduling, stock alerts, multi-user access, reports, history, and traceability.',
+            'Internal systems, dashboards, appointments, stock alerts, multi-user access, reports, history, and traceability for growing businesses.',
         },
       ],
       reviews: [
@@ -317,8 +323,8 @@ export const siteContent = {
       ],
       contact: {
         eyebrow: 'Contact',
-        title: 'Tell us what you want to improve, automate, or sell.',
-        body: 'Based in Quito, Ecuador — working with businesses across Latin America and beyond.',
+        title: 'Tell me what you need to sell, automate, or control in Quito.',
+        body: 'Based in Quito, Ecuador. Ideal for SMEs, entrepreneurs, professionals, shops, restaurants, clinics, academies, and service businesses that need a practical digital solution.',
         emailSubjectPrefix: 'Project request from',
         submitLabel: 'Send request',
         successMessage:
@@ -367,7 +373,13 @@ export const siteContent = {
             name: 'company',
             label: 'Company',
             type: 'text',
-            placeholder: 'Company or brand',
+            placeholder: 'Company, business, or brand',
+          },
+          {
+            name: 'location',
+            label: 'City or sector',
+            type: 'text',
+            placeholder: 'Quito Norte, Centro, Sur, Cumbaya, Valle, etc.',
           },
           {
             name: 'service',
@@ -380,21 +392,48 @@ export const siteContent = {
             label: 'Business need',
             type: 'textarea',
             placeholder:
-              'What do you want to sell, automate, control, or optimize?',
+              'What do you sell, what do you want to automate, and how soon do you need it?',
+          },
+        ],
+      },
+      faqs: {
+        eyebrow: 'Local SEO questions',
+        title: 'Common questions from businesses in Quito.',
+        body: 'Short answers for owners comparing website, chatbot, e-commerce, inventory, and automation services before requesting a quote.',
+        items: [
+          {
+            question: 'How much does a business website cost in Quito?',
+            answer:
+              'An express website starts at $200, depending on the number of sections, copy, forms, WhatsApp buttons, SEO setup, and integrations. The goal is a fast first version that can generate leads quickly.',
+          },
+          {
+            question: 'Do you work with businesses in Quito Norte, Centro, and Sur?',
+            answer:
+              'Yes. MaiAtesta works with businesses across Quito and Pichincha, including Quito Norte, Centro, Sur, Cumbaya, Tumbaco, and Los Valles. Remote work is available when meetings are easier by WhatsApp or video call.',
+          },
+          {
+            question: 'What is the fastest service if I need more leads?',
+            answer:
+              'For most local businesses, the fastest starting point is a focused landing page with WhatsApp contact, basic local SEO, and an optional chatbot that answers frequent questions and qualifies prospects.',
+          },
+          {
+            question: 'Can I request only a WhatsApp chatbot or Excel automation?',
+            answer:
+              'Yes. You can start with a small automation, chatbot, report, or Excel tool without buying a full website or large software project.',
           },
         ],
       },
       footer: {
         headline: 'MaiAtesta',
-        body: 'Intelligent technology for businesses in Quito, Ecuador.',
+        body: 'Accessible web development, automation, and software for businesses in Quito, Ecuador.',
         rights: 'All rights reserved.',
       },
       bot: {
         eyebrow: 'Kipux · Live AI',
-        title: 'Describe your business. Get a custom plan.',
-        body: 'No forms. No sales calls. Kipux analyzes your operation in real time and tells you exactly which tools will generate measurable results for your company.',
+        title: 'Describe your business and get a practical next step.',
+        body: 'Use the assistant to explain what you sell, where you are in Quito, and what you need: a website, WhatsApp chatbot, online store, inventory, reports, or automation.',
         badges: ['Responds in seconds', 'Available 24/7', 'No commitment needed'],
-        trust: 'Over 200 businesses have already talked to Kipux.',
+        trust: 'A quick way to organize your idea before requesting a quote.',
         chatLabel: 'Open live chat',
         chatHint: 'Load the assistant only when you need it.',
       },
@@ -407,15 +446,15 @@ export const siteContent = {
       },
       nav: [
         { label: 'Servicios', href: '#services' },
-        { label: 'Soluciones', href: '#projects' },
+        { label: 'Paquetes', href: '#projects' },
         { label: 'Contacto', href: '#contact' },
       ],
       hero: {
-        eyebrow: 'Tecnología inteligente para crecer y rentabilizar tu negocio',
+        eyebrow: 'Agencia digital accesible en Quito, Pichincha',
         title:
-          'Soluciones digitales que aumentan ventas, automatizan operaciones y mejoran decisiones.',
-        body: 'MaiAtesta diseña desarrollo web, e-commerce, software a medida, inventario inteligente, optimización matemática de compras, automatización con IA y automatización de planillas para empresas en Quito, Ecuador y más allá.',
-        primaryCta: 'Contactar MaiAtesta',
+          'Páginas web, tiendas online y automatización para pymes de Quito.',
+        body: 'MaiAtesta ayuda a negocios, emprendimientos y profesionales en Quito Norte, Centro, Sur y Pichincha a conseguir más clientes por internet con desarrollo web accesible, e-commerce, chatbots para WhatsApp, inventario, software a medida y automatización de Excel.',
+        primaryCta: 'Cotizar por WhatsApp',
         secondaryCta: 'Ver servicios',
         metrics: [
           { value: '24/7', label: 'atención y oportunidades con IA' },
@@ -436,80 +475,80 @@ export const siteContent = {
       products: [
         {
           id: 'web-development',
-          title: 'Desarrollo Web',
-          description: 'Desarrollo web para potenciar la imagen de tu empresa y tu visibilidad en el mercado.',
-          accent: 'Fortalece tu presencia digital',
+          title: 'Desarrollo Web en Quito',
+          description: 'Páginas web y landing pages rápidas para negocios, profesionales y pymes que necesitan llamadas, WhatsApp y visibilidad local.',
+          accent: 'Una web clara para captar clientes',
           previewUrl: 'https://arquitectura.ltrueba.com/',
         },
         {
           id: 'e-commerce',
-          title: 'E-Commerce',
-          description: 'Tiendas online listas para vender con catálogo de productos, carrito, pagos en línea, gestión de pedidos, redes sociales y chats con IA.',
-          accent: 'Vende online con menos fricción',
+          title: 'Tiendas Online en Ecuador',
+          description: 'E-commerce con catálogo de productos, carrito, opciones de pago, gestión de pedidos, redes sociales y chat con IA opcional.',
+          accent: 'Vende online sin complicarte',
           previewUrl: 'https://my-winery-ecommerce-edjw7vlfl-ltp94.vercel.app/',
         },
         {
           id: 'custom-software',
-          title: 'Software a Medida',
+          title: 'Software a Medida para Pymes',
           description:
-            'Sistemas personalizados para tu empresa: plataformas internas, dashboards, reservas, agendas y automatización operativa.',
-          accent: 'Construye sobre tu proceso real',
+            'Sistemas simples para agendas, reservas, dashboards, formularios, reportes y procesos diarios que Excel ya no resuelve bien.',
+          accent: 'Convierte tu proceso real en sistema',
         },
         {
           id: 'inventory-software',
-          title: 'Inventario',
+          title: 'Software de Inventario',
           description:
-            'Control inteligente de stock con entradas, salidas, alertas de bajo inventario, reportes automáticos, multiusuario, historial y trazabilidad.',
-          accent: 'Controla stock con inteligencia',
+            'Control de stock para bodegas pequeñas, tiendas, restaurantes y distribuidores con entradas, salidas, alertas, reportes, usuarios e historial.',
+          accent: 'Sabe qué tienes antes de que te cueste',
           previewUrl: 'https://inventario.kipuxbot.com/recepcion/',
         },
         {
           id: 'purchase-optimization',
-          title: 'Optimización de Compras',
+          title: 'Control de Compras y Costos',
           description:
-            'Software matemático para comparar proveedores, modelar ahorros, priorizar compras, reducir costos y controlar presupuestos.',
-          accent: 'Compra mejor y reduce costos',
+            'Herramientas para comparar proveedores, ordenar cotizaciones, modelar ahorros, priorizar compras, reducir costos y controlar presupuestos.',
+          accent: 'Compra mejor con números claros',
         },
         {
           id: 'ai-automation',
-          title: 'Automatización con IA',
+          title: 'Automatización con IA y WhatsApp',
           description:
-            'Chatbots web y WhatsApp con respuestas instantáneas, captura de clientes potenciales, preguntas frecuentes, seguimiento y agendamiento.',
-          accent: 'Genera oportunidades 24/7',
+            'Chatbots web y WhatsApp con respuestas instantáneas, captura de leads, preguntas frecuentes, seguimiento y solicitudes de citas.',
+          accent: 'Atiende clientes fuera de horario',
         },
         {
           id: 'spreadsheet-automation',
-          title: 'Planillas Inteligentes',
+          title: 'Automatización de Excel',
           description:
-            'Excel inteligente, reportes automáticos, consolidación de datos y reducción de errores manuales en procesos repetitivos.',
-          accent: 'Convierte tareas repetitivas en sistemas',
+            'Excel inteligente, dashboards, reportes automáticos, consolidación de datos y menos errores manuales en tareas repetitivas.',
+          accent: 'Deja de rehacer el mismo reporte cada semana',
         },
       ],
       banners: [
         {
-          eyebrow: 'Señal MAIAtesta',
+          eyebrow: 'Ejecución digital local',
           title:
-            'Sistemas digitales con una identidad grafito y bronce premium.',
-          body: 'Una capa visual más precisa para servicios que conectan ventas, operaciones, IA y control del negocio.',
+            'Sistemas útiles para negocios que necesitan clientes, control y respuesta rápida.',
+          body: 'Una capa práctica de páginas web, automatización, software y reportes para pequeñas empresas en Quito y Pichincha.',
         },
         {
-          eyebrow: 'Ejecución inteligente',
+          eyebrow: 'Ejecución accesible',
           title:
-            'Automatización, software y comercio bajo un mismo lenguaje visual.',
-          body: 'Desde el primer contacto hasta dashboards operativos, cada solución mantiene la marca precisa, luminosa y medible.',
+            'Web, WhatsApp, software y comercio conectados alrededor de tu operación diaria.',
+          body: 'Desde el primer contacto hasta dashboards operativos, cada solución se construye para ser entendible, medible y realista para un negocio en crecimiento.',
         },
       ],
       sections: {
         services: {
           eyebrow: 'Servicios',
-          title: 'Tecnología diseñada para crecer y rentabilizar tu negocio.',
-          body: 'Elige la solución MaiAtesta que tu empresa necesita ahora: ventas, operaciones, inventario, compras, atención con IA o automatización de procesos.',
+          title: 'Servicios digitales accesibles para pymes en Quito.',
+          body: 'Elige lo que tu negocio necesita ahora: página web profesional, tienda online, automatización de WhatsApp, inventario, control de compras, software a medida o automatización de Excel.',
         },
         projects: {
-          eyebrow: 'Soluciones',
+          eyebrow: 'Paquetes',
           title:
-            'Sistemas digitales enfocados en ventas, control y mejores decisiones.',
-          body: 'Desde la primera página web hasta software empresarial a medida, cada solución se diseña para generar impacto operativo y comercial medible.',
+            'Puntos de partida claros para negocios sin presupuesto empresarial.',
+          body: 'Empieza con una web o chatbot, y luego suma inventario, automatización y software a medida cuando la operación lo necesite.',
         },
         reviews: {
           eyebrow: 'Por qué MaiAtesta',
@@ -519,39 +558,41 @@ export const siteContent = {
         },
       },
       process: [
-        { title: 'Analizar', body: 'Entendemos tus necesidades de ventas, operaciones, inventario, compras y reportes.' },
-        { title: 'Diseñar', body: 'Diseñamos la solución digital adecuada: web, comercio, software a medida, IA o automatización.' },
-        { title: 'Construir', body: 'Construimos sistemas rápidos y profesionales con formularios, integraciones, dashboards y lógica de negocio.' },
-        { title: 'Lanzar', body: 'Lanzamos, medimos y mejoramos resultados con automatización, reportes y mejores herramientas de decisión.' },
+        { title: 'Escuchar', body: 'Entiendo qué vendes, de dónde vienen tus clientes y qué frena tu operación.' },
+        { title: 'Priorizar', body: 'Elegimos primero la solución de menor fricción: web, bot de WhatsApp, tienda, Excel, inventario o software.' },
+        { title: 'Construir', body: 'Creo un sistema rápido y profesional con formularios, integraciones, reportes y lógica de negocio.' },
+        { title: 'Lanzar', body: 'Publicamos, probamos en celular, conectamos WhatsApp y mejoramos con leads y datos reales.' },
       ],
-      processTitle: 'Metodología de trabajo',
+      processTitle: 'Cómo avanza el proyecto',
       projects: [
         {
-          name: 'Presencia Web Express (a partir de $200)',
+          name: 'Página Web Express en Quito (desde $200)',
           type: 'Pago único',
           result:
-            'Tu página web profesional lista en 3 a 5 días hábiles. Pago único, sin mensualidades ocultas.',
+            'Tu página web profesional lista en 3 a 5 días hábiles. Pago único, optimizada para celular y conectada a tu WhatsApp.',
           features: [
             { label: 'Web profesional, rápida y moderna.', included: true },
             { label: 'Diseño optimizado para celulares.', included: true },
             {
               label: 'Botón de contacto directo a tu WhatsApp.',
               included: true,
-            },            { label: 'Entrega garantizada en tiempo récord.', included: true },            { label: 'Atención automática a clientes.', included: false },
+            },
+            { label: 'SEO local básico para Quito y Ecuador.', included: true },
+            { label: 'Atención automática a clientes.', included: false },
             { label: 'Integración con bases de datos.', included: false },
           ],
-          ctaText: 'Cotiza con nosotros, agenda una cita.',
+          ctaText: 'Pide una cotización rápida por WhatsApp.',
         },
         {
-          name: 'Chats automatizados con IA (a partir de US$ 60)',
+          name: 'Chatbot de WhatsApp con IA (desde US$ 60)',
           type: 'Más Popular',
           result:
-            'Página web + un asistente virtual en WhatsApp que atiende clientes mientras duermes.',
+            'Un asistente virtual para WhatsApp o tu web que responde preguntas frecuentes y captura leads mientras trabajas.',
           badgeText: 'Más Popular',
           featured: true,
           features: [
             {
-              label: 'Incluye Presencia Web Express completa.',
+              label: 'Flujo de conversación para tu servicio o producto.',
               included: true,
               emphasized: true,
             },
@@ -566,17 +607,17 @@ export const siteContent = {
               included: true,
             },
             {
-              label: 'Conexión a sistemas contables/CRM.',
+              label: 'Conexión personalizada a CRM o sistema contable.',
               included: false,
             },
           ],
-          ctaText: 'Cotiza con nosotros, agenda una cita.',
+          ctaText: 'Pide una cotización rápida por WhatsApp.',
         },
         {
-          name: 'Control Operativo',
-          type: 'Software a medida e inventario',
+          name: 'Control Operativo para Pymes',
+          type: 'Software a medida, inventario y Excel',
           result:
-            'Sistemas internos, dashboards, agendas, alertas de stock, multiusuario, reportes, historial y trazabilidad.',
+            'Sistemas internos, dashboards, agendas, alertas de stock, multiusuario, reportes, historial y trazabilidad para negocios en crecimiento.',
         },
       ],
       reviews: [
@@ -601,8 +642,8 @@ export const siteContent = {
       ],
       contact: {
         eyebrow: 'Contacto',
-        title: 'Cuéntanos qué quieres mejorar, automatizar o vender.',
-        body: 'Estamos en Quito, Ecuador — trabajamos con empresas en toda Latinoamérica y más allá.',
+        title: 'Cuéntame qué necesitas vender, automatizar o controlar en Quito.',
+        body: 'Estoy en Quito, Ecuador. Ideal para pymes, emprendimientos, profesionales, tiendas, restaurantes, consultorios, academias y negocios de servicios que necesitan una solución digital práctica.',
         emailSubjectPrefix: 'Solicitud de proyecto de',
         submitLabel: 'Enviar solicitud',
         successMessage:
@@ -651,7 +692,13 @@ export const siteContent = {
             name: 'company',
             label: 'Empresa',
             type: 'text',
-            placeholder: 'Empresa o marca',
+            placeholder: 'Empresa, negocio o marca',
+          },
+          {
+            name: 'location',
+            label: 'Ciudad o sector',
+            type: 'text',
+            placeholder: 'Quito Norte, Centro, Sur, Cumbayá, Valle, etc.',
           },
           {
             name: 'service',
@@ -664,21 +711,48 @@ export const siteContent = {
             label: 'Necesidad del negocio',
             type: 'textarea',
             placeholder:
-              '¿Qué quieres vender, automatizar, controlar u optimizar?',
+              '¿Qué vendes, qué quieres automatizar y para cuándo lo necesitas?',
+          },
+        ],
+      },
+      faqs: {
+        eyebrow: 'Preguntas locales',
+        title: 'Preguntas comunes de negocios en Quito.',
+        body: 'Respuestas cortas para dueños que comparan página web, chatbot, tienda online, inventario y automatización antes de pedir una cotización.',
+        items: [
+          {
+            question: '¿Cuánto cuesta una página web para negocio en Quito?',
+            answer:
+              'Una página web express empieza desde $200, según cantidad de secciones, textos, formularios, botones de WhatsApp, SEO básico e integraciones. La prioridad es lanzar una primera versión rápida que pueda generar contactos.',
+          },
+          {
+            question: '¿Atiendes negocios del Norte, Centro y Sur de Quito?',
+            answer:
+              'Sí. MaiAtesta trabaja con negocios en Quito y Pichincha, incluyendo Quito Norte, Centro, Sur, Cumbayá, Tumbaco y Los Valles. También se puede avanzar de forma remota por WhatsApp o videollamada.',
+          },
+          {
+            question: '¿Qué servicio conviene si necesito clientes rápido?',
+            answer:
+              'Para la mayoría de negocios locales, el punto de partida más rápido es una landing page enfocada, botón de WhatsApp, SEO local básico y un chatbot opcional que responda preguntas frecuentes y filtre prospectos.',
+          },
+          {
+            question: '¿Puedo pedir solo un chatbot de WhatsApp o automatización de Excel?',
+            answer:
+              'Sí. Puedes empezar con una automatización pequeña, chatbot, reporte o herramienta en Excel sin comprar una página completa ni un proyecto grande de software.',
           },
         ],
       },
       footer: {
         headline: 'MaiAtesta',
-        body: 'Tecnología inteligente para empresas en Quito, Ecuador.',
+        body: 'Desarrollo web, automatización y software accesible para negocios en Quito, Ecuador.',
         rights: 'Todos los derechos reservados.',
       },
       bot: {
         eyebrow: 'Kipux · IA en vivo',
-        title: 'Describe tu negocio. Obtén un plan a medida.',
-        body: 'Sin formularios. Sin llamadas de ventas. Kipux analiza tu operación en tiempo real y te dice exactamente qué herramientas generarán resultados medibles para tu empresa.',
+        title: 'Describe tu negocio y recibe un siguiente paso práctico.',
+        body: 'Usa el asistente para explicar qué vendes, en qué sector de Quito estás y qué necesitas: web, chatbot de WhatsApp, tienda online, inventario, reportes o automatización.',
         badges: ['Responde en segundos', 'Disponible 24/7', 'Sin compromiso'],
-        trust: 'Más de 200 empresas ya hablaron con Kipux.',
+        trust: 'Una forma rápida de ordenar tu idea antes de pedir cotización.',
         chatLabel: 'Abrir chat en vivo',
         chatHint: 'Carga el asistente solo cuando lo necesites.',
       },

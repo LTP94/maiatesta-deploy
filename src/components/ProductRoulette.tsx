@@ -6,10 +6,10 @@ import type { PaletteName } from '../App';
 import { LuminousText } from './LuminousText';
 
 const servicesHighlightPhrases = [
-  'grow and monetize your business',
-  'crecer y rentabilizar tu negocio',
-  'Technology',
-  'Tecnología',
+  'SMEs in Quito',
+  'Accessible digital services',
+  'pymes en Quito',
+  'Servicios digitales accesibles',
 ];
 
 type ProductRouletteProps = {

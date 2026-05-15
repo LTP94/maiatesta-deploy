@@ -5,12 +5,12 @@ import { LuminousText } from './LuminousText';
 import { PersonaPortrait } from './PersonaPortrait';
 
 const heroHighlightPhrases = [
-  'increase sales',
-  'automate operations',
-  'improve decisions',
-  'aumentan ventas',
-  'automatizan operaciones',
-  'mejoran decisiones',
+  'Quito small businesses',
+  'Websites',
+  'automation',
+  'pymes de Quito',
+  'Páginas web',
+  'automatización',
 ];
 
 type HeroProps = {
@@ -34,6 +34,10 @@ export function Hero({
     palette === 'atlantic'
       ? siteContent.brand.atlanticPersona
       : siteContent.brand.persona;
+  const whatsappChannel = content.contact.channels.find(
+    (channel) => channel.label.toLowerCase() === 'whatsapp',
+  );
+
   return (
     <section className='hero-section' id='top'>
       {/* Animated CSS background — GPU-only, no videos */}
@@ -69,7 +73,12 @@ export function Hero({
           </h1>
           <p className='hero-body'>{content.hero.body}</p>
           <div className='hero-actions'>
-            <a className='button button-primary' href='#contact'>
+            <a
+              className='button button-primary'
+              href={whatsappChannel?.href ?? '#contact'}
+              target={whatsappChannel ? '_blank' : undefined}
+              rel={whatsappChannel ? 'noreferrer' : undefined}
+            >
               {content.hero.primaryCta}
             </a>
             <a className='button button-secondary' href='#services'>

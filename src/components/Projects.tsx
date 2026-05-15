@@ -2,10 +2,10 @@ import type { LocalizedContent } from '../data/siteContent';
 import { LuminousText } from './LuminousText';
 
 const projectsHighlightPhrases = [
-  'sales, control, and better decisions',
-  'ventas, control y mejores decisiones',
-  'Digital systems',
-  'Sistemas digitales',
+  'without enterprise budgets',
+  'Clear starting points',
+  'sin presupuesto empresarial',
+  'Puntos de partida claros',
 ];
 
 type ProjectsProps = {
