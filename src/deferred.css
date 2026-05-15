@@ -4343,3 +4343,47 @@ textarea {
     animation: none !important;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   MOBILE PERFORMANCE — disable GPU-heavy decorative effects on phones.
+   All rules below are purely cosmetic. Content and layout are unaffected.
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Hero orbs: large blurred gradient circles with continuous animations
+     are the single biggest GPU drain on mobile. Remove filter and animation;
+     keep the subtle base gradient colour for visual depth. */
+  .hero-orb {
+    filter: none;
+    animation: none;
+    opacity: 0.5;
+  }
+
+  /* Aurora: already hidden at ≤620px via critical.css; also hide at 621-768px
+     (tablets and large phones in landscape) to stop the 72px blur + rotation. */
+  .hero-aurora {
+    display: none;
+  }
+
+  /* Grain: the 0.8 s loop causes frequent style recalcs on mobile. Static noise
+     is visually identical and costs nothing. */
+  .hero-grain {
+    animation: none;
+  }
+
+  /* Page meteors: four fixed-position animated elements trigger full-viewport
+     repaints on every frame. Hide on mobile — invisible at small sizes anyway. */
+  .page-meteor {
+    display: none;
+  }
+
+  /* Hero shooting stars: similar to page meteors — small screens don't benefit. */
+  .hero-shooting-star {
+    display: none;
+  }
+
+  /* Stars-bg: reduce twinkle frequency to cut down GPU composite layers. */
+  .stars-bg__layer--far,
+  .stars-bg__layer--near {
+    animation-duration: 20s;
+  }
+}
