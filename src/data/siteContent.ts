@@ -124,8 +124,8 @@ export const siteContent = {
         eyebrow: 'Intelligent technology for profitable growth',
         title:
           'Digital solutions that increase sales, automate operations, and improve decisions.',
-        body: 'MAIAtesta designs smart websites, e-commerce, custom software, inventory tools, mathematical purchasing optimization, AI automation, and spreadsheet automation for businesses ready to grow.',
-        primaryCta: 'Contact MAIAtesta',
+        body: 'MaiAtesta designs smart websites, e-commerce, custom software, inventory tools, mathematical purchasing optimization, AI automation, and spreadsheet automation for businesses in Quito, Ecuador and beyond.',
+        primaryCta: 'Contact MaiAtesta',
         secondaryCta: 'Explore services',
         metrics: [
           { value: '24/7', label: 'AI-powered customer attention' },
@@ -214,7 +214,7 @@ export const siteContent = {
         services: {
           eyebrow: 'Services',
           title: 'Technology designed to grow and monetize your business.',
-          body: 'Choose the MaIAtesta solution your business needs now: sales, operations, inventory, purchasing, AI customer attention, or process automation.',
+          body: 'Choose the MaiAtesta solution your business needs now: sales, operations, inventory, purchasing, AI customer attention, or process automation.',
         },
         projects: {
           eyebrow: 'Solutions',
@@ -223,7 +223,7 @@ export const siteContent = {
           body: 'From the first website to custom business software, each solution is built to create measurable operational and commercial impact.',
         },
         reviews: {
-          eyebrow: 'Why MaIAtesta',
+          eyebrow: 'Why MaiAtesta',
           title:
             'Modern solutions, personalized attention, and real automation.',
           body: 'We apply technology to the business itself: more sales opportunities, fewer manual tasks, cleaner information, and better results.',
@@ -299,26 +299,26 @@ export const siteContent = {
         {
           quote:
             'Technology should serve the business: more control, more sales opportunities, and fewer manual errors.',
-          author: 'MaIAtesta',
+          author: 'MaiAtesta',
           role: 'Technology applied to business',
         },
         {
           quote:
             'Automation is useful when it answers customers, organizes information, and keeps operations moving 24/7.',
-          author: 'MaIAtesta',
+          author: 'MaiAtesta',
           role: 'AI automation and operations',
         },
         {
           quote:
             'Better decisions start with cleaner data, smarter purchasing models, and systems that reveal what is happening.',
-          author: 'MaIAtesta',
+          author: 'MaiAtesta',
           role: 'Dashboards and optimization',
         },
       ],
       contact: {
         eyebrow: 'Contact',
         title: 'Tell us what you want to improve, automate, or sell.',
-        body: '',
+        body: 'Based in Quito, Ecuador — working with businesses across Latin America and beyond.',
         emailSubjectPrefix: 'Project request from',
         submitLabel: 'Send request',
         successMessage:
@@ -326,8 +326,8 @@ export const siteContent = {
         channels: [
           {
             label: 'Email',
-            value: 'maiAtesta@gmail.com',
-            href: 'mailto: maiAtesta@gmail.com',
+            value: 'maiatesta@gmail.com',
+            href: 'mailto:maiatesta@gmail.com',
           },
           {
             label: 'WhatsApp',
@@ -341,8 +341,8 @@ export const siteContent = {
           },
           {
             label: 'Web',
-            value: 'www.maiAtesta.com',
-            href: 'https://www.maiAtesta.com',
+            value: 'www.maiatesta.com',
+            href: 'https://www.maiatesta.com',
           },
           {
             label: 'Instagram',
@@ -385,8 +385,8 @@ export const siteContent = {
         ],
       },
       footer: {
-        headline: 'MaIAtesta',
-        body: 'Intelligent technology to grow and monetize your business.',
+        headline: 'MaiAtesta',
+        body: 'Intelligent technology for businesses in Quito, Ecuador.',
         rights: 'All rights reserved.',
       },
       bot: {
@@ -414,7 +414,7 @@ export const siteContent = {
         eyebrow: 'Tecnología inteligente para crecer y rentabilizar tu negocio',
         title:
           'Soluciones digitales que aumentan ventas, automatizan operaciones y mejoran decisiones.',
-        body: 'MaIAtesta diseña desarrollo web, e-commerce, software a medida, inventario inteligente, optimización matemática de compras, automatización con IA y automatización de planillas para empresas listas para crecer.',
+        body: 'MaiAtesta diseña desarrollo web, e-commerce, software a medida, inventario inteligente, optimización matemática de compras, automatización con IA y automatización de planillas para empresas en Quito, Ecuador y más allá.',
         primaryCta: 'Contactar MaiAtesta',
         secondaryCta: 'Ver servicios',
         metrics: [
@@ -602,7 +602,7 @@ export const siteContent = {
       contact: {
         eyebrow: 'Contacto',
         title: 'Cuéntanos qué quieres mejorar, automatizar o vender.',
-        body: '',
+        body: 'Estamos en Quito, Ecuador — trabajamos con empresas en toda Latinoamérica y más allá.',
         emailSubjectPrefix: 'Solicitud de proyecto de',
         submitLabel: 'Enviar solicitud',
         successMessage:
@@ -610,7 +610,7 @@ export const siteContent = {
         channels: [
           {
             label: 'Email',
-            value: 'maiAtesta@gmail.com',
+            value: 'maiatesta@gmail.com',
             href: 'mailto:maiatesta@gmail.com',
           },
           {
@@ -625,12 +625,12 @@ export const siteContent = {
           },
           {
             label: 'Web',
-            value: 'www.maiAtesta.com',
-            href: 'https://www.maiAtesta.com',
+            value: 'www.maiatesta.com',
+            href: 'https://www.maiatesta.com',
           },
           {
             label: 'Instagram',
-            value: 'maiAtestatech',
+            value: 'maiatestatech',
             href: 'https://www.instagram.com/maiatestatech',
           },
         ],
@@ -669,8 +669,8 @@ export const siteContent = {
         ],
       },
       footer: {
-        headline: 'MaIAtesta',
-        body: 'Tecnología inteligente para crecer y rentabilizar tu negocio.',
+        headline: 'MaiAtesta',
+        body: 'Tecnología inteligente para empresas en Quito, Ecuador.',
         rights: 'Todos los derechos reservados.',
       },
       bot: {

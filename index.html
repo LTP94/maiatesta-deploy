@@ -1,14 +1,31 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Maiatesta builds modern websites, automations, bots, and digital products for ambitious teams."
+      content="MaiAtesta: desarrollo web, e-commerce, software a medida e inteligencia artificial para empresas en Quito, Ecuador. Más ventas, menos procesos manuales."
     />
-    <title>Maiatesta | Websites, Bots and Development</title>
+    <meta name="keywords" content="desarrollo web Quito, agencia digital Ecuador, software a medida Quito, automatización con IA Ecuador, e-commerce Ecuador, MaiAtesta" />
+    <meta name="author" content="MaiAtesta" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#04080F" />
+
+    <!-- Geo tags for local SEO (Quito, Ecuador) -->
+    <meta name="geo.region" content="EC-P" />
+    <meta name="geo.placename" content="Quito" />
+    <meta name="geo.position" content="-0.1807;-78.4678" />
+    <meta name="ICBM" content="-0.1807, -78.4678" />
+
+    <title>MaiAtesta | Desarrollo Web, Software e IA · Quito, Ecuador</title>
     <link rel="icon" href="/assets/maiatesta-favicon.png" type="image/png" />
+
+    <!-- Canonical & hreflang -->
+    <link rel="canonical" href="https://maiatesta.com/" />
+    <link rel="alternate" hreflang="es" href="https://maiatesta.com/" />
+    <link rel="alternate" hreflang="en" href="https://maiatesta.com/" />
+    <link rel="alternate" hreflang="x-default" href="https://maiatesta.com/" />
 
     <!-- Preconnect to external CDNs used by the chat widget -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" />
@@ -21,25 +38,84 @@
     <!-- Open Graph (Facebook, WhatsApp, LinkedIn, etc.) -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://maiatesta.com/" />
-    <meta property="og:title" content="Maiatesta | Websites, Bots and Development" />
+    <meta property="og:site_name" content="MaiAtesta" />
+    <meta property="og:locale" content="es_EC" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:title" content="MaiAtesta | Desarrollo Web, Software e IA · Quito, Ecuador" />
     <meta
       property="og:description"
-      content="Maiatesta builds modern websites, automations, bots, and digital products for ambitious teams."
+      content="MaiAtesta: desarrollo web, e-commerce, software a medida e inteligencia artificial para empresas en Quito, Ecuador. Más ventas, menos procesos manuales."
     />
     <meta property="og:image" content="https://maiatesta.com/assets/maiatesta-persona-hero.png" />
     <meta property="og:image:width" content="720" />
     <meta property="og:image:height" content="720" />
-    <meta property="og:image:alt" content="MaiAtesta AI persona" />
+    <meta property="og:image:alt" content="MaiAtesta — Agencia digital en Quito, Ecuador" />
 
     <!-- Twitter / X Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Maiatesta | Websites, Bots and Development" />
+    <meta name="twitter:title" content="MaiAtesta | Desarrollo Web, Software e IA · Quito, Ecuador" />
     <meta
       name="twitter:description"
-      content="Maiatesta builds modern websites, automations, bots, and digital products for ambitious teams."
+      content="MaiAtesta: desarrollo web, e-commerce, software a medida e IA para empresas en Quito, Ecuador."
     />
     <meta name="twitter:image" content="https://maiatesta.com/assets/maiatesta-persona-hero.png" />
-    <meta name="twitter:image:alt" content="MaiAtesta AI persona" />
+    <meta name="twitter:image:alt" content="MaiAtesta — Agencia digital en Quito, Ecuador" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://maiatesta.com/#organization",
+          "name": "MaiAtesta",
+          "url": "https://maiatesta.com/",
+          "logo": "https://maiatesta.com/assets/maiatesta-logo-optimized-2.jpg",
+          "email": "maiatesta@gmail.com",
+          "telephone": "+593963092859",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Quito",
+            "addressRegion": "Pichincha",
+            "addressCountry": "EC"
+          },
+          "areaServed": [
+            { "@type": "Country", "name": "Ecuador" },
+            { "@type": "Country", "name": "Colombia" },
+            { "@type": "Country", "name": "Mexico" },
+            { "@type": "Country", "name": "United States" }
+          ],
+          "sameAs": [
+            "https://www.instagram.com/maiatestatech",
+            "https://www.linkedin.com/search/results/companies/?keywords=MaiAtesta"
+          ],
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Servicios MaiAtesta",
+            "itemListElement": [
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Desarrollo Web", "description": "Sitios web profesionales y landing pages optimizadas para conversión." } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "E-Commerce", "description": "Tiendas online con integración de pagos y gestión de inventario." } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Software a Medida", "description": "Aplicaciones y sistemas diseñados para los procesos específicos de tu empresa." } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Software de Inventario", "description": "Control de stock en tiempo real con alertas y reportes automatizados." } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Optimización Matemática de Compras", "description": "Modelos de optimización para reducir costos y mejorar la cadena de abastecimiento." } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Automatización con IA", "description": "Chatbots y agentes de IA que atienden clientes y automatizan operaciones 24/7." } },
+              { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Automatización de Planillas", "description": "Automatización de hojas de cálculo para eliminar trabajo manual y errores." } }
+            ]
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://maiatesta.com/#website",
+          "url": "https://maiatesta.com/",
+          "name": "MaiAtesta",
+          "description": "Agencia digital en Quito, Ecuador: desarrollo web, software a medida, e-commerce y automatización con IA.",
+          "publisher": { "@id": "https://maiatesta.com/#organization" },
+          "inLanguage": ["es", "en"]
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
