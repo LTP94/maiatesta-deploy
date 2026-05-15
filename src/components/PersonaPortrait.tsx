@@ -33,8 +33,11 @@ export function PersonaPortrait({
   };
 
   return (
-    <div className='persona-scan-anchor'>
-      <span className='persona-scanner-beam' aria-hidden='true' />
+    <div className='persona-orbit-anchor'>
+      <span className='persona-orbit-ring' aria-hidden='true' />
+      <span className='persona-orbit-star persona-orbit-star--a' aria-hidden='true' />
+      <span className='persona-orbit-star persona-orbit-star--b' aria-hidden='true' />
+      <span className='persona-orbit-star persona-orbit-star--c' aria-hidden='true' />
       <div
         className={`persona-portrait${isFlipping ? ' is-flipping' : ''}`}
         style={

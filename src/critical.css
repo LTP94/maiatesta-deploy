@@ -338,11 +338,50 @@ textarea {
   justify-content: center;
 }
 
-.persona-scan-anchor {
+.persona-orbit-anchor {
   position: relative;
   z-index: 2;
   width: var(--portrait-size);
   aspect-ratio: 1;
+}
+
+.persona-orbit-ring {
+  position: absolute;
+  inset: -9%;
+  border: 1px solid rgba(194, 165, 109, 0.38);
+  border-radius: 50%;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.persona-orbit-star {
+  position: absolute;
+  z-index: 8;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 10px rgba(232, 237, 242, 0.9),
+    0 0 22px rgba(194, 165, 109, 0.48);
+  pointer-events: none;
+}
+
+.persona-orbit-star--a {
+  top: 4%;
+  right: 18%;
+}
+
+.persona-orbit-star--b {
+  bottom: 16%;
+  left: 2%;
+}
+
+.persona-orbit-star--c {
+  right: 0;
+  bottom: 28%;
+  width: 4px;
+  height: 4px;
 }
 
 .persona-portrait {
