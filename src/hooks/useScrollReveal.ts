@@ -50,6 +50,7 @@ export function useScrollReveal(dependency: unknown) {
 
     // Handle elements already in the DOM (hero + any above-fold content).
     document.querySelectorAll<HTMLElement>(".scroll-reveal").forEach(processElement);
+    document.documentElement.classList.add("reveal-enabled");
 
     // Watch for .scroll-reveal elements injected by lazy-loaded chunks.
     // We batch processing via requestAnimationFrame so that any DOM writes

@@ -828,3 +828,267 @@ textarea {
     line-height: 1.55;
   }
 }
+
+/* Minimal below-fold baseline: prevents raw/unstyled sections during fast scroll
+   before deferred.css has finished loading. Full visual styling still lives in
+   deferred.css. */
+.site-main {
+  position: relative;
+  z-index: 1;
+  background: var(--app-ink);
+}
+
+.site-main main {
+  display: block;
+}
+
+.section,
+.site-main-typebot-chat,
+.site-footer {
+  position: relative;
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(64px, 9vw, 112px) 0;
+  color: var(--app-paper);
+}
+
+.section {
+  scroll-margin-top: 118px;
+}
+
+.section-heading,
+.contact-copy,
+.bot-invite {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 36px;
+}
+
+.section-heading h2,
+.contact-copy h2,
+.bot-invite__title {
+  margin: 0;
+  max-width: 880px;
+  color: var(--app-paper);
+  font-size: clamp(2rem, 4vw, 4.3rem);
+  line-height: 1.05;
+}
+
+.section-heading p,
+.contact-copy p,
+.bot-invite__body,
+.bot-invite__trust,
+.site-footer p {
+  max-width: 720px;
+  color: var(--app-silver);
+  line-height: 1.6;
+}
+
+.roulette-layout,
+.project-grid,
+.review-grid,
+.local-faq-grid,
+.contact-section,
+.site-main-typebot-chat {
+  display: grid;
+  gap: clamp(20px, 4vw, 44px);
+}
+
+.service-carousel {
+  position: relative;
+  width: min(100%, 760px);
+  min-height: clamp(390px, 48vw, 500px);
+  margin: 0 auto clamp(96px, 12vw, 160px);
+  display: grid;
+  place-items: center;
+}
+
+.service-scene {
+  position: relative;
+  width: 24px;
+  height: 250px;
+  perspective: 1400px;
+  margin: 56px auto 200px;
+}
+
+.service-axis,
+.service-deck {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.service-card {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  width: 350px;
+  min-height: 450px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 40px;
+  border: 1px solid rgba(246, 248, 251, 0.18);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(27, 47, 73, 0.98), rgba(7, 17, 31, 0.98));
+  color: var(--app-paper);
+  overflow: hidden;
+}
+
+.service-card:not(.active) {
+  opacity: 0.42;
+}
+
+.service-card h3,
+.project-card h3 {
+  margin: 0;
+  color: var(--app-paper);
+  line-height: 1.12;
+}
+
+.service-card p,
+.project-card p,
+.local-faq-item p {
+  margin: 0;
+  color: var(--app-silver);
+  line-height: 1.5;
+}
+
+.service-card strong {
+  color: var(--app-copper);
+}
+
+.service-card-preview {
+  display: block;
+  width: 100%;
+  height: clamp(150px, 14vw, 176px);
+  margin-top: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(246, 248, 251, 0.16);
+  border-radius: 6px;
+  background: #06101c;
+}
+
+.service-preview-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 14px;
+  padding: 0 7px;
+  background: rgba(246, 248, 251, 0.1);
+}
+
+.service-preview-frame {
+  position: relative;
+  display: block;
+  height: calc(100% - 14px);
+  overflow: hidden;
+}
+
+.service-preview-frame img,
+.service-preview-frame video,
+.service-preview-skeleton {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #06101c;
+}
+
+.service-preview-overlay,
+.service-active-summary,
+.service-indicators {
+  position: relative;
+}
+
+.project-card,
+.review-card,
+.local-faq-item,
+.contact-form,
+.site-main-typebot-chat__placeholder {
+  border: 1px solid rgba(246, 248, 251, 0.14);
+  border-radius: 8px;
+  background: rgba(14, 27, 45, 0.78);
+  color: var(--app-paper);
+}
+
+.project-card,
+.review-card,
+.contact-form,
+.site-main-typebot-chat__placeholder {
+  padding: clamp(20px, 4vw, 34px);
+}
+
+.local-faq-item {
+  padding: 0;
+}
+
+.local-faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 68px;
+  padding: 18px clamp(18px, 3vw, 26px);
+}
+
+.contact-form {
+  display: grid;
+  gap: 16px;
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid rgba(246, 248, 251, 0.18);
+  border-radius: 6px;
+  color: var(--app-paper);
+  background: rgba(7, 17, 31, 0.82);
+}
+
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 32px;
+  padding-bottom: 42px;
+}
+
+@media (max-width: 620px) {
+  .section,
+  .site-main-typebot-chat,
+  .site-footer {
+    width: min(100% - 24px, 1180px);
+    padding: 56px 0;
+  }
+
+  .service-scene {
+    height: 318px;
+    margin: 34px auto 138px;
+  }
+
+  .service-card {
+    left: calc(12px - clamp(200px, 72vw, 260px) / 2);
+    width: clamp(200px, 72vw, 260px);
+    min-height: clamp(336px, 92vw, 376px);
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .service-card:not(.active) {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .service-card-preview {
+    height: clamp(126px, 38vw, 152px);
+    margin-top: 10px;
+  }
+
+  .site-footer {
+    flex-direction: column;
+  }
+}

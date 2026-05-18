@@ -45,7 +45,7 @@ export function ServicePreview({
       },
       {
         root: null,
-        rootMargin: '96px 0px',
+        rootMargin: '420px 0px',
         threshold: [0, 0.45, 0.75, 1],
       },
     );

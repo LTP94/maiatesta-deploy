@@ -77,11 +77,23 @@ function removeRawPublicVideosFromBuild(isSsrBuild: boolean): Plugin {
         return;
       }
 
-      for (const fileName of fs.readdirSync(assetsDir)) {
-        if (fileName.toLowerCase().endsWith(".mov")) {
-          fs.rmSync(path.join(assetsDir, fileName));
+      const removeIgnoredPublicArtifacts = (directory: string) => {
+        for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+          const entryPath = path.join(directory, entry.name);
+
+          if (entry.isDirectory()) {
+            removeIgnoredPublicArtifacts(entryPath);
+            continue;
+          }
+
+          const lowerName = entry.name.toLowerCase();
+          if (lowerName.endsWith(".mov") || lowerName === ".ds_store") {
+            fs.rmSync(entryPath);
+          }
         }
-      }
+      };
+
+      removeIgnoredPublicArtifacts(assetsDir);
     },
   };
 }
@@ -106,7 +118,6 @@ export default defineConfig(({ command }) => {
       assetsInlineLimit: 1024,
       modulePreload: {
         polyfill: false,
-        resolveDependencies: () => [],
       },
       rollupOptions: {
         output: isSsrBuild
