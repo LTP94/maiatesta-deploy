@@ -2542,6 +2542,33 @@ html.reveal-enabled .scroll-reveal.is-visible {
     0 0 1px color-mix(in srgb, var(--app-paper) 72%, transparent);
 }
 
+.service-side-hotspot {
+  position: absolute;
+  top: 72px;
+  bottom: 112px;
+  z-index: 23;
+  width: clamp(104px, 16vw, 180px);
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.service-side-hotspot--previous {
+  left: 0;
+}
+
+.service-side-hotspot--next {
+  right: 0;
+}
+
+.service-side-hotspot:focus-visible {
+  outline: 2px solid var(--app-copper);
+  outline-offset: 4px;
+  background: rgba(216, 189, 120, 0.08);
+}
+
 .service-card-index,
 .service-card h3,
 .service-card-preview,
@@ -3947,6 +3974,10 @@ html.reveal-enabled .scroll-reveal.is-visible {
   .service-card-preview {
     height: clamp(126px, 38vw, 152px);
     margin-top: 10px;
+  }
+
+  .service-side-hotspot {
+    display: none;
   }
 
   .service-preview-overlay {

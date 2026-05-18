@@ -1002,6 +1002,33 @@ textarea {
   position: relative;
 }
 
+.service-side-hotspot {
+  position: absolute;
+  top: 72px;
+  bottom: 112px;
+  z-index: 23;
+  width: clamp(104px, 16vw, 180px);
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.service-side-hotspot--previous {
+  left: 0;
+}
+
+.service-side-hotspot--next {
+  right: 0;
+}
+
+.service-side-hotspot:focus-visible {
+  outline: 2px solid var(--app-copper);
+  outline-offset: 4px;
+  background: rgba(216, 189, 120, 0.08);
+}
+
 .project-card,
 .review-card,
 .local-faq-item,
@@ -1086,6 +1113,10 @@ textarea {
   .service-card-preview {
     height: clamp(126px, 38vw, 152px);
     margin-top: 10px;
+  }
+
+  .service-side-hotspot {
+    display: none;
   }
 
   .site-footer {

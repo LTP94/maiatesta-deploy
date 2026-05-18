@@ -90,6 +90,11 @@ export function ProductRoulette({
       : 0;
   const safeActiveIndex = cellCount > 0 ? activeIndex % cellCount : 0;
   const activeProduct = services[safeActiveIndex];
+  const previousIndex =
+    cellCount > 0 ? (safeActiveIndex - 1 + cellCount) % cellCount : 0;
+  const nextIndex = cellCount > 0 ? (safeActiveIndex + 1) % cellCount : 0;
+  const previousProduct = services[previousIndex];
+  const nextProduct = services[nextIndex];
 
   const handleCardKeyDown = (
     event: React.KeyboardEvent<HTMLElement>,
@@ -211,6 +216,22 @@ export function ProductRoulette({
               </div>
             </div>
           </div>
+          {cellCount > 1 && previousProduct ? (
+            <button
+              className='service-side-hotspot service-side-hotspot--previous'
+              type='button'
+              onClick={() => setActiveIndex(previousIndex)}
+              aria-label={`Seleccionar ${previousProduct.title}`}
+            />
+          ) : null}
+          {cellCount > 1 && nextProduct ? (
+            <button
+              className='service-side-hotspot service-side-hotspot--next'
+              type='button'
+              onClick={() => setActiveIndex(nextIndex)}
+              aria-label={`Seleccionar ${nextProduct.title}`}
+            />
+          ) : null}
           <div className='service-orbit-shadow' aria-hidden='true' />
           {activeProduct ? (
             <p className='service-active-summary'>{activeProduct.accent}</p>
