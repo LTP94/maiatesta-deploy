@@ -30,7 +30,7 @@ const paletteOptions = [
   },
   {
     id: 'atlantic',
-    colors: ['#E8EDF2', '#2C3947', '#547A95', '#C2A56D'],
+    colors: ['#F6F8FB', '#07111F', '#6F8FAF', '#D8BD78'],
   },
   {
     id: 'tropical',
