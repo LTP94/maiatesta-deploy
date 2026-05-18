@@ -13,6 +13,8 @@ const servicesHighlightPhrases = [
   'Servicios digitales accesibles',
 ];
 
+const cardAutoRotateMs = 4500;
+
 type ProductRouletteProps = {
   content: LocalizedContent;
   palette: PaletteName;
@@ -105,7 +107,7 @@ export function ProductRoulette({
     setActiveIndex(0);
   }, [services]);
 
-  // Rotacion automatica de cartas. Cambia 1500 para acelerar o reducir la velocidad.
+  // Rotacion automatica de cartas. 4500ms deja tiempo para leer titulo, texto y frase final.
   useEffect(() => {
     if (typeof window === 'undefined') {
       return;
@@ -117,7 +119,7 @@ export function ProductRoulette({
 
     const intervalId = window.setInterval(() => {
       setActiveIndex((currentIndex) => (currentIndex + 1) % cellCount);
-    }, 1500);
+    }, cardAutoRotateMs);
 
     return () => window.clearInterval(intervalId);
   }, [cellCount, isPaused]);
