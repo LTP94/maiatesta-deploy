@@ -63,6 +63,29 @@ function htmlPerformanceAssets(isSsrBuild: boolean, command: string): Plugin {
   };
 }
 
+function removeRawPublicVideosFromBuild(isSsrBuild: boolean): Plugin {
+  return {
+    name: "maiatesta-remove-raw-public-videos-from-build",
+    closeBundle() {
+      if (isSsrBuild) {
+        return;
+      }
+
+      const assetsDir = path.join(rootDir, "dist", "assets");
+
+      if (!fs.existsSync(assetsDir)) {
+        return;
+      }
+
+      for (const fileName of fs.readdirSync(assetsDir)) {
+        if (fileName.toLowerCase().endsWith(".mov")) {
+          fs.rmSync(path.join(assetsDir, fileName));
+        }
+      }
+    },
+  };
+}
+
 export default defineConfig(({ command }) => {
   const isSsrBuild = process.argv.includes('--ssr');
 
@@ -71,6 +94,7 @@ export default defineConfig(({ command }) => {
       neutralizeDeferredCssForBuild(command),
       react(),
       htmlPerformanceAssets(isSsrBuild, command),
+      removeRawPublicVideosFromBuild(isSsrBuild),
     ],
     build: {
       target: 'es2020' as const,

@@ -2571,10 +2571,13 @@ textarea {
   display: block;
   width: 100%;
   height: 150px;
+  margin-top: 14px;
   overflow: hidden;
   border: 1px solid rgba(248, 248, 248, 0.22);
   border-radius: 6px;
   background: rgba(7, 7, 7, 0.66);
+  color: inherit;
+  text-decoration: none;
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.04),
     0 14px 28px rgba(0, 0, 0, 0.24);
@@ -2613,13 +2616,15 @@ textarea {
 }
 
 .service-preview-frame img,
+.service-preview-frame video,
 .service-preview-skeleton {
   display: block;
   width: 100%;
   height: 100%;
 }
 
-.service-preview-frame img {
+.service-preview-frame img,
+.service-preview-frame video {
   object-fit: cover;
   filter: saturate(0.94) contrast(1.04) brightness(0.86);
 }
@@ -3914,16 +3919,16 @@ textarea {
 
   .service-scene {
     margin-top: 34px;
-    margin-bottom: 80px;
-    height: 200px;
+    margin-bottom: 126px;
+    height: 270px;
   }
 
   .service-card {
     /* Center card on the 3D scene axis and fit on 320-390px phones */
     left: calc(12px - clamp(200px, 72vw, 260px) / 2);
     width: clamp(200px, 72vw, 260px);
-    min-height: 180px;
-    padding: 18px;
+    min-height: clamp(286px, 84vw, 330px);
+    padding: 16px;
     gap: 10px;
   }
 
@@ -3934,7 +3939,8 @@ textarea {
   }
 
   .service-card-preview {
-    height: 68px;
+    height: clamp(92px, 28vw, 112px);
+    margin-top: 10px;
   }
 
   .service-preview-overlay {
@@ -3951,6 +3957,7 @@ textarea {
 
   .service-card p {
     font-size: 0.86rem;
+    line-height: 1.34;
   }
 
   .contact-channels a {

@@ -8,6 +8,8 @@ export type Product = {
   previewUrl?: string;
   previewImage?: string;
   previewAlt?: string;
+  previewVideoMp4?: string;
+  previewVideoWebm?: string;
 };
 
 export type FieldContent = {
@@ -161,6 +163,9 @@ export const siteContent = {
           previewUrl: 'https://arquitectura.ltrueba.com/',
           previewImage: '/assets/previews/desarrollo-web-quito.webp',
           previewAlt: 'Static preview of a fast website for a Quito business',
+          previewVideoMp4: '/assets/previews/videos/web-development-preview.mp4',
+          previewVideoWebm:
+            '/assets/previews/videos/web-development-preview.webm',
         },
         {
           id: 'e-commerce',
@@ -171,6 +176,8 @@ export const siteContent = {
           previewUrl: 'https://my-winery-ecommerce-edjw7vlfl-ltp94.vercel.app/',
           previewImage: '/assets/previews/tienda-online-ecuador.webp',
           previewAlt: 'Static preview of an online store for Ecuador',
+          previewVideoMp4: '/assets/previews/videos/ecommerce-preview.mp4',
+          previewVideoWebm: '/assets/previews/videos/ecommerce-preview.webm',
         },
         {
           id: 'custom-software',
@@ -178,6 +185,12 @@ export const siteContent = {
           description:
             'Simple internal systems for schedules, bookings, dashboards, forms, reports, and daily processes that no spreadsheet handles well anymore.',
           accent: 'Turn your real workflow into a system',
+          previewImage: '/assets/previews/videos/custom-software-poster.webp',
+          previewAlt: 'Preview of custom software for SMEs in Ecuador',
+          previewVideoMp4:
+            '/assets/previews/videos/custom-software-preview.mp4',
+          previewVideoWebm:
+            '/assets/previews/videos/custom-software-preview.webm',
         },
         {
           id: 'inventory-software',
@@ -188,6 +201,8 @@ export const siteContent = {
           previewUrl: 'https://inventario.kipuxbot.com/recepcion/',
           previewImage: '/assets/previews/inventario-pymes-quito.webp',
           previewAlt: 'Static preview of inventory software for SMEs in Quito',
+          previewVideoMp4: '/assets/previews/videos/inventory-preview.mp4',
+          previewVideoWebm: '/assets/previews/videos/inventory-preview.webm',
         },
         {
           id: 'purchase-optimization',
@@ -195,6 +210,13 @@ export const siteContent = {
           description:
             'Tools to compare suppliers, organize quotes, model savings, prioritize purchases, reduce costs, and keep budgets under control.',
           accent: 'Buy better with cleaner numbers',
+          previewImage:
+            '/assets/previews/videos/purchase-optimization-poster.webp',
+          previewAlt: 'Preview of purchasing and cost control dashboards',
+          previewVideoMp4:
+            '/assets/previews/videos/purchase-optimization-preview.mp4',
+          previewVideoWebm:
+            '/assets/previews/videos/purchase-optimization-preview.webm',
         },
         {
           id: 'ai-automation',
@@ -202,6 +224,11 @@ export const siteContent = {
           description:
             'Web and WhatsApp chatbots with instant answers, lead capture, FAQs, customer follow-up, and appointment requests.',
           accent: 'Answer customers even outside business hours',
+          previewImage: '/assets/previews/videos/ai-automation-poster.webp',
+          previewAlt: 'Preview of AI and WhatsApp automation for SMEs',
+          previewVideoMp4: '/assets/previews/videos/ai-automation-preview.mp4',
+          previewVideoWebm:
+            '/assets/previews/videos/ai-automation-preview.webm',
         },
         {
           id: 'spreadsheet-automation',
@@ -209,6 +236,13 @@ export const siteContent = {
           description:
             'Automated Excel files, dashboards, reports, data consolidation, and fewer manual mistakes in repeated administrative work.',
           accent: 'Stop rebuilding the same report every week',
+          previewImage:
+            '/assets/previews/videos/spreadsheet-automation-poster.webp',
+          previewAlt: 'Preview of spreadsheet dashboards and automation',
+          previewVideoMp4:
+            '/assets/previews/videos/spreadsheet-automation-preview.mp4',
+          previewVideoWebm:
+            '/assets/previews/videos/spreadsheet-automation-preview.webm',
         },
       ],
       banners: [
@@ -471,6 +505,9 @@ export const siteContent = {
           previewUrl: 'https://arquitectura.ltrueba.com/',
           previewImage: '/assets/previews/desarrollo-web-quito.webp',
           previewAlt: 'Vista previa estática de una página web para negocio en Quito',
+          previewVideoMp4: '/assets/previews/videos/web-development-preview.mp4',
+          previewVideoWebm:
+            '/assets/previews/videos/web-development-preview.webm',
         },
         {
           id: 'e-commerce',
@@ -480,6 +517,8 @@ export const siteContent = {
           previewUrl: 'https://my-winery-ecommerce-edjw7vlfl-ltp94.vercel.app/',
           previewImage: '/assets/previews/tienda-online-ecuador.webp',
           previewAlt: 'Vista previa estática de una tienda online para Ecuador',
+          previewVideoMp4: '/assets/previews/videos/ecommerce-preview.mp4',
+          previewVideoWebm: '/assets/previews/videos/ecommerce-preview.webm',
         },
         {
           id: 'custom-software',
@@ -487,6 +526,12 @@ export const siteContent = {
           description:
             'Sistemas simples para agendas, reservas, dashboards, formularios, reportes y procesos diarios que Excel ya no resuelve bien.',
           accent: 'Convierte tu proceso real en sistema',
+          previewImage: '/assets/previews/videos/custom-software-poster.webp',
+          previewAlt: 'Vista previa de software a medida para pymes en Ecuador',
+          previewVideoMp4:
+            '/assets/previews/videos/custom-software-preview.mp4',
+          previewVideoWebm:
+            '/assets/previews/videos/custom-software-preview.webm',
         },
         {
           id: 'inventory-software',
@@ -497,6 +542,8 @@ export const siteContent = {
           previewUrl: 'https://inventario.kipuxbot.com/recepcion/',
           previewImage: '/assets/previews/inventario-pymes-quito.webp',
           previewAlt: 'Vista previa estática de software de inventario para pymes en Quito',
+          previewVideoMp4: '/assets/previews/videos/inventory-preview.mp4',
+          previewVideoWebm: '/assets/previews/videos/inventory-preview.webm',
         },
         {
           id: 'purchase-optimization',
@@ -504,6 +551,13 @@ export const siteContent = {
           description:
             'Herramientas para comparar proveedores, ordenar cotizaciones, modelar ahorros, priorizar compras, reducir costos y controlar presupuestos.',
           accent: 'Compra mejor con números claros',
+          previewImage:
+            '/assets/previews/videos/purchase-optimization-poster.webp',
+          previewAlt: 'Vista previa de dashboards para control de compras y costos',
+          previewVideoMp4:
+            '/assets/previews/videos/purchase-optimization-preview.mp4',
+          previewVideoWebm:
+            '/assets/previews/videos/purchase-optimization-preview.webm',
         },
         {
           id: 'ai-automation',
@@ -511,6 +565,11 @@ export const siteContent = {
           description:
             'Chatbots web y WhatsApp con respuestas instantáneas, captura de leads, preguntas frecuentes, seguimiento y solicitudes de citas.',
           accent: 'Atiende clientes fuera de horario',
+          previewImage: '/assets/previews/videos/ai-automation-poster.webp',
+          previewAlt: 'Vista previa de automatización con IA y WhatsApp para pymes',
+          previewVideoMp4: '/assets/previews/videos/ai-automation-preview.mp4',
+          previewVideoWebm:
+            '/assets/previews/videos/ai-automation-preview.webm',
         },
         {
           id: 'spreadsheet-automation',
@@ -518,6 +577,13 @@ export const siteContent = {
           description:
             'Excel inteligente, dashboards, reportes automáticos, consolidación de datos y menos errores manuales en tareas repetitivas.',
           accent: 'Deja de rehacer el mismo reporte cada semana',
+          previewImage:
+            '/assets/previews/videos/spreadsheet-automation-poster.webp',
+          previewAlt: 'Vista previa de dashboards y automatización de Excel',
+          previewVideoMp4:
+            '/assets/previews/videos/spreadsheet-automation-preview.mp4',
+          previewVideoWebm:
+            '/assets/previews/videos/spreadsheet-automation-preview.webm',
         },
       ],
       banners: [

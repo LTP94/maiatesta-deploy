@@ -187,13 +187,18 @@ export function ProductRoulette({
                       <h3>{service.title}</h3>
                       <p>
                         <span>{service.description}</span>
-                        {service.previewUrl ? (
+                        {service.previewUrl ||
+                        service.previewImage ||
+                        service.previewVideoMp4 ||
+                        service.previewVideoWebm ? (
                           <ServicePreview
                             href={service.previewUrl}
                             image={service.previewImage}
                             alt={service.previewAlt}
                             title={service.title}
                             isActive={index === safeActiveIndex}
+                            videoMp4={service.previewVideoMp4}
+                            videoWebm={service.previewVideoWebm}
                           />
                         ) : null}
                       </p>
