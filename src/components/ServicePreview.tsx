@@ -24,6 +24,9 @@ export function ServicePreview({
   const [hasIntent, setHasIntent] = useState(false);
   const hasVideo = Boolean(videoMp4 || videoWebm);
   const shouldLoadVideo = hasVideo && (hasIntent || (isActive && isInView));
+  const previewClassName = hasVideo
+    ? 'service-card-preview has-video'
+    : 'service-card-preview';
   const setPreviewNode = (node: HTMLAnchorElement | HTMLSpanElement | null) => {
     previewRef.current = node;
   };
@@ -97,7 +100,7 @@ export function ServicePreview({
     return (
       <span
         ref={setPreviewNode}
-        className='service-card-preview'
+        className={previewClassName}
         onMouseEnter={() => setHasIntent(true)}
         onFocus={() => setHasIntent(true)}
         onTouchStart={() => setHasIntent(true)}
@@ -111,7 +114,7 @@ export function ServicePreview({
   return (
     <a
       ref={setPreviewNode}
-      className='service-card-preview'
+      className={previewClassName}
       href={href}
       target='_blank'
       rel='noreferrer'
