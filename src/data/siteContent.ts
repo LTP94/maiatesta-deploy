@@ -103,9 +103,9 @@ export type LocalizedContent = {
 
 export const siteContent = {
   brand: {
-    name: 'MaiAtesta',
-    logoAlt: 'MaiAtesta agencia digital en Quito',
-    personaAlt: 'MaiAtesta asistente digital para pymes en Quito',
+    name: 'Maiatesta',
+    logoAlt: 'Maiatesta agencia digital en Quito',
+    personaAlt: 'Maiatesta asistente digital para pymes en Quito',
     logo: '/assets/maiatesta-logo-optimized-2.jpg',
     persona: '/assets/maiatesta-persona-hero.webp',
     atlanticPersona: '/assets/maiatesta-persona-hero.webp',
@@ -134,7 +134,7 @@ export const siteContent = {
         eyebrow: 'Accessible digital agency in Quito, Pichincha',
         title:
           'Websites, online stores, and automation for Quito small businesses.',
-        body: 'MaiAtesta helps local shops, restaurants, clinics, professionals, and growing SMEs in Quito Norte, Centro, Sur, and Pichincha get more leads online with clear, affordable web development, e-commerce, WhatsApp chatbots, inventory tools, custom software, and Excel automation.',
+        body: 'Maiatesta helps local shops, restaurants, clinics, professionals, and growing SMEs in Quito Norte, Centro, Sur, and Pichincha get more leads online with clear, affordable web development, e-commerce, WhatsApp chatbots, inventory tools, custom software, and Excel automation.',
         primaryCta: 'Quote on WhatsApp',
         secondaryCta: 'Explore services',
         metrics: [
@@ -271,7 +271,7 @@ export const siteContent = {
           body: 'Start small with a website or chatbot, then add inventory, automation, and custom software when the operation needs it.',
         },
         reviews: {
-          eyebrow: 'Why MaiAtesta',
+          eyebrow: 'Why Maiatesta',
           title:
             'Modern solutions, personalized attention, and real automation.',
           body: 'We apply technology to the business itself: more sales opportunities, fewer manual tasks, cleaner information, and better results.',
@@ -347,19 +347,19 @@ export const siteContent = {
         {
           quote:
             'Technology should serve the business: more control, more sales opportunities, and fewer manual errors.',
-          author: 'MaiAtesta',
+          author: 'Maiatesta',
           role: 'Technology applied to business',
         },
         {
           quote:
             'Automation is useful when it answers customers, organizes information, and keeps operations moving 24/7.',
-          author: 'MaiAtesta',
+          author: 'Maiatesta',
           role: 'AI automation and operations',
         },
         {
           quote:
             'Better decisions start with cleaner data, smarter purchasing models, and systems that reveal what is happening.',
-          author: 'MaiAtesta',
+          author: 'Maiatesta',
           role: 'Dashboards and optimization',
         },
       ],
@@ -384,8 +384,8 @@ export const siteContent = {
           },
           {
             label: 'LinkedIn',
-            value: 'MaiAtesta',
-            href: 'https://www.linkedin.com/search/results/companies/?keywords=MaiAtesta',
+            value: 'Maiatesta',
+            href: 'https://www.linkedin.com/search/results/companies/?keywords=Maiatesta',
           },
           {
             label: 'Web',
@@ -426,6 +426,11 @@ export const siteContent = {
         body: 'Short answers for owners comparing website, chatbot, e-commerce, inventory, and automation services before requesting a quote.',
         items: [
           {
+            question: 'What is Maiatesta?',
+            answer:
+              'Maiatesta is a digital agency in Quito, Ecuador, focused on web development, SME software, WhatsApp chatbots, online stores, inventory tools, and AI automation.',
+          },
+          {
             question: 'How much does a business website cost in Quito?',
             answer:
               'An express website starts at $200, depending on the number of sections, copy, forms, WhatsApp buttons, SEO setup, and integrations. The goal is a fast first version that can generate leads quickly.',
@@ -433,7 +438,7 @@ export const siteContent = {
           {
             question: 'Do you work with businesses in Quito Norte, Centro, and Sur?',
             answer:
-              'Yes. MaiAtesta works with businesses across Quito and Pichincha, including Quito Norte, Centro, Sur, Cumbaya, Tumbaco, and Los Valles. Remote work is available when meetings are easier by WhatsApp or video call.',
+              'Yes. Maiatesta works with businesses across Quito and Pichincha, including Quito Norte, Centro, Sur, Cumbaya, Tumbaco, and Los Valles. Remote work is available when meetings are easier by WhatsApp or video call.',
           },
           {
             question: 'What is the fastest service if I need more leads?',
@@ -448,8 +453,8 @@ export const siteContent = {
         ],
       },
       footer: {
-        headline: 'MaiAtesta',
-        body: 'Accessible web development, automation, and software for businesses in Quito, Ecuador.',
+        headline: 'Maiatesta',
+        body: 'Maiatesta is a digital agency in Quito, Ecuador, specialized in web development, SME software, and AI automation.',
         rights: 'All rights reserved.',
       },
       bot: {
@@ -477,7 +482,7 @@ export const siteContent = {
         eyebrow: 'Agencia digital accesible en Quito, Pichincha',
         title:
           'Páginas web, tiendas online y automatización para pymes de Quito.',
-        body: 'MaiAtesta ayuda a negocios, emprendimientos y profesionales en Quito Norte, Centro, Sur y Pichincha a conseguir más clientes por internet con desarrollo web accesible, e-commerce, chatbots para WhatsApp, inventario, software a medida y automatización de Excel.',
+        body: 'Maiatesta ayuda a negocios, emprendimientos y profesionales en Quito Norte, Centro, Sur y Pichincha a conseguir más clientes por internet con desarrollo web accesible, e-commerce, chatbots para WhatsApp, inventario, software a medida y automatización de Excel.',
         primaryCta: 'Cotizar por WhatsApp',
         secondaryCta: 'Ver servicios',
         metrics: [
@@ -613,7 +618,7 @@ export const siteContent = {
           body: 'Empieza con una web o chatbot, y luego suma inventario, automatización y software a medida cuando la operación lo necesite.',
         },
         reviews: {
-          eyebrow: 'Por qué MaiAtesta',
+          eyebrow: 'Por qué Maiatesta',
           title:
             'Soluciones modernas, atención personalizada y automatización real.',
           body: 'Aplicamos tecnología al negocio: más oportunidades de venta, menos tareas manuales, información más clara y mejores resultados.',
@@ -686,19 +691,19 @@ export const siteContent = {
         {
           quote:
             'La tecnología debe servir al negocio: más control, más oportunidades de venta y menos errores manuales.',
-          author: 'MaiAtesta',
+          author: 'Maiatesta',
           role: 'Tecnología aplicada al negocio',
         },
         {
           quote:
             'La automatización es útil cuando atiende clientes, organiza información y mantiene la operación activa 24/7.',
-          author: 'MaiAtesta',
+          author: 'Maiatesta',
           role: 'Automatización con IA y operaciones',
         },
         {
           quote:
             'Decidir mejor empieza con datos más limpios, modelos de compra inteligentes y sistemas que muestran lo que ocurre.',
-          author: 'MaiAtesta',
+          author: 'Maiatesta',
           role: 'Dashboards y optimización',
         },
       ],
@@ -723,8 +728,8 @@ export const siteContent = {
           },
           {
             label: 'LinkedIn',
-            value: 'MaiAtesta',
-            href: 'https://www.linkedin.com/search/results/companies/?keywords=MaiAtesta',
+            value: 'Maiatesta',
+            href: 'https://www.linkedin.com/search/results/companies/?keywords=Maiatesta',
           },
           {
             label: 'Web',
@@ -765,6 +770,11 @@ export const siteContent = {
         body: 'Respuestas cortas para dueños que comparan chatbot de WhatsApp, página web, tienda online, inventario y automatización antes de pedir una cotización.',
         items: [
           {
+            question: '¿Qué es Maiatesta?',
+            answer:
+              'Maiatesta es una agencia digital en Quito, Ecuador, especializada en desarrollo web, software para pymes, chatbots de WhatsApp, tiendas online, inventario y automatización con IA.',
+          },
+          {
             question: '¿Cuánto cuesta un chatbot de WhatsApp en Ecuador?',
             answer:
               'Un chatbot básico para WhatsApp empieza desde US$60. El precio sube si necesita flujos avanzados, conexión a CRM, base de datos, inventario, facturación electrónica del SRI o integración con pagos.',
@@ -792,13 +802,13 @@ export const siteContent = {
           {
             question: '¿Atiendes negocios del Norte, Centro y Sur de Quito?',
             answer:
-              'Sí. MaiAtesta trabaja con negocios en Quito y Pichincha, incluyendo Quito Norte, Centro, Sur, Cumbayá, Tumbaco y Los Valles. También se puede avanzar por WhatsApp o videollamada.',
+              'Sí. Maiatesta trabaja con negocios en Quito y Pichincha, incluyendo Quito Norte, Centro, Sur, Cumbayá, Tumbaco y Los Valles. También se puede avanzar por WhatsApp o videollamada.',
           },
         ],
       },
       footer: {
-        headline: 'MaiAtesta',
-        body: 'Desarrollo web, automatización y software accesible para negocios en Quito, Ecuador.',
+        headline: 'Maiatesta',
+        body: 'Maiatesta es una agencia digital en Quito, Ecuador, especializada en desarrollo web, software para pymes y automatización con IA.',
         rights: 'Todos los derechos reservados.',
       },
       bot: {
