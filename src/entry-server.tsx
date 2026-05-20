@@ -3,8 +3,256 @@ import { renderToPipeableStream } from 'react-dom/server';
 // @ts-expect-error Node types are intentionally not installed for this tiny SSG entry.
 import { PassThrough } from 'node:stream';
 import App from './App';
+import { articlePages, getArticlePageByPath } from './data/articlePages';
+import { articleRouteSlugs } from './data/articleRoutes';
+import { servicePages, getServicePageByPath } from './data/servicePages';
+import { serviceRouteSlugs } from './data/serviceRoutes';
 
-export function render() {
+const siteUrl = 'https://maiatesta.com';
+
+const localBusinessSchema = {
+  '@type': ['LocalBusiness', 'ProfessionalService', 'Organization'],
+  '@id': `${siteUrl}/#localbusiness`,
+  name: 'Maiatesta',
+  alternateName: [
+    'Maiatesta Quito',
+    'Maiatesta Ecuador',
+    'Maiatesta software',
+    'Maiatesta agencia digital',
+  ],
+  url: `${siteUrl}/`,
+  image: `${siteUrl}/assets/maiatesta-persona-hero.webp`,
+  logo: `${siteUrl}/assets/maiatesta-logo.webp`,
+  description:
+    'Maiatesta es una agencia digital accesible en Quito para desarrollo web, tiendas online, chatbots de WhatsApp, software para pymes, inventario y automatización de Excel.',
+  email: 'maiatesta@gmail.com',
+  telephone: '+593963092859',
+  priceRange: '$60-$200+',
+  knowsAbout: [
+    'desarrollo web',
+    'software para pymes',
+    'chatbots de WhatsApp',
+    'automatización con IA',
+    'tiendas online',
+    'inventario',
+  ],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Quito',
+    addressRegion: 'Pichincha',
+    addressCountry: 'EC',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: -0.1807,
+    longitude: -78.4678,
+  },
+  areaServed: [
+    { '@type': 'City', name: 'Quito' },
+    { '@type': 'AdministrativeArea', name: 'Pichincha' },
+    { '@type': 'Place', name: 'Quito Norte' },
+    { '@type': 'Place', name: 'Centro de Quito' },
+    { '@type': 'Place', name: 'Sur de Quito' },
+    { '@type': 'Place', name: 'Cumbayá' },
+    { '@type': 'Place', name: 'Tumbaco' },
+  ],
+  sameAs: ['https://www.instagram.com/maiatestatech'],
+};
+
+const websiteSchema = {
+  '@type': 'WebSite',
+  '@id': `${siteUrl}/#website`,
+  url: `${siteUrl}/`,
+  name: 'Maiatesta',
+  description:
+    'Maiatesta ofrece desarrollo web, chatbots de WhatsApp, tiendas online, inventario y automatización para pymes en Quito, Ecuador.',
+  publisher: { '@id': `${siteUrl}/#localbusiness` },
+  inLanguage: 'es',
+};
+
+function normalizeRoutePath(routePath = '/') {
+  if (routePath === '/') {
+    return '/';
+  }
+
+  return routePath.endsWith('/') ? routePath : `${routePath}/`;
+}
+
+export function getStaticRoutes() {
+  return [
+    '/',
+    '/guias/',
+    ...serviceRouteSlugs.map((slug) => `/servicios/${slug}/`),
+    ...articleRouteSlugs.map((slug) => `/guias/${slug}/`),
+  ];
+}
+
+export function getRouteSeo(routePath = '/') {
+  const normalizedPath = normalizeRoutePath(routePath);
+  const articlePage = getArticlePageByPath(normalizedPath);
+  const servicePage = getServicePageByPath(normalizedPath);
+  const isGuidesIndex = normalizedPath === '/guias/';
+  const url = `${siteUrl}${normalizedPath === '/' ? '/' : normalizedPath}`;
+
+  if (isGuidesIndex) {
+    return {
+      title: 'Guías de software, páginas web y chatbots para pymes en Ecuador | Maiatesta',
+      description:
+        'Guías prácticas de Maiatesta para pymes en Quito y Ecuador sobre páginas web, chatbots de WhatsApp, inventario, Excel y software.',
+      canonical: url,
+      ogTitle: 'Guías de software, páginas web y chatbots para pymes en Ecuador | Maiatesta',
+      ogDescription:
+        'Recursos claros para decidir antes de cotizar software, web o automatización con Maiatesta en Quito.',
+      ogUrl: url,
+      twitterTitle: 'Guías de software, páginas web y chatbots para pymes en Ecuador | Maiatesta',
+      twitterDescription:
+        'Guías prácticas para pymes en Quito y Ecuador sobre web, chatbots, inventario, Excel y software.',
+    };
+  }
+
+  if (articlePage) {
+    return {
+      title: articlePage.metaTitle,
+      description: articlePage.metaDescription,
+      canonical: url,
+      ogTitle: articlePage.metaTitle,
+      ogDescription: articlePage.metaDescription,
+      ogUrl: url,
+      twitterTitle: articlePage.metaTitle,
+      twitterDescription: articlePage.metaDescription,
+    };
+  }
+
+  if (servicePage) {
+    return {
+      title: servicePage.metaTitle,
+      description: servicePage.metaDescription,
+      canonical: url,
+      ogTitle: servicePage.metaTitle,
+      ogDescription: servicePage.metaDescription,
+      ogUrl: url,
+      twitterTitle: servicePage.metaTitle,
+      twitterDescription: servicePage.metaDescription,
+    };
+  }
+
+  return {
+    title: 'Maiatesta | Desarrollo Web, Software y Chatbots en Quito',
+    description:
+      'Maiatesta es una agencia digital en Quito para páginas web, software para pymes, chatbots de WhatsApp, tiendas online e inventario en Ecuador.',
+    canonical: `${siteUrl}/`,
+    ogTitle: 'Maiatesta | Desarrollo Web, Software y Chatbots en Quito',
+    ogDescription:
+      'Maiatesta es una agencia digital en Quito para páginas web, software para pymes, chatbots de WhatsApp, tiendas online e inventario en Ecuador.',
+    ogUrl: `${siteUrl}/`,
+    twitterTitle: 'Maiatesta | Desarrollo Web, Software y Chatbots en Quito',
+    twitterDescription:
+      'Maiatesta es una agencia digital en Quito para páginas web, software para pymes, chatbots de WhatsApp, tiendas online e inventario en Ecuador.',
+  };
+}
+
+export function getRouteStructuredData(routePath = '/') {
+  const normalizedPath = normalizeRoutePath(routePath);
+  const articlePage = getArticlePageByPath(normalizedPath);
+  const servicePage = getServicePageByPath(normalizedPath);
+  const isGuidesIndex = normalizedPath === '/guias/';
+  const graph: Array<Record<string, unknown>> = [
+    localBusinessSchema,
+    websiteSchema,
+  ];
+
+  if (isGuidesIndex) {
+    graph.push({
+      '@type': 'CollectionPage',
+      '@id': `${siteUrl}/guias/#collection`,
+      name: 'Guías prácticas para negocios en Quito y Ecuador',
+      description:
+        'Guías de Maiatesta sobre desarrollo web, chatbots de WhatsApp, inventario, Excel y software para pymes.',
+      inLanguage: 'es',
+      publisher: { '@id': `${siteUrl}/#localbusiness` },
+      isPartOf: { '@id': `${siteUrl}/#website` },
+      mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: articlePages.map((page, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          url: `${siteUrl}/guias/${page.slug}/`,
+          name: page.title,
+        })),
+      },
+    });
+  } else if (articlePage) {
+    graph.push({
+      '@type': 'BlogPosting',
+      '@id': `${siteUrl}${normalizedPath}#article`,
+      headline: articlePage.h1,
+      name: articlePage.title,
+      description: articlePage.metaDescription,
+      datePublished: articlePage.publishDate,
+      dateModified: articlePage.updatedDate,
+      inLanguage: 'es',
+      author: { '@id': `${siteUrl}/#localbusiness` },
+      publisher: { '@id': `${siteUrl}/#localbusiness` },
+      mainEntityOfPage: `${siteUrl}${normalizedPath}`,
+      about: articlePage.primaryKeyword,
+      isPartOf: { '@id': `${siteUrl}/#website` },
+    });
+  } else if (servicePage) {
+    graph.push({
+      '@type': 'Service',
+      '@id': `${siteUrl}${normalizedPath}#service`,
+      name: servicePage.title,
+      serviceType: servicePage.primaryKeyword,
+      description: servicePage.metaDescription,
+      provider: { '@id': `${siteUrl}/#localbusiness` },
+      areaServed: [
+        { '@type': 'City', name: 'Quito' },
+        { '@type': 'AdministrativeArea', name: 'Pichincha' },
+        { '@type': 'Country', name: 'Ecuador' },
+      ],
+      offers: {
+        '@type': 'Offer',
+        availability: 'https://schema.org/InStock',
+        priceCurrency: 'USD',
+        description: servicePage.priceHint,
+        url: `${siteUrl}${normalizedPath}`,
+      },
+      mainEntityOfPage: `${siteUrl}${normalizedPath}`,
+    });
+  } else {
+    graph[0] = {
+      ...localBusinessSchema,
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Servicios digitales accesibles en Quito',
+        itemListElement: servicePages.slice(0, 5).map((page) => ({
+          '@type': 'Offer',
+          itemOffered: {
+            '@type': 'Service',
+            name: page.title,
+            description: page.metaDescription,
+            areaServed: { '@type': 'City', name: 'Quito' },
+            url: `${siteUrl}/servicios/${page.slug}/`,
+          },
+        })),
+      },
+      subjectOf: articlePages.slice(0, 4).map((page) => ({
+        '@type': 'BlogPosting',
+        headline: page.title,
+        url: `${siteUrl}/guias/${page.slug}/`,
+      })),
+    };
+  }
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': graph,
+  };
+}
+
+export function render(routePath = '/') {
+  const normalizedPath = normalizeRoutePath(routePath);
+
   return new Promise<string>((resolve, reject) => {
     let html = '';
     const stream = new PassThrough();
@@ -17,7 +265,7 @@ export function render() {
 
     const { pipe } = renderToPipeableStream(
       <StrictMode>
-        <App />
+        <App routePath={normalizedPath} />
       </StrictMode>,
       {
         onAllReady() {

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { LocalizedContent } from '../data/siteContent';
 import { LuminousText } from './LuminousText';
 
@@ -13,6 +14,10 @@ type LocalFaqProps = {
 };
 
 export function LocalFaq({ content }: LocalFaqProps) {
+  const [showAllFaqs, setShowAllFaqs] = useState(false);
+  const visibleFaqCount = 3;
+  const hiddenFaqCount = Math.max(0, content.faqs.items.length - visibleFaqCount);
+
   return (
     <section className='section local-faq-section' id='local-faq'>
       <div className='section-heading scroll-reveal'>
@@ -28,7 +33,11 @@ export function LocalFaq({ content }: LocalFaqProps) {
       <div className='local-faq-grid'>
         {content.faqs.items.map((item, index) => (
           <details
-            className='local-faq-item scroll-reveal'
+            className={`local-faq-item scroll-reveal${
+              !showAllFaqs && index >= visibleFaqCount
+                ? ' local-faq-item--extra'
+                : ''
+            }`}
             key={item.question}
             style={{ animationDelay: `${index * 70}ms` }}
           >
@@ -40,6 +49,20 @@ export function LocalFaq({ content }: LocalFaqProps) {
           </details>
         ))}
       </div>
+      {hiddenFaqCount > 0 ? (
+        <div className='local-faq-actions scroll-reveal'>
+          <button
+            className='local-faq-more'
+            type='button'
+            aria-expanded={showAllFaqs}
+            onClick={() => setShowAllFaqs((currentValue) => !currentValue)}
+          >
+            {showAllFaqs
+              ? 'Mostrar menos preguntas'
+              : `Ver ${hiddenFaqCount} preguntas más`}
+          </button>
+        </div>
+      ) : null}
     </section>
   );
 }

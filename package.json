@@ -10,7 +10,10 @@
     "check:bundle": "node scripts/check-bundle-size.mjs",
     "check:cls": "node scripts/check-cls.mjs",
     "check:scroll-load": "node scripts/check-scroll-load.mjs",
+    "check:seo": "node scripts/check-seo-pages.mjs",
+    "create:article": "node scripts/create-seo-article.mjs",
     "perf:test": "npm run build && npm run check:bundle && npm run check:cls && npm run check:scroll-load",
+    "seo:test": "npm run build && npm run check:seo",
     "preview": "vite preview"
   },
   "dependencies": {

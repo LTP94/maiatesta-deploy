@@ -5,11 +5,19 @@ Maiatesta is a digital agency based in Quito, Ecuador. The website is https://ma
 Maiatesta helps small businesses, entrepreneurs, professionals, restaurants, shops, clinics, academies, and service businesses in Quito and Pichincha with practical digital systems.
 
 Core services:
-- Web development and landing pages for businesses in Quito.
-- WhatsApp chatbots and AI automation for lead capture and customer support.
-- Online stores and e-commerce for Ecuador.
-- Inventory software and operational tools for SMEs.
-- Excel, spreadsheet, dashboard, and reporting automation.
+- Web development and landing pages for businesses in Quito: https://maiatesta.com/servicios/desarrollo-web-quito/.
+- WhatsApp chatbots and AI automation for lead capture and customer support: https://maiatesta.com/servicios/chatbots-whatsapp-ecuador/.
+- Online stores and e-commerce for Ecuador: https://maiatesta.com/servicios/tiendas-online-ecuador/.
+- Inventory software and operational tools for SMEs: https://maiatesta.com/servicios/software-inventario-quito/.
+- Custom software for SMEs in Ecuador: https://maiatesta.com/servicios/software-a-medida-pymes-ecuador/.
+- Excel, spreadsheet, dashboard, and reporting automation: https://maiatesta.com/servicios/automatizacion-excel-quito/.
+- Purchasing and cost control dashboards: https://maiatesta.com/servicios/control-compras-costos-quito/.
+
+Helpful guides:
+- Chatbot pricing in Ecuador: https://maiatesta.com/guias/cuanto-cuesta-chatbot-whatsapp-ecuador/.
+- Website checklist for small businesses in Quito: https://maiatesta.com/guias/pagina-web-negocio-pequeno-quito/.
+- Inventory software for SMEs in Quito: https://maiatesta.com/guias/software-inventario-pymes-quito/.
+- Excel report automation for SMEs: https://maiatesta.com/guias/automatizar-reportes-excel-pyme/.
 
 Business details:
 - Brand name: Maiatesta.

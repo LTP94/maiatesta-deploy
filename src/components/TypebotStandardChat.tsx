@@ -1,7 +1,35 @@
 import { createElement, useEffect, useRef, useState } from 'react';
 import type { LocalizedContent } from '../data/siteContent';
 
-const typebotScriptId = 'maiatesta-typebot-standard-script';
+const typebotModuleUrl = 'https://cdn.jsdelivr.net/npm/@typebot.io/js@0/dist/web.js';
+
+type TypebotWebModule = {
+  default?: {
+    initStandard: (options: Record<string, unknown>) => void;
+  };
+  initStandard?: (options: Record<string, unknown>) => void;
+};
+
+let typebotLoadPromise:
+  | Promise<{ initStandard: (options: Record<string, unknown>) => void }>
+  | undefined;
+let hasInitializedTypebot = false;
+
+function loadTypebotModule() {
+  typebotLoadPromise ??= import(/* @vite-ignore */ typebotModuleUrl).then(
+    (module: TypebotWebModule) => {
+      const typebot = module.default ?? module;
+
+      if (!typebot.initStandard) {
+        throw new Error('Typebot module did not expose initStandard.');
+      }
+
+      return { initStandard: typebot.initStandard };
+    },
+  );
+
+  return typebotLoadPromise;
+}
 
 function runWhenIdle(callback: () => void) {
   if (typeof window === 'undefined') {
@@ -114,47 +142,47 @@ export function TypebotStandardChat({ content }: { content: LocalizedContent }) 
       animationFrameId = window.requestAnimationFrame(syncTypebotStyles);
     };
 
-    if (document.getElementById(typebotScriptId)) {
+    if (hasInitializedTypebot) {
       syncTypebotStyles();
       return;
     }
 
     const cancelIdleLoad = runWhenIdle(() => {
-      if (document.getElementById(typebotScriptId)) {
+      if (hasInitializedTypebot) {
         syncTypebotStyles();
         return;
       }
 
-      const typebotInitScript = document.createElement('script');
-      typebotInitScript.id = typebotScriptId;
-      typebotInitScript.type = 'module';
-      typebotInitScript.innerHTML = `import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js@0/dist/web.js'
-  
-Typebot.initStandard({
-  typebot: "my-typebot-fy5w3to",
-  apiHost: "https://viewer.kipuxbot.com",
-  theme: {
-      chat: {
-        host: {
-          backgroundColor: "transparent" // ¡Aquí ocurre la magia!
-        }
-      }
-    }
-});
-`;
-      document.body.append(typebotInitScript);
+      void loadTypebotModule()
+        .then((Typebot) => {
+          Typebot.initStandard({
+            typebot: 'my-typebot-fy5w3to',
+            apiHost: 'https://viewer.kipuxbot.com',
+            theme: {
+              chat: {
+                host: {
+                  backgroundColor: 'transparent',
+                },
+              },
+            },
+          });
+          hasInitializedTypebot = true;
 
-      syncTypebotStyles();
+          syncTypebotStyles();
 
-      const host = document.querySelector('typebot-standard');
+          const host = document.querySelector('typebot-standard');
 
-      if (host instanceof HTMLElement && host.shadowRoot) {
-        observer = new MutationObserver(() => {
-          applyTypebotSurfaceStyles();
+          if (host instanceof HTMLElement && host.shadowRoot) {
+            observer = new MutationObserver(() => {
+              applyTypebotSurfaceStyles();
+            });
+
+            observer.observe(host.shadowRoot, { childList: true, subtree: true });
+          }
+        })
+        .catch((error) => {
+          console.error('Failed to load Typebot.', error);
         });
-
-        observer.observe(host.shadowRoot, { childList: true, subtree: true });
-      }
     });
 
     return () => {

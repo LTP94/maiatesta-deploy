@@ -3,7 +3,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 const SECTIONS = [
   { selector: '.services-section', label: 'Services' },
   { selector: '.projects-section', label: 'Projects' },
-  { selector: '.luminescent-banner', label: 'Featured' },
+  { selector: '.milky-way-divider', label: 'Orbit' },
   { selector: '.contact-section',   label: 'Contact'  },
 ] as const;
 

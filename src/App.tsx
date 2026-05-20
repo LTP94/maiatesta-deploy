@@ -4,6 +4,8 @@ import { ProductRoulette } from './components/ProductRoulette';
 import { ScrollConstellation } from './components/ScrollConstellation';
 import { siteContent } from './data/siteContent';
 import type { LanguageCode, LocalizedContent } from './data/siteContent';
+import { normalizeArticlePath } from './data/articleRoutes';
+import { normalizeServicePath } from './data/serviceRoutes';
 import { useScrollReveal } from './hooks/useScrollReveal';
 
 // Non-critical UI is split away from the hero bundle.
@@ -13,32 +15,45 @@ const loadTypebotStandardChat = () =>
   import('./components/TypebotStandardChat').then((m) => ({ default: m.TypebotStandardChat }));
 const loadProjects = () =>
   import('./components/Projects').then((m) => ({ default: m.Projects }));
-const loadLuminescentBanner = () =>
-  import('./components/LuminescentBanner').then((m) => ({ default: m.LuminescentBanner }));
+const loadMilkyWayDivider = () =>
+  import('./components/MilkyWayDivider').then((m) => ({ default: m.MilkyWayDivider }));
 const loadLocalFaq = () =>
   import('./components/LocalFaq').then((m) => ({ default: m.LocalFaq }));
 const loadContactForm = () =>
   import('./components/ContactForm').then((m) => ({ default: m.ContactForm }));
+const loadGuidesTeaser = () =>
+  import('./components/GuidesTeaser').then((m) => ({ default: m.GuidesTeaser }));
 const loadFooter = () =>
   import('./components/Footer').then((m) => ({ default: m.Footer }));
 const loadStickyWhatsAppButton = () =>
   import('./components/StickyWhatsAppButton').then((m) => ({ default: m.StickyWhatsAppButton }));
+const loadServiceLandingPage = () =>
+  import('./components/ServiceLandingPage').then((m) => ({ default: m.ServiceLandingPage }));
+const loadArticleLandingPage = () =>
+  import('./components/ArticleLandingPage').then((m) => ({ default: m.ArticleLandingPage }));
+const loadGuidesIndexPage = () =>
+  import('./components/GuidesIndexPage').then((m) => ({ default: m.GuidesIndexPage }));
 
 const StarsBackground     = lazy(loadStarsBackground);
 const TypebotStandardChat = lazy(loadTypebotStandardChat);
 const Projects             = lazy(loadProjects);
-const LuminescentBanner    = lazy(loadLuminescentBanner);
+const MilkyWayDivider      = lazy(loadMilkyWayDivider);
 const LocalFaq             = lazy(loadLocalFaq);
 const ContactForm          = lazy(loadContactForm);
+const GuidesTeaser         = lazy(loadGuidesTeaser);
 const Footer               = lazy(loadFooter);
 const StickyWhatsAppButton = lazy(loadStickyWhatsAppButton);
+const ServiceLandingPage   = lazy(loadServiceLandingPage);
+const ArticleLandingPage   = lazy(loadArticleLandingPage);
+const GuidesIndexPage      = lazy(loadGuidesIndexPage);
 
 const localChunkPreloaders = [
   loadStarsBackground,
   loadTypebotStandardChat,
   loadProjects,
-  loadLuminescentBanner,
+  loadMilkyWayDivider,
   loadLocalFaq,
+  loadGuidesTeaser,
   loadContactForm,
   loadFooter,
   loadStickyWhatsAppButton,
@@ -57,34 +72,6 @@ const defaultPalette: PaletteName = 'atlantic';
 // Cambia esto a true si quieres que el navegador recuerde la ultima paleta elegida.
 // En false, la web siempre usa defaultPalette al cargar.
 const savePaletteChoice = false;
-
-function SectionFallback({
-  id,
-  className,
-  eyebrow,
-  title,
-  body,
-}: {
-  id?: string;
-  className: string;
-  eyebrow: string;
-  title: string;
-  body: string;
-}) {
-  return (
-    <section
-      id={id}
-      className={`section ${className} scroll-fallback`}
-      aria-busy='true'
-    >
-      <div className='section-heading'>
-        <p className='eyebrow'>{eyebrow}</p>
-        <h2>{title}</h2>
-        <p>{body}</p>
-      </div>
-    </section>
-  );
-}
 
 function TypebotFallback({ content }: { content: LocalizedContent }) {
   return (
@@ -106,23 +93,32 @@ function ContactFallback({ content }: { content: LocalizedContent }) {
         <h2>{content.contact.title}</h2>
         <p>{content.contact.body}</p>
       </div>
-      <div className='contact-form' aria-hidden='true'>
-        <span />
-        <span />
-        <span />
-      </div>
     </section>
   );
 }
 
-function FooterFallback({ content }: { content: LocalizedContent }) {
+function RouteFallback({
+  eyebrow,
+  title,
+  body,
+}: {
+  eyebrow: string;
+  title: string;
+  body: string;
+}) {
   return (
-    <footer className='site-footer scroll-fallback' aria-busy='true'>
-      <div>
-        <strong>{siteContent.brand.name}</strong>
-        <p>{content.footer.body}</p>
-      </div>
-    </footer>
+    <div className='app-shell service-page-shell' data-palette='atlantic'>
+      <section className='service-page-hero' id='top'>
+        <div className='hero-scrim' />
+        <div className='service-page-hero__inner'>
+          <div className='service-page-copy'>
+            <p className='eyebrow'>{eyebrow}</p>
+            <h1>{title}</h1>
+            <p className='hero-body'>{body}</p>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -160,7 +156,19 @@ function getInitialPalette(): PaletteName {
     : defaultPalette;
 }
 
-export default function App() {
+function getInitialRoutePath() {
+  if (typeof window === 'undefined') {
+    return '/';
+  }
+
+  return window.location.pathname;
+}
+
+type AppProps = {
+  routePath?: string;
+};
+
+export default function App({ routePath }: AppProps) {
   // Estados globales de la interfaz: idioma, tema de color y estado de scroll.
   // Always start with 'es' to match SSR output; detect browser language in useEffect.
   const [language, setLanguage] = useState<LanguageCode>('es');
@@ -170,6 +178,11 @@ export default function App() {
     useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
   const content = useMemo(() => siteContent.locales[language], [language]);
+  const currentRoutePath = routePath ?? getInitialRoutePath();
+  const serviceSlug = normalizeServicePath(currentRoutePath);
+  const articleSlug = normalizeArticlePath(currentRoutePath);
+  const isGuidesIndexRoute =
+    currentRoutePath === '/guias' || currentRoutePath === '/guias/';
   useScrollReveal(language);
 
   // Sincroniza el atributo lang del documento para accesibilidad y SEO.
@@ -194,40 +207,13 @@ export default function App() {
       return;
     }
 
-    let cancelled = false;
-    const idleWindow = window as Window & {
-      requestIdleCallback?: (
-        callback: IdleRequestCallback,
-        options?: IdleRequestOptions,
-      ) => number;
-      cancelIdleCallback?: (handle: number) => void;
-    };
-
-    const preloadLocalChunks = () => {
-      if (cancelled) {
-        return;
-      }
-
+    const timeoutId = window.setTimeout(() => {
       localChunkPreloaders.forEach((preloadChunk) => {
         void preloadChunk();
       });
-    };
-
-    if (idleWindow.requestIdleCallback && idleWindow.cancelIdleCallback) {
-      const idleId = idleWindow.requestIdleCallback(preloadLocalChunks, {
-        timeout: 1800,
-      });
-
-      return () => {
-        cancelled = true;
-        idleWindow.cancelIdleCallback?.(idleId);
-      };
-    }
-
-    const timeoutId = window.setTimeout(preloadLocalChunks, 250);
+    }, 250);
 
     return () => {
-      cancelled = true;
       window.clearTimeout(timeoutId);
     };
   }, []);
@@ -315,6 +301,65 @@ export default function App() {
     });
   };
 
+  if (serviceSlug) {
+    return (
+      <Suspense
+        fallback={
+          <RouteFallback
+            eyebrow='Servicio local'
+            title='Servicios digitales para pymes en Quito.'
+            body='Cargando la página de servicio de Maiatesta.'
+          />
+        }
+      >
+        <ServiceLandingPage
+          slug={serviceSlug}
+          language={language}
+          onLanguageChange={handleLanguageChange}
+        />
+      </Suspense>
+    );
+  }
+
+  if (articleSlug) {
+    return (
+      <Suspense
+        fallback={
+          <RouteFallback
+            eyebrow='Guía local'
+            title='Guías SEO para pymes en Quito.'
+            body='Cargando la guía de Maiatesta.'
+          />
+        }
+      >
+        <ArticleLandingPage
+          slug={articleSlug}
+          language={language}
+          onLanguageChange={handleLanguageChange}
+        />
+      </Suspense>
+    );
+  }
+
+  if (isGuidesIndexRoute) {
+    return (
+      <Suspense
+        fallback={
+          <RouteFallback
+            eyebrow='Guías Maiatesta'
+            title='Guías prácticas para negocios en Quito.'
+            body='Cargando recursos de Maiatesta.'
+          />
+        }
+      >
+        <GuidesIndexPage
+          language={language}
+          onLanguageChange={handleLanguageChange}
+        />
+      </Suspense>
+    );
+  }
+
   return (
     // data-palette alimenta las variables CSS que cambian la identidad visual.
     <div
@@ -352,49 +397,23 @@ export default function App() {
             palette={palette}
             onPaletteChange={setPalette}
           />
-          <Suspense
-            fallback={
-              <SectionFallback
-                id='projects'
-                className='projects-section'
-                eyebrow={content.sections.projects.eyebrow}
-                title={content.sections.projects.title}
-                body={content.sections.projects.body}
-              />
-            }
-          >
+          <Suspense fallback={null}>
             <Projects content={content} />
           </Suspense>
-          <Suspense
-            fallback={
-              <SectionFallback
-                className='luminescent-banner silver'
-                eyebrow={content.banners[1].eyebrow}
-                title={content.banners[1].title}
-                body={content.banners[1].body}
-              />
-            }
-          >
-            <LuminescentBanner {...content.banners[1]} tone='silver' />
+          <Suspense fallback={null}>
+            <MilkyWayDivider />
           </Suspense>
-          <Suspense
-            fallback={
-              <SectionFallback
-                id='local-faq'
-                className='local-faq-section'
-                eyebrow={content.faqs.eyebrow}
-                title={content.faqs.title}
-                body={content.faqs.body}
-              />
-            }
-          >
+          <Suspense fallback={null}>
             <LocalFaq content={content} />
+          </Suspense>
+          <Suspense fallback={null}>
+            <GuidesTeaser />
           </Suspense>
           <Suspense fallback={<ContactFallback content={content} />}>
             <ContactForm content={content} />
           </Suspense>
         </main>
-        <Suspense fallback={<FooterFallback content={content} />}>
+        <Suspense fallback={null}>
           <Footer content={content} />
         </Suspense>
         <Suspense fallback={null}>

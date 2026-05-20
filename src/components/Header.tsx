@@ -6,9 +6,17 @@ type HeaderProps = {
   content: LocalizedContent;
   language: LanguageCode;
   onLanguageChange: (language: LanguageCode) => void;
+  homeHref?: string;
+  navHrefPrefix?: string;
 };
 
-export function Header({ content, language, onLanguageChange }: HeaderProps) {
+export function Header({
+  content,
+  language,
+  onLanguageChange,
+  homeHref = '#top',
+  navHrefPrefix = '',
+}: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const whatsappChannel = content.contact.channels.find(
     (channel) => channel.label.toLowerCase() === 'whatsapp',
@@ -18,7 +26,7 @@ export function Header({ content, language, onLanguageChange }: HeaderProps) {
 
   return (
     <header className={`site-header${isMenuOpen ? ' menu-open' : ''}`}>
-      <a className="brand-mark" href="#top" aria-label={siteContent.brand.name} onClick={closeMenu}>
+      <a className="brand-mark" href={homeHref} aria-label={siteContent.brand.name} onClick={closeMenu}>
         <picture>
           <source
             srcSet="/assets/maiatesta-logo-320.webp 320w, /assets/maiatesta-logo.webp 520w"
@@ -30,7 +38,7 @@ export function Header({ content, language, onLanguageChange }: HeaderProps) {
       </a>
       <nav className="nav-links" aria-label={content.ariaLabels.primaryNavigation}>
         {content.nav.map((item) => (
-          <a key={item.href} href={item.href}>
+          <a key={item.href} href={`${navHrefPrefix}${item.href}`}>
             {item.label}
           </a>
         ))}
@@ -73,7 +81,7 @@ export function Header({ content, language, onLanguageChange }: HeaderProps) {
       {isMenuOpen && (
         <nav className="mobile-nav" aria-label={content.ariaLabels.primaryNavigation}>
           {content.nav.map((item) => (
-            <a key={item.href} href={item.href} onClick={closeMenu}>
+            <a key={item.href} href={`${navHrefPrefix}${item.href}`} onClick={closeMenu}>
               {item.label}
             </a>
           ))}

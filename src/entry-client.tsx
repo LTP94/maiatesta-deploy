@@ -7,6 +7,6 @@ hydrateRoot(
   document.getElementById("root") as HTMLElement,
   // StrictMode ayuda a detectar efectos secundarios inseguros durante el desarrollo.
   <StrictMode>
-    <App />
+    <App routePath={window.location.pathname} />
   </StrictMode>
 );

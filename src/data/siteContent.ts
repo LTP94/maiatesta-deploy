@@ -252,10 +252,10 @@ export const siteContent = {
           body: 'A practical layer of websites, automation, software, and reporting for small companies in Quito and Pichincha.',
         },
         {
-          eyebrow: 'Accessible execution',
+          eyebrow: 'Space signal',
           title:
-            'Web, WhatsApp, software, and commerce connected around your daily operation.',
-          body: 'From first contact to internal dashboards, each solution is built to be understandable, measurable, and realistic for a growing business.',
+            'A quiet Milky Way separator keeps the page moving without adding media weight.',
+          body: 'CSS-only visual transition for the space identity.',
         },
       ],
       sections: {
@@ -374,8 +374,8 @@ export const siteContent = {
         channels: [
           {
             label: 'Email',
-            value: 'maiatesta@gmail.com',
-            href: 'mailto:maiatesta@gmail.com',
+            value: 'ventas@maiatesta.com',
+            href: 'mailto:ventas@maiatesta.com',
           },
           {
             label: 'WhatsApp',
@@ -599,10 +599,10 @@ export const siteContent = {
           body: 'Una capa práctica de páginas web, automatización, software y reportes para pequeñas empresas en Quito y Pichincha.',
         },
         {
-          eyebrow: 'Ejecución accesible',
+          eyebrow: 'Señal espacial',
           title:
-            'Web, WhatsApp, software y comercio conectados alrededor de tu operación diaria.',
-          body: 'Desde el primer contacto hasta dashboards operativos, cada solución se construye para ser entendible, medible y realista para un negocio en crecimiento.',
+            'Un separador tipo Vía Láctea mantiene el ritmo visual sin añadir peso multimedia.',
+          body: 'Transición CSS-only para reforzar la identidad espacial.',
         },
       ],
       sections: {

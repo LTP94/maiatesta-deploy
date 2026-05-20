@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { siteContent } from '../data/siteContent';
 import type { LocalizedContent } from '../data/siteContent';
+import { getServiceSlugForProductId } from '../data/serviceRoutes';
 import type { PaletteName } from '../App';
 import { LuminousText } from './LuminousText';
 import { ServicePreview } from './ServicePreview';
@@ -164,6 +165,7 @@ export function ProductRoulette({
               >
                 {services.map((service, index) => {
                   const angle = theta * index;
+                  const servicePageSlug = getServiceSlugForProductId(service.id);
 
                   return (
                     // Cada tarjeta se ubica en el circulo con rotateY + translateZ(radius).
@@ -210,6 +212,15 @@ export function ProductRoulette({
                         ) : null}
                       </p>
                       <strong>{service.accent}</strong>
+                      {servicePageSlug ? (
+                        <a
+                          className='service-page-link'
+                          href={`/servicios/${servicePageSlug}/`}
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          Ver servicio
+                        </a>
+                      ) : null}
                     </article>
                   );
                 })}
