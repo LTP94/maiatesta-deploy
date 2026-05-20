@@ -20,16 +20,55 @@ export function ServicePreview({
   videoWebm,
 }: ServicePreviewProps) {
   const previewRef = useRef<HTMLElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isInView, setIsInView] = useState(false);
   const [hasIntent, setHasIntent] = useState(false);
+  const [isSmallViewport, setIsSmallViewport] = useState(false);
+  const [isStableActive, setIsStableActive] = useState(false);
   const hasVideo = Boolean(videoMp4 || videoWebm);
-  const shouldLoadVideo = hasVideo && (hasIntent || (isActive && isInView));
+  const shouldLoadVideo =
+    hasVideo &&
+    (hasIntent ||
+      (isActive && isInView && (!isSmallViewport || isStableActive)));
   const previewClassName = hasVideo
     ? 'service-card-preview has-video'
     : 'service-card-preview';
   const setPreviewNode = (node: HTMLAnchorElement | HTMLSpanElement | null) => {
     previewRef.current = node;
   };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia('(max-width: 620px)');
+    const syncViewport = () => setIsSmallViewport(mediaQuery.matches);
+
+    syncViewport();
+    mediaQuery.addEventListener('change', syncViewport);
+
+    return () => mediaQuery.removeEventListener('change', syncViewport);
+  }, []);
+
+  useEffect(() => {
+    if (!isActive) {
+      setIsStableActive(false);
+      return;
+    }
+
+    const stableDelayMs = isSmallViewport ? 800 : 0;
+    if (stableDelayMs === 0) {
+      setIsStableActive(true);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setIsStableActive(true);
+    }, stableDelayMs);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [isActive, isSmallViewport]);
 
   useEffect(() => {
     const node = previewRef.current;
@@ -45,7 +84,7 @@ export function ServicePreview({
       },
       {
         root: null,
-        rootMargin: '420px 0px',
+        rootMargin: isSmallViewport ? '160px 0px' : '420px 0px',
         threshold: [0, 0.45, 0.75, 1],
       },
     );
@@ -53,7 +92,34 @@ export function ServicePreview({
     observer.observe(node);
 
     return () => observer.disconnect();
-  }, [isActive]);
+  }, [isActive, isSmallViewport]);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    const handleVisibilityChange = () => {
+      const video = videoRef.current;
+      if (!video) {
+        return;
+      }
+
+      if (document.hidden || !isInView || !isActive) {
+        video.pause();
+        return;
+      }
+
+      void video.play().catch(() => {});
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    handleVisibilityChange();
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isActive, isInView, shouldLoadVideo]);
 
   const media = (
     <>
@@ -65,6 +131,7 @@ export function ServicePreview({
       <span className='service-preview-frame'>
         {shouldLoadVideo ? (
           <video
+            ref={videoRef}
             autoPlay
             loop
             muted

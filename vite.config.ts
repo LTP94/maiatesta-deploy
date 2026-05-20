@@ -63,17 +63,17 @@ function htmlPerformanceAssets(isSsrBuild: boolean, command: string): Plugin {
   };
 }
 
-function removeRawPublicVideosFromBuild(isSsrBuild: boolean): Plugin {
+function removeIgnoredArtifactsFromBuild(isSsrBuild: boolean): Plugin {
   return {
-    name: "maiatesta-remove-raw-public-videos-from-build",
+    name: "maiatesta-remove-ignored-artifacts-from-build",
     closeBundle() {
       if (isSsrBuild) {
         return;
       }
 
-      const assetsDir = path.join(rootDir, "dist", "assets");
+      const distDir = path.join(rootDir, "dist");
 
-      if (!fs.existsSync(assetsDir)) {
+      if (!fs.existsSync(distDir)) {
         return;
       }
 
@@ -93,7 +93,7 @@ function removeRawPublicVideosFromBuild(isSsrBuild: boolean): Plugin {
         }
       };
 
-      removeIgnoredPublicArtifacts(assetsDir);
+      removeIgnoredPublicArtifacts(distDir);
     },
   };
 }
@@ -106,7 +106,7 @@ export default defineConfig(({ command }) => {
       neutralizeDeferredCssForBuild(command),
       react(),
       htmlPerformanceAssets(isSsrBuild, command),
-      removeRawPublicVideosFromBuild(isSsrBuild),
+      removeIgnoredArtifactsFromBuild(isSsrBuild),
     ],
     build: {
       target: 'es2020' as const,
@@ -116,6 +116,7 @@ export default defineConfig(({ command }) => {
       sourcemap: false,
       reportCompressedSize: false,
       assetsInlineLimit: 1024,
+      copyPublicDir: !isSsrBuild,
       modulePreload: {
         polyfill: false,
       },

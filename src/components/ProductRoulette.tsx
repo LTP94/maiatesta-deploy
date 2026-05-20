@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { siteContent } from '../data/siteContent';
 import type { LocalizedContent } from '../data/siteContent';
@@ -63,6 +63,8 @@ export function ProductRoulette({
   const services = content.products;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isUserScrolling, setIsUserScrolling] = useState(false);
+  const scrollPauseTimeoutRef = useRef<number | null>(null);
   // Initialize to 1024 (matches SSR) to avoid hydration mismatch.
   // The useEffect reads the real width after hydration.
   const [windowWidth, setWindowWidth] = useState(1024);
@@ -79,6 +81,7 @@ export function ProductRoulette({
   }, []);
 
   const cellCount = services.length;
+  const isMobileViewport = windowWidth <= 620;
   // Tamano base usado para calcular la separacion circular entre tarjetas.
   // Se reduce en movil para que la ruleta quepa en pantallas estrechas.
   const cellSize = windowWidth <= 390 ? 220 : windowWidth <= 620 ? 260 : 400;
@@ -113,13 +116,42 @@ export function ProductRoulette({
     setActiveIndex(0);
   }, [services]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined' || !isMobileViewport) {
+      return;
+    }
+
+    const handleScroll = () => {
+      setIsUserScrolling(true);
+
+      if (scrollPauseTimeoutRef.current !== null) {
+        window.clearTimeout(scrollPauseTimeoutRef.current);
+      }
+
+      scrollPauseTimeoutRef.current = window.setTimeout(() => {
+        scrollPauseTimeoutRef.current = null;
+        setIsUserScrolling(false);
+      }, 900);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollPauseTimeoutRef.current !== null) {
+        window.clearTimeout(scrollPauseTimeoutRef.current);
+        scrollPauseTimeoutRef.current = null;
+      }
+    };
+  }, [isMobileViewport]);
+
   // Rotacion automatica de cartas. 4500ms deja tiempo para leer titulo, texto y frase final.
   useEffect(() => {
     if (typeof window === 'undefined') {
       return;
     }
 
-    if (isPaused || cellCount < 2) {
+    if (isPaused || isUserScrolling || cellCount < 2) {
       return;
     }
 
@@ -128,7 +160,7 @@ export function ProductRoulette({
     }, cardAutoRotateMs);
 
     return () => window.clearInterval(intervalId);
-  }, [cellCount, isPaused]);
+  }, [cellCount, isPaused, isUserScrolling]);
 
   return (
     <section className='section services-section' id='services'>
@@ -157,13 +189,19 @@ export function ProductRoulette({
                 className='service-deck'
                 style={{
                   // translateZ usa el radio calculado para ubicar el carrusel en profundidad.
-                  transform: `translateZ(${-radius}px) rotateY(${
-                    -safeActiveIndex * theta
-                  }deg)`,
+                  transform: isMobileViewport
+                    ? 'translateZ(0) rotateY(0deg)'
+                    : `translateZ(${-radius}px) rotateY(${
+                        -safeActiveIndex * theta
+                      }deg)`,
                 }}
                 aria-label={content.sections.services.title}
               >
                 {services.map((service, index) => {
+                  if (isMobileViewport && index !== safeActiveIndex) {
+                    return null;
+                  }
+
                   const angle = theta * index;
                   const servicePageSlug = getServiceSlugForProductId(service.id);
 
@@ -181,7 +219,9 @@ export function ProductRoulette({
                       style={
                         {
                           // El radio define cuanto se aleja cada tarjeta del centro de la ruleta.
-                          transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
+                          transform: isMobileViewport
+                            ? 'translateZ(0) rotateY(0deg)'
+                            : `rotateY(${angle}deg) translateZ(${radius}px)`,
                         } as CSSProperties
                       }
                       onClick={() => setActiveIndex(index)}

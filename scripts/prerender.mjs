@@ -4,7 +4,8 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const clientIndexPath = path.join(root, 'dist', 'index.html');
-const serverEntryPath = path.join(root, 'dist', 'server', 'entry-server.js');
+const serverOutDir = path.join(root, '.ssg-server');
+const serverEntryPath = path.join(serverOutDir, 'entry-server.js');
 
 const template = await fs.readFile(clientIndexPath, 'utf8');
 const {
@@ -109,3 +110,5 @@ ${getStaticRoutes()
 `;
 
 await fs.writeFile(path.join(root, 'dist', 'sitemap.xml'), sitemapXml);
+
+await fs.rm(serverOutDir, { recursive: true, force: true });

@@ -1,6 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Hero } from './components/Hero';
-import { ProductRoulette } from './components/ProductRoulette';
 import { ScrollConstellation } from './components/ScrollConstellation';
 import { siteContent } from './data/siteContent';
 import type { LanguageCode, LocalizedContent } from './data/siteContent';
@@ -13,6 +12,8 @@ const loadStarsBackground = () =>
   import('./components/StarsBackground').then((m) => ({ default: m.StarsBackground }));
 const loadTypebotStandardChat = () =>
   import('./components/TypebotStandardChat').then((m) => ({ default: m.TypebotStandardChat }));
+const loadProductRoulette = () =>
+  import('./components/ProductRoulette').then((m) => ({ default: m.ProductRoulette }));
 const loadProjects = () =>
   import('./components/Projects').then((m) => ({ default: m.Projects }));
 const loadMilkyWayDivider = () =>
@@ -36,6 +37,7 @@ const loadGuidesIndexPage = () =>
 
 const StarsBackground     = lazy(loadStarsBackground);
 const TypebotStandardChat = lazy(loadTypebotStandardChat);
+const ProductRoulette     = lazy(loadProductRoulette);
 const Projects             = lazy(loadProjects);
 const MilkyWayDivider      = lazy(loadMilkyWayDivider);
 const LocalFaq             = lazy(loadLocalFaq);
@@ -48,8 +50,7 @@ const ArticleLandingPage   = lazy(loadArticleLandingPage);
 const GuidesIndexPage      = lazy(loadGuidesIndexPage);
 
 const localChunkPreloaders = [
-  loadStarsBackground,
-  loadTypebotStandardChat,
+  loadProductRoulette,
   loadProjects,
   loadMilkyWayDivider,
   loadLocalFaq,
@@ -72,6 +73,43 @@ const defaultPalette: PaletteName = 'atlantic';
 // Cambia esto a true si quieres que el navegador recuerde la ultima paleta elegida.
 // En false, la web siempre usa defaultPalette al cargar.
 const savePaletteChoice = false;
+
+function isConstrainedConnection() {
+  if (typeof navigator === 'undefined') {
+    return false;
+  }
+
+  const connection = (navigator as Navigator & {
+    connection?: { saveData?: boolean; effectiveType?: string };
+  }).connection;
+
+  return (
+    connection?.saveData === true ||
+    ['slow-2g', '2g', '3g'].includes(connection?.effectiveType ?? '')
+  );
+}
+
+function scheduleWhenIdle(callback: () => void, timeout: number) {
+  if (typeof window === 'undefined') {
+    return () => {};
+  }
+
+  const idleWindow = window as Window & {
+    requestIdleCallback?: (
+      callback: IdleRequestCallback,
+      options?: IdleRequestOptions,
+    ) => number;
+    cancelIdleCallback?: (handle: number) => void;
+  };
+
+  if (idleWindow.requestIdleCallback && idleWindow.cancelIdleCallback) {
+    const idleId = idleWindow.requestIdleCallback(callback, { timeout });
+    return () => idleWindow.cancelIdleCallback?.(idleId);
+  }
+
+  const timeoutId = window.setTimeout(callback, timeout);
+  return () => window.clearTimeout(timeoutId);
+}
 
 function TypebotFallback({ content }: { content: LocalizedContent }) {
   return (
@@ -177,6 +215,9 @@ export default function App({ routePath }: AppProps) {
   const [isPersonaPortraitAligned, setIsPersonaPortraitAligned] =
     useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
+  const hasScrolledRef = useRef(false);
+  const [shouldShowScrollConstellation, setShouldShowScrollConstellation] =
+    useState(false);
   const content = useMemo(() => siteContent.locales[language], [language]);
   const currentRoutePath = routePath ?? getInitialRoutePath();
   const serviceSlug = normalizeServicePath(currentRoutePath);
@@ -200,21 +241,83 @@ export default function App({ routePath }: AppProps) {
     if (detected !== 'es') setLanguage(detected);
   }, []);
 
-  // Warm local lazy chunks shortly after first paint so fast scrolling does not
-  // wait on section JS. The external Typebot CDN still loads only after click.
+  // Warm local lazy chunks only when the browser has breathing room. Mobile and
+  // constrained networks keep the first scroll smooth instead of downloading all
+  // below-fold chunks immediately after hydration.
   useEffect(() => {
     if (typeof window === 'undefined') {
       return;
     }
 
-    const timeoutId = window.setTimeout(() => {
+    if (isConstrainedConnection()) {
+      return;
+    }
+
+    let didPreload = false;
+    let cancelIdlePreload = () => {};
+
+    const preloadLocalChunks = () => {
+      if (didPreload) {
+        return;
+      }
+
+      didPreload = true;
       localChunkPreloaders.forEach((preloadChunk) => {
         void preloadChunk();
       });
-    }, 250);
+    };
+
+    const queuePreload = () => {
+      if (didPreload) {
+        return;
+      }
+
+      cancelIdlePreload();
+      cancelIdlePreload = scheduleWhenIdle(preloadLocalChunks, 4200);
+    };
+
+    const isSmallViewport = window.innerWidth <= 620;
+
+    if (!isSmallViewport) {
+      const desktopWarmupId = window.setTimeout(preloadLocalChunks, 650);
+      return () => window.clearTimeout(desktopWarmupId);
+    }
+
+    const interactionOptions: AddEventListenerOptions = {
+      once: true,
+      passive: true,
+    };
+
+    queuePreload();
+    window.addEventListener('scroll', queuePreload, interactionOptions);
+    window.addEventListener('pointerdown', queuePreload, interactionOptions);
+    window.addEventListener('keydown', queuePreload, { once: true });
 
     return () => {
-      window.clearTimeout(timeoutId);
+      cancelIdlePreload();
+      window.removeEventListener('scroll', queuePreload);
+      window.removeEventListener('pointerdown', queuePreload);
+      window.removeEventListener('keydown', queuePreload);
+    };
+  }, []);
+
+  // The scroll constellation is decorative and expensive on phones. Mount it
+  // only where there is enough space to benefit from it.
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia('(min-width: 1536px)');
+    const syncConstellationVisibility = () => {
+      setShouldShowScrollConstellation(mediaQuery.matches);
+    };
+
+    syncConstellationVisibility();
+    mediaQuery.addEventListener('change', syncConstellationVisibility);
+
+    return () => {
+      mediaQuery.removeEventListener('change', syncConstellationVisibility);
     };
   }, []);
 
@@ -277,7 +380,13 @@ export default function App({ routePath }: AppProps) {
     }
 
     const handleScroll = () => {
-      setHasScrolled(window.scrollY > 12);
+      const nextHasScrolled = window.scrollY > 12;
+      if (hasScrolledRef.current === nextHasScrolled) {
+        return;
+      }
+
+      hasScrolledRef.current = nextHasScrolled;
+      setHasScrolled(nextHasScrolled);
     };
 
     handleScroll();
@@ -377,7 +486,7 @@ export default function App({ routePath }: AppProps) {
         <span className='page-meteor page-meteor--d' />
       </div>
       {/* Space scroll constellation — right-side comet + section nodes */}
-      <ScrollConstellation />
+      {shouldShowScrollConstellation ? <ScrollConstellation /> : null}
       <Hero
         content={content}
         language={language}
@@ -392,11 +501,13 @@ export default function App({ routePath }: AppProps) {
         </Suspense>
         {/* Composicion principal de la pagina: servicios, proyectos y contacto. */}
         <main>
-          <ProductRoulette
-            content={content}
-            palette={palette}
-            onPaletteChange={setPalette}
-          />
+          <Suspense fallback={null}>
+            <ProductRoulette
+              content={content}
+              palette={palette}
+              onPaletteChange={setPalette}
+            />
+          </Suspense>
           <Suspense fallback={null}>
             <Projects content={content} />
           </Suspense>

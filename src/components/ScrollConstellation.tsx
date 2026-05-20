@@ -14,6 +14,8 @@ export function ScrollConstellation() {
   const nodePositionsRef = useRef<number[]>([]);
   const rafRef           = useRef<number>(0);
   const prevActiveRef    = useRef<number>(-1);
+  const scrollProgressRef = useRef(0);
+  const activeSectionIndexRef = useRef<number>(-1);
 
   const [nodePositions,      setNodePositions]      = useState<number[]>([]);
   const [scrollProgress,     setScrollProgress]     = useState(0);
@@ -68,7 +70,10 @@ export function ScrollConstellation() {
         Math.max(0, window.scrollY / totalScrollable),
       );
 
-      setScrollProgress(progress);
+      if (Math.abs(progress - scrollProgressRef.current) > 0.003) {
+        scrollProgressRef.current = progress;
+        setScrollProgress(progress);
+      }
 
       // Determine active section (last one whose start ≤ current progress)
       const positions = nodePositionsRef.current;
@@ -76,7 +81,10 @@ export function ScrollConstellation() {
       for (let i = 0; i < positions.length; i++) {
         if ((positions[i] ?? 0) <= progress + 0.008) newActive = i;
       }
-      setActiveSectionIndex(newActive);
+      if (newActive !== activeSectionIndexRef.current) {
+        activeSectionIndexRef.current = newActive;
+        setActiveSectionIndex(newActive);
+      }
     });
   }, []);
 

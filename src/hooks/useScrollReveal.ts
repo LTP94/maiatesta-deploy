@@ -80,11 +80,16 @@ export function useScrollReveal(dependency: unknown) {
       }
     });
 
-    mutationObserver.observe(document.body, { childList: true, subtree: true });
+    const mutationRoot = document.querySelector("main") ?? document.body;
+    mutationObserver.observe(mutationRoot, { childList: true, subtree: true });
+    const mutationObserverTimeoutId = window.setTimeout(() => {
+      mutationObserver.disconnect();
+    }, 2500);
 
     return () => {
       intersectionObserver.disconnect();
       mutationObserver.disconnect();
+      window.clearTimeout(mutationObserverTimeoutId);
       if (pendingRafId !== null) window.cancelAnimationFrame(pendingRafId);
     };
   }, [dependency]);
