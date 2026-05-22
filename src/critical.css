@@ -1557,20 +1557,95 @@ a.site-footer__cta:hover {
   opacity: 1;
 }
 
+.section-hydration-shell {
+  isolation: isolate;
+}
+
+.section-shell--services {
+  min-height: 820px;
+}
+
+.section-shell--projects {
+  min-height: 660px;
+}
+
+.section-shell--faq {
+  min-height: 620px;
+}
+
+.section-shell-card,
+.service-shell-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.service-shell-card {
+  width: min(400px, 72vw);
+  min-height: 520px;
+  margin: 48px auto 0;
+  padding: 24px;
+  border: 1px solid rgba(246, 248, 251, 0.14);
+  border-radius: 8px;
+  background: rgba(14, 27, 45, 0.78);
+  color: var(--app-paper);
+}
+
+.section-shell-line {
+  display: block;
+  width: 100%;
+  height: 12px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(246, 248, 251, 0.1),
+    rgba(216, 189, 120, 0.18),
+    rgba(246, 248, 251, 0.1)
+  );
+}
+
+.section-shell-line--title {
+  width: 72%;
+  height: 18px;
+}
+
+.section-shell-line--short {
+  width: 48%;
+}
+
+.service-shell-card .service-preview-frame {
+  height: 100%;
+}
+
 @media (max-width: 920px) {
+  :root {
+    --services-shell-height: 1180px;
+    --projects-shell-height: 920px;
+    --faq-shell-height: 900px;
+  }
+
+  #services,
+  #projects,
+  #local-faq,
+  .section-hydration-shell {
+    contain: layout paint style;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
   #services {
     content-visibility: auto;
-    contain-intrinsic-size: auto 1180px;
+    contain-intrinsic-size: auto var(--services-shell-height);
   }
 
   #projects {
     content-visibility: auto;
-    contain-intrinsic-size: auto 920px;
+    contain-intrinsic-size: auto var(--projects-shell-height);
   }
 
   #local-faq {
     content-visibility: auto;
-    contain-intrinsic-size: auto 900px;
+    contain-intrinsic-size: auto var(--faq-shell-height);
   }
 
   #contact {
@@ -1581,6 +1656,33 @@ a.site-footer__cta:hover {
   .site-footer {
     content-visibility: auto;
     contain-intrinsic-size: auto 760px;
+  }
+
+  .section-shell--services {
+    min-height: var(--services-shell-height);
+  }
+
+  .section-shell--projects {
+    min-height: var(--projects-shell-height);
+  }
+
+  .section-shell--faq {
+    min-height: var(--faq-shell-height);
+  }
+
+  .service-shell-card {
+    width: clamp(200px, 72vw, 260px);
+    min-height: clamp(336px, 92vw, 376px);
+    margin-top: 34px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 920px) {
+  html.is-scrolling #services,
+  html.is-scrolling #projects,
+  html.is-scrolling #local-faq {
+    will-change: transform;
   }
 }
 
@@ -1602,5 +1704,26 @@ html.is-scrolling .milky-way-divider__dust,
 html.is-scrolling .scroll-track__fill,
 html.is-scrolling .scroll-comet,
 html.is-scrolling .scroll-node__burst {
+  animation-play-state: paused !important;
+}
+
+html.is-flicking .page-meteor,
+html.is-flicking .stars-bg__layer,
+html.is-flicking .hero-aurora,
+html.is-flicking .hero-orb,
+html.is-flicking .hero-shooting-star,
+html.is-flicking .persona-orbit-ring,
+html.is-flicking .persona-orbit-star,
+html.is-flicking .persona-portrait::before,
+html.is-flicking .service-axis,
+html.is-flicking .service-deck,
+html.is-flicking .service-preview-skeleton,
+html.is-flicking .milky-way-divider::before,
+html.is-flicking .milky-way-divider__band,
+html.is-flicking .milky-way-divider__core,
+html.is-flicking .milky-way-divider__dust,
+html.is-flicking .scroll-track__fill,
+html.is-flicking .scroll-comet,
+html.is-flicking .scroll-node__burst {
   animation-play-state: paused !important;
 }

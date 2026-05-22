@@ -247,7 +247,12 @@ try {
 
     for (const target of scrollTargets) {
       await page.waitForSelector(target, { state: 'attached' });
-      await page.locator(target).scrollIntoViewIfNeeded();
+      await page.evaluate((targetSelector) => {
+        document.querySelector(targetSelector)?.scrollIntoView({
+          block: 'center',
+          behavior: 'auto',
+        });
+      }, target);
       await page.waitForTimeout(350);
 
       const result = await page.evaluate(
@@ -308,10 +313,12 @@ try {
           }
 
           if (targetSelector === '#services') {
-            const preview = document.querySelector(
-              '.service-card.active .service-card-preview',
+            const preview =
+              document.querySelector('.service-card.active .service-card-preview') ??
+              document.querySelector('.service-shell-card .service-card-preview');
+            const media = preview?.querySelector(
+              'img, video, .service-preview-skeleton',
             );
-            const media = preview?.querySelector('img, video');
 
             if (!(preview instanceof HTMLElement) || !(media instanceof HTMLElement)) {
               return {

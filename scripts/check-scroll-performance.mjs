@@ -170,8 +170,17 @@ try {
       window.__scrollPerf = {
         longTasks: [],
         rafGaps: [],
+        flickEvents: [],
         videoResourcesBeforeServices: [],
       };
+
+      document.addEventListener('maiatesta:scroll-activity', (event) => {
+        window.__scrollPerf.flickEvents.push({
+          time: performance.now(),
+          scrollY: window.scrollY,
+          detail: event.detail,
+        });
+      });
 
       if ('PerformanceObserver' in window) {
         try {
@@ -195,7 +204,74 @@ try {
       waitUntil: 'domcontentloaded',
     });
     await page.waitForSelector('#services', { state: 'attached' });
-    await page.waitForTimeout(900);
+    await page.waitForTimeout(profile.name.startsWith('mobile') ? 900 : 3600);
+
+    if (profile.name.startsWith('mobile')) {
+      await page.evaluate(() => {
+        window.__scrollPerf.flickEvents = [];
+      });
+
+      const flickDistance = await page.evaluate(
+        () => Math.ceil((document.documentElement.scrollHeight - window.innerHeight) / 2),
+      );
+      const flickDelta = Math.max(520, Math.ceil(flickDistance / 5));
+
+      for (let index = 0; index < 5; index += 1) {
+        await page.mouse.wheel(0, flickDelta);
+        await page.waitForTimeout(12);
+      }
+
+      await page.waitForTimeout(520);
+
+      const flickResult = await page.evaluate(() => {
+        const flickEvents = window.__scrollPerf.flickEvents;
+        const firstFlick = flickEvents.find((event) => event.detail?.isFlicking);
+        const lastFlick = [...flickEvents]
+          .reverse()
+          .find((event) => event.detail?.isFlicking);
+        const flickStart = firstFlick?.time ?? 0;
+        const flickEnd = lastFlick?.time ?? 0;
+        const heavyChunksDuringFlick =
+          flickStart > 0
+            ? performance
+                .getEntriesByType('resource')
+                .filter((entry) =>
+                  /(?:ProductRoulette|Projects|LocalFaq)-.*\.js(?:\?|$)/.test(
+                    entry.name,
+                  ),
+                )
+                .filter(
+                  (entry) =>
+                    entry.startTime >= flickStart && entry.startTime <= flickEnd,
+                )
+                .map((entry) => entry.name)
+            : [];
+
+        return {
+          sawFlicking: Boolean(firstFlick),
+          isFlickingAfterIdle:
+            document.documentElement.classList.contains('is-flicking'),
+          heavyChunksDuringFlick,
+        };
+      });
+
+      if (!flickResult.sawFlicking) {
+        throw new Error(`${profile.name}: is-flicking was not emitted during rapid scroll`);
+      }
+
+      if (flickResult.isFlickingAfterIdle) {
+        throw new Error(`${profile.name}: is-flicking remained active after scroll idle`);
+      }
+
+      if (flickResult.heavyChunksDuringFlick.length > 0) {
+        throw new Error(
+          `${profile.name}: heavy chunks imported during flick: ${flickResult.heavyChunksDuringFlick.join(', ')}`,
+        );
+      }
+
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(500);
+    }
 
     if (profile.name.startsWith('mobile')) {
       const earlyVideos = await page.evaluate(() =>

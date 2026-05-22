@@ -1,4 +1,12 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  lazy,
+  startTransition,
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Hero } from './components/Hero';
 import { ScrollConstellation } from './components/ScrollConstellation';
 import { siteContent } from './data/siteContent';
@@ -49,10 +57,13 @@ const ServiceLandingPage   = lazy(loadServiceLandingPage);
 const ArticleLandingPage   = lazy(loadArticleLandingPage);
 const GuidesIndexPage      = lazy(loadGuidesIndexPage);
 
-const sectionChunkPreloaders = [
+const gatedSectionPreloaders = [
   { selector: '#services', preload: loadProductRoulette },
   { selector: '#projects', preload: loadProjects },
   { selector: '#local-faq', preload: loadLocalFaq },
+] satisfies Array<{ selector: string; preload: () => Promise<unknown> }>;
+
+const sectionChunkPreloaders = [
   { selector: '.milky-way-divider', preload: loadMilkyWayDivider },
   { selector: '.guides-teaser-section', preload: loadGuidesTeaser },
   { selector: '#contact', preload: loadContactForm },
@@ -74,13 +85,24 @@ const defaultPalette: PaletteName = 'atlantic';
 // En false, la web siempre usa defaultPalette al cargar.
 const savePaletteChoice = false;
 
-function emitScrollActivity(isScrolling: boolean) {
+type ScrollActivityDetail = {
+  isScrolling: boolean;
+  isFlicking: boolean;
+  velocity: number;
+};
+
+function emitScrollActivity(
+  isScrolling: boolean,
+  isFlicking = false,
+  velocity = 0,
+) {
   if (typeof document === 'undefined') return;
 
   document.documentElement.classList.toggle('is-scrolling', isScrolling);
+  document.documentElement.classList.toggle('is-flicking', isFlicking);
   document.dispatchEvent(
     new CustomEvent('maiatesta:scroll-activity', {
-      detail: { isScrolling },
+      detail: { isScrolling, isFlicking, velocity } satisfies ScrollActivityDetail,
     }),
   );
 }
@@ -104,6 +126,102 @@ function ContactFallback({ content }: { content: LocalizedContent }) {
         <p className='eyebrow'>{content.contact.eyebrow}</p>
         <h2>{content.contact.title}</h2>
         <p>{content.contact.body}</p>
+      </div>
+    </section>
+  );
+}
+
+function SectionShellHeading({
+  eyebrow,
+  title,
+  body,
+}: {
+  eyebrow: string;
+  title: string;
+  body: string;
+}) {
+  return (
+    <div className='section-heading scroll-reveal'>
+      <p className='eyebrow'>{eyebrow}</p>
+      <h2>{title}</h2>
+      <p>{body}</p>
+    </div>
+  );
+}
+
+function ServicesShell({ content }: { content: LocalizedContent }) {
+  return (
+    <section
+      className='section services-section section-hydration-shell section-shell--services'
+      id='services'
+      aria-busy='true'
+    >
+      <SectionShellHeading
+        eyebrow={content.sections.services.eyebrow}
+        title={content.sections.services.title}
+        body={content.sections.services.body}
+      />
+      <div className='roulette-layout'>
+        <div className='service-carousel scroll-reveal'>
+          <div className='service-shell-card' aria-hidden='true'>
+            <span className='service-card-index'>01</span>
+            <span className='service-card-preview'>
+              <span className='service-preview-frame'>
+                <span className='service-preview-skeleton' aria-hidden='true' />
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProjectsShell({ content }: { content: LocalizedContent }) {
+  return (
+    <section
+      className='section projects-section section-hydration-shell section-shell--projects'
+      id='projects'
+      aria-busy='true'
+    >
+      <SectionShellHeading
+        eyebrow={content.sections.projects.eyebrow}
+        title={content.sections.projects.title}
+        body={content.sections.projects.body}
+      />
+      <div className='project-grid'>
+        {[0, 1, 2].map((index) => (
+          <article
+            className='project-card section-shell-card scroll-reveal'
+            key={index}
+            aria-hidden='true'
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function FaqShell({ content }: { content: LocalizedContent }) {
+  return (
+    <section
+      className='section local-faq-section section-hydration-shell section-shell--faq'
+      id='local-faq'
+      aria-busy='true'
+    >
+      <SectionShellHeading
+        eyebrow={content.faqs.eyebrow}
+        title={content.faqs.title}
+        body={content.faqs.body}
+      />
+      <div className='local-faq-grid'>
+        {[0, 1, 2].map((index) => (
+          <article
+            className='local-faq-item section-shell-card scroll-reveal'
+            key={index}
+            aria-hidden='true'
+          />
+        ))}
       </div>
     </section>
   );
@@ -190,8 +308,14 @@ export default function App({ routePath }: AppProps) {
     useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
   const hasScrolledRef = useRef(false);
+  const scrollingRef = useRef(false);
+  const flickingRef = useRef(false);
+  const pendingHydrationSelectors = useRef(new Set<string>());
   const [shouldShowScrollConstellation, setShouldShowScrollConstellation] =
     useState(false);
+  const [hydratedSections, setHydratedSections] = useState<Set<string>>(
+    () => new Set(),
+  );
   const content = useMemo(() => siteContent.locales[language], [language]);
   const currentRoutePath = routePath ?? getInitialRoutePath();
   const serviceSlug = normalizeServicePath(currentRoutePath);
@@ -226,18 +350,40 @@ export default function App({ routePath }: AppProps) {
     let rafId = 0;
     let idleTimeoutId = 0;
     let isScrolling = false;
+    let isFlicking = false;
+    let lastY = window.scrollY;
+    let lastTs = performance.now();
+    const flickThreshold = window.innerWidth <= 920 ? 1.35 : 2.2;
 
-    const setScrolling = (nextValue: boolean) => {
-      if (isScrolling === nextValue) return;
-      isScrolling = nextValue;
-      emitScrollActivity(nextValue);
+    const setScrollState = (
+      nextScrolling: boolean,
+      nextFlicking: boolean,
+      velocity = 0,
+    ) => {
+      if (isScrolling === nextScrolling && isFlicking === nextFlicking) {
+        return;
+      }
+
+      isScrolling = nextScrolling;
+      isFlicking = nextFlicking;
+      scrollingRef.current = nextScrolling;
+      flickingRef.current = nextFlicking;
+      emitScrollActivity(nextScrolling, nextFlicking, velocity);
     };
 
     const markScrolling = () => {
+      scrollingRef.current = true;
+
       if (rafId === 0) {
-        rafId = window.requestAnimationFrame(() => {
+        rafId = window.requestAnimationFrame((now) => {
           rafId = 0;
-          setScrolling(true);
+          const nextY = window.scrollY;
+          const deltaMs = Math.max(16, now - lastTs);
+          const velocity = Math.abs(nextY - lastY) / deltaMs;
+
+          lastY = nextY;
+          lastTs = now;
+          setScrollState(true, velocity >= flickThreshold, velocity);
         });
       }
 
@@ -247,7 +393,9 @@ export default function App({ routePath }: AppProps) {
           window.cancelAnimationFrame(rafId);
           rafId = 0;
         }
-        setScrolling(false);
+        lastY = window.scrollY;
+        lastTs = performance.now();
+        setScrollState(false, false, 0);
       }, 150);
     };
 
@@ -263,18 +411,30 @@ export default function App({ routePath }: AppProps) {
       window.removeEventListener('wheel', markScrolling);
       window.clearTimeout(idleTimeoutId);
       if (rafId !== 0) window.cancelAnimationFrame(rafId);
-      emitScrollActivity(false);
+      scrollingRef.current = false;
+      flickingRef.current = false;
+      emitScrollActivity(false, false, 0);
     };
   }, []);
 
-  // Preloads local lazy chunks far before their sections enter the viewport.
-  // Typebot is intentionally excluded because its remote script stays click-only.
+  // Preloads local lazy chunks far before their sections enter the viewport,
+  // but defers expensive section hydration during high-velocity flicks.
   useEffect(() => {
     if (typeof window === 'undefined' || typeof document === 'undefined') {
       return;
     }
 
     const loaded = new Set<string>();
+    const pendingSelectors = pendingHydrationSelectors.current;
+    let hydrationSettleTimeout = 0;
+
+    if (window.innerWidth > 920) {
+      void Promise.all(gatedSectionPreloaders.map(({ preload: loader }) => loader())).then(() => {
+        setHydratedSections(
+          new Set(['#services', '#projects', '#local-faq']),
+        );
+      });
+    }
 
     const preload = (selector: string, loader: () => Promise<unknown>) => {
       if (loaded.has(selector)) return;
@@ -282,19 +442,95 @@ export default function App({ routePath }: AppProps) {
       void loader();
     };
 
+    const isNearViewport = (element: Element) => {
+      const rect = element.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      return (
+        rect.bottom > -viewportHeight * 0.35 &&
+        rect.top < viewportHeight * 1.35
+      );
+    };
+
+    const activateSection = (selector: string) => {
+      const target = document.querySelector(selector);
+
+      const shouldWaitForIdle = window.innerWidth <= 920 && scrollingRef.current;
+
+      if (
+        !target ||
+        !isNearViewport(target) ||
+        flickingRef.current ||
+        shouldWaitForIdle
+      ) {
+        pendingSelectors.add(selector);
+        return;
+      }
+
+      pendingSelectors.delete(selector);
+
+      startTransition(() => {
+        setHydratedSections((currentSections) => {
+          if (currentSections.has(selector)) {
+            return currentSections;
+          }
+
+          const nextSections = new Set(currentSections);
+          nextSections.add(selector);
+          return nextSections;
+        });
+      });
+    };
+
+    const processPendingHydration = () => {
+      pendingSelectors.forEach((selector) => {
+        const match = gatedSectionPreloaders.find(
+          (item) => item.selector === selector,
+        );
+
+        if (match) {
+          activateSection(match.selector);
+        }
+      });
+    };
+
+    const handleScrollActivity = (
+      event: Event,
+    ) => {
+      const customEvent = event as CustomEvent<ScrollActivityDetail>;
+      if (!customEvent.detail?.isScrolling && !customEvent.detail?.isFlicking) {
+        window.clearTimeout(hydrationSettleTimeout);
+        hydrationSettleTimeout = window.setTimeout(
+          processPendingHydration,
+          window.innerWidth <= 920 ? 720 : 180,
+        );
+      }
+    };
+
+    document.addEventListener('maiatesta:scroll-activity', handleScrollActivity);
+
     if (!('IntersectionObserver' in window)) {
+      gatedSectionPreloaders.forEach(({ selector }) => {
+        activateSection(selector);
+      });
       sectionChunkPreloaders.forEach(({ selector, preload: loader }) => {
         preload(selector, loader);
       });
-      return;
+      return () => {
+        window.clearTimeout(hydrationSettleTimeout);
+        document.removeEventListener(
+          'maiatesta:scroll-activity',
+          handleScrollActivity,
+        );
+      };
     }
 
-    const preloadDistanceMultiplier = window.innerWidth >= 1024 ? 8 : 3;
+    const preloadDistanceMultiplier = window.innerWidth >= 1024 ? 16 : 3;
     const preloadDistancePx = Math.ceil(
       window.innerHeight * preloadDistanceMultiplier,
     );
+    const hydrationDistancePx = window.innerWidth <= 920 ? 0 : preloadDistancePx;
 
-    const observer = new IntersectionObserver(
+    const preloadObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
@@ -305,7 +541,7 @@ export default function App({ routePath }: AppProps) {
 
           if (!match) return;
           preload(match.selector, match.preload);
-          observer.unobserve(entry.target);
+          preloadObserver.unobserve(entry.target);
         });
       },
       {
@@ -315,23 +551,70 @@ export default function App({ routePath }: AppProps) {
       },
     );
 
-    sectionChunkPreloaders.forEach(({ selector, preload: loader }) => {
+    const hydrationObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          const match = gatedSectionPreloaders.find(({ selector }) =>
+            entry.target.matches(selector),
+          );
+
+          if (!match) return;
+
+          if (flickingRef.current) {
+            pendingSelectors.add(match.selector);
+            return;
+          }
+
+          activateSection(match.selector);
+        });
+      },
+      {
+        root: null,
+        rootMargin: `${hydrationDistancePx}px 0px`,
+        threshold: 0,
+      },
+    );
+
+    gatedSectionPreloaders.forEach(({ selector }) => {
       const target = document.querySelector(selector);
 
       if (target) {
-        observer.observe(target);
+        hydrationObserver.observe(target);
         return;
       }
 
       window.requestAnimationFrame(() => {
         const lateTarget = document.querySelector(selector);
-        if (lateTarget) observer.observe(lateTarget);
+        if (lateTarget) hydrationObserver.observe(lateTarget);
+        else activateSection(selector);
+      });
+    });
+
+    sectionChunkPreloaders.forEach(({ selector, preload: loader }) => {
+      const target = document.querySelector(selector);
+
+      if (target) {
+        preloadObserver.observe(target);
+        return;
+      }
+
+      window.requestAnimationFrame(() => {
+        const lateTarget = document.querySelector(selector);
+        if (lateTarget) preloadObserver.observe(lateTarget);
         else preload(selector, loader);
       });
     });
 
     return () => {
-      observer.disconnect();
+      window.clearTimeout(hydrationSettleTimeout);
+      document.removeEventListener(
+        'maiatesta:scroll-activity',
+        handleScrollActivity,
+      );
+      preloadObserver.disconnect();
+      hydrationObserver.disconnect();
     };
   }, []);
 
@@ -535,22 +818,34 @@ export default function App({ routePath }: AppProps) {
         </Suspense>
         {/* Composicion principal de la pagina: servicios, proyectos y contacto. */}
         <main>
-          <Suspense fallback={null}>
-            <ProductRoulette
-              content={content}
-              palette={palette}
-              onPaletteChange={setPalette}
-            />
-          </Suspense>
-          <Suspense fallback={null}>
-            <Projects content={content} />
-          </Suspense>
+          {hydratedSections.has('#services') ? (
+            <Suspense fallback={<ServicesShell content={content} />}>
+              <ProductRoulette
+                content={content}
+                palette={palette}
+                onPaletteChange={setPalette}
+              />
+            </Suspense>
+          ) : (
+            <ServicesShell content={content} />
+          )}
+          {hydratedSections.has('#projects') ? (
+            <Suspense fallback={<ProjectsShell content={content} />}>
+              <Projects content={content} />
+            </Suspense>
+          ) : (
+            <ProjectsShell content={content} />
+          )}
           <Suspense fallback={null}>
             <MilkyWayDivider />
           </Suspense>
-          <Suspense fallback={null}>
-            <LocalFaq content={content} />
-          </Suspense>
+          {hydratedSections.has('#local-faq') ? (
+            <Suspense fallback={<FaqShell content={content} />}>
+              <LocalFaq content={content} />
+            </Suspense>
+          ) : (
+            <FaqShell content={content} />
+          )}
           <Suspense fallback={null}>
             <GuidesTeaser />
           </Suspense>
