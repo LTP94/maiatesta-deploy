@@ -1,6 +1,8 @@
-# Contexto de Servicios MaiAtesta
+# Contexto de Servicios Maiatesta
 
 Este documento resume los servicios actuales del sitio. Es una base editable para actualizar mensajes, alcance, beneficios y prioridades comerciales.
+
+Para onboarding, arquitectura, deployment y operación diaria, empieza en `docs/START_HERE.md`.
 
 ## Servicios
 

@@ -49,16 +49,16 @@ const ServiceLandingPage   = lazy(loadServiceLandingPage);
 const ArticleLandingPage   = lazy(loadArticleLandingPage);
 const GuidesIndexPage      = lazy(loadGuidesIndexPage);
 
-const localChunkPreloaders = [
-  loadProductRoulette,
-  loadProjects,
-  loadMilkyWayDivider,
-  loadLocalFaq,
-  loadGuidesTeaser,
-  loadContactForm,
-  loadFooter,
-  loadStickyWhatsAppButton,
-];
+const sectionChunkPreloaders = [
+  { selector: '#services', preload: loadProductRoulette },
+  { selector: '#projects', preload: loadProjects },
+  { selector: '#local-faq', preload: loadLocalFaq },
+  { selector: '.milky-way-divider', preload: loadMilkyWayDivider },
+  { selector: '.guides-teaser-section', preload: loadGuidesTeaser },
+  { selector: '#contact', preload: loadContactForm },
+  { selector: '.site-footer', preload: loadFooter },
+  { selector: '.sticky-whatsapp-button', preload: loadStickyWhatsAppButton },
+] satisfies Array<{ selector: string; preload: () => Promise<unknown> }>;
 
 export type PaletteName =
   | 'current'
@@ -74,41 +74,15 @@ const defaultPalette: PaletteName = 'atlantic';
 // En false, la web siempre usa defaultPalette al cargar.
 const savePaletteChoice = false;
 
-function isConstrainedConnection() {
-  if (typeof navigator === 'undefined') {
-    return false;
-  }
+function emitScrollActivity(isScrolling: boolean) {
+  if (typeof document === 'undefined') return;
 
-  const connection = (navigator as Navigator & {
-    connection?: { saveData?: boolean; effectiveType?: string };
-  }).connection;
-
-  return (
-    connection?.saveData === true ||
-    ['slow-2g', '2g', '3g'].includes(connection?.effectiveType ?? '')
+  document.documentElement.classList.toggle('is-scrolling', isScrolling);
+  document.dispatchEvent(
+    new CustomEvent('maiatesta:scroll-activity', {
+      detail: { isScrolling },
+    }),
   );
-}
-
-function scheduleWhenIdle(callback: () => void, timeout: number) {
-  if (typeof window === 'undefined') {
-    return () => {};
-  }
-
-  const idleWindow = window as Window & {
-    requestIdleCallback?: (
-      callback: IdleRequestCallback,
-      options?: IdleRequestOptions,
-    ) => number;
-    cancelIdleCallback?: (handle: number) => void;
-  };
-
-  if (idleWindow.requestIdleCallback && idleWindow.cancelIdleCallback) {
-    const idleId = idleWindow.requestIdleCallback(callback, { timeout });
-    return () => idleWindow.cancelIdleCallback?.(idleId);
-  }
-
-  const timeoutId = window.setTimeout(callback, timeout);
-  return () => window.clearTimeout(timeoutId);
 }
 
 function TypebotFallback({ content }: { content: LocalizedContent }) {
@@ -241,63 +215,123 @@ export default function App({ routePath }: AppProps) {
     if (detected !== 'es') setLanguage(detected);
   }, []);
 
-  // Warm local lazy chunks only when the browser has breathing room. Mobile and
-  // constrained networks keep the first scroll smooth instead of downloading all
-  // below-fold chunks immediately after hydration.
+  // Pauses decorative motion while the user is actively scrolling or swiping.
+  // This keeps the visual system intact at rest without making fast mobile
+  // scrolling compete with animation work.
   useEffect(() => {
-    if (typeof window === 'undefined') {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
       return;
     }
 
-    if (isConstrainedConnection()) {
-      return;
-    }
+    let rafId = 0;
+    let idleTimeoutId = 0;
+    let isScrolling = false;
 
-    let didPreload = false;
-    let cancelIdlePreload = () => {};
+    const setScrolling = (nextValue: boolean) => {
+      if (isScrolling === nextValue) return;
+      isScrolling = nextValue;
+      emitScrollActivity(nextValue);
+    };
 
-    const preloadLocalChunks = () => {
-      if (didPreload) {
-        return;
+    const markScrolling = () => {
+      if (rafId === 0) {
+        rafId = window.requestAnimationFrame(() => {
+          rafId = 0;
+          setScrolling(true);
+        });
       }
 
-      didPreload = true;
-      localChunkPreloaders.forEach((preloadChunk) => {
-        void preloadChunk();
-      });
+      window.clearTimeout(idleTimeoutId);
+      idleTimeoutId = window.setTimeout(() => {
+        if (rafId !== 0) {
+          window.cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+        setScrolling(false);
+      }, 150);
     };
 
-    const queuePreload = () => {
-      if (didPreload) {
-        return;
-      }
+    const options: AddEventListenerOptions = { passive: true };
 
-      cancelIdlePreload();
-      cancelIdlePreload = scheduleWhenIdle(preloadLocalChunks, 4200);
-    };
-
-    const isSmallViewport = window.innerWidth <= 620;
-
-    if (!isSmallViewport) {
-      const desktopWarmupId = window.setTimeout(preloadLocalChunks, 650);
-      return () => window.clearTimeout(desktopWarmupId);
-    }
-
-    const interactionOptions: AddEventListenerOptions = {
-      once: true,
-      passive: true,
-    };
-
-    queuePreload();
-    window.addEventListener('scroll', queuePreload, interactionOptions);
-    window.addEventListener('pointerdown', queuePreload, interactionOptions);
-    window.addEventListener('keydown', queuePreload, { once: true });
+    window.addEventListener('scroll', markScrolling, options);
+    window.addEventListener('touchmove', markScrolling, options);
+    window.addEventListener('wheel', markScrolling, options);
 
     return () => {
-      cancelIdlePreload();
-      window.removeEventListener('scroll', queuePreload);
-      window.removeEventListener('pointerdown', queuePreload);
-      window.removeEventListener('keydown', queuePreload);
+      window.removeEventListener('scroll', markScrolling);
+      window.removeEventListener('touchmove', markScrolling);
+      window.removeEventListener('wheel', markScrolling);
+      window.clearTimeout(idleTimeoutId);
+      if (rafId !== 0) window.cancelAnimationFrame(rafId);
+      emitScrollActivity(false);
+    };
+  }, []);
+
+  // Preloads local lazy chunks far before their sections enter the viewport.
+  // Typebot is intentionally excluded because its remote script stays click-only.
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return;
+    }
+
+    const loaded = new Set<string>();
+
+    const preload = (selector: string, loader: () => Promise<unknown>) => {
+      if (loaded.has(selector)) return;
+      loaded.add(selector);
+      void loader();
+    };
+
+    if (!('IntersectionObserver' in window)) {
+      sectionChunkPreloaders.forEach(({ selector, preload: loader }) => {
+        preload(selector, loader);
+      });
+      return;
+    }
+
+    const preloadDistanceMultiplier = window.innerWidth >= 1024 ? 8 : 3;
+    const preloadDistancePx = Math.ceil(
+      window.innerHeight * preloadDistanceMultiplier,
+    );
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          const match = sectionChunkPreloaders.find(({ selector }) =>
+            entry.target.matches(selector),
+          );
+
+          if (!match) return;
+          preload(match.selector, match.preload);
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        root: null,
+        rootMargin: `${preloadDistancePx}px 0px`,
+        threshold: 0,
+      },
+    );
+
+    sectionChunkPreloaders.forEach(({ selector, preload: loader }) => {
+      const target = document.querySelector(selector);
+
+      if (target) {
+        observer.observe(target);
+        return;
+      }
+
+      window.requestAnimationFrame(() => {
+        const lateTarget = document.querySelector(selector);
+        if (lateTarget) observer.observe(lateTarget);
+        else preload(selector, loader);
+      });
+    });
+
+    return () => {
+      observer.disconnect();
     };
   }, []);
 

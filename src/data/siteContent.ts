@@ -109,7 +109,7 @@ export const siteContent = {
     logo: '/assets/maiatesta-logo-optimized-2.jpg',
     persona: '/assets/maiatesta-persona-hero.webp',
     atlanticPersona: '/assets/maiatesta-persona-hero.webp',
-    email: 'maiatesta@gmail.com',
+    email: 'ventas@maiatesta.com',
   },
   languageSwitcher: {
     label: 'Language',
@@ -718,8 +718,8 @@ export const siteContent = {
         channels: [
           {
             label: 'Email',
-            value: 'maiatesta@gmail.com',
-            href: 'mailto:maiatesta@gmail.com',
+            value: 'ventas@maiatesta.com',
+            href: 'mailto:ventas@maiatesta.com',
           },
           {
             label: 'WhatsApp',

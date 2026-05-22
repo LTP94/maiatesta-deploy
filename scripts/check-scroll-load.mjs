@@ -150,6 +150,101 @@ try {
     });
     await page.waitForSelector('#services', { state: 'attached' });
 
+    const headerResult = await page.evaluate((profileName) => {
+      const header = document.querySelector('.site-header');
+      const navLinks = document.querySelector('.nav-links');
+      const hamburger = document.querySelector('.hamburger-btn');
+      const logo = document.querySelector('.brand-mark img');
+
+      if (!(header instanceof HTMLElement)) {
+        return { ok: false, reason: 'site header is missing' };
+      }
+
+      if (!(navLinks instanceof HTMLElement)) {
+        return { ok: false, reason: 'desktop nav is missing' };
+      }
+
+      if (!(hamburger instanceof HTMLElement)) {
+        return { ok: false, reason: 'hamburger button is missing' };
+      }
+
+      if (!(logo instanceof HTMLElement)) {
+        return { ok: false, reason: 'brand logo is missing' };
+      }
+
+      const navStyle = getComputedStyle(navLinks);
+      const hamburgerStyle = getComputedStyle(hamburger);
+      const logoRect = logo.getBoundingClientRect();
+
+      if (profileName.startsWith('mobile')) {
+        if (navStyle.display !== 'none') {
+          return { ok: false, reason: `mobile nav links display is ${navStyle.display}` };
+        }
+
+        if (hamburgerStyle.display === 'none') {
+          return { ok: false, reason: 'mobile hamburger is hidden' };
+        }
+
+        if (logoRect.height > 44) {
+          return {
+            ok: false,
+            reason: `mobile logo is not compact: ${Math.round(logoRect.height)}px`,
+          };
+        }
+
+        return { ok: true, reason: 'mobile header ok' };
+      }
+
+      if (navStyle.display === 'none') {
+        return { ok: false, reason: 'desktop nav links are hidden' };
+      }
+
+      if (hamburgerStyle.display !== 'none') {
+        return { ok: false, reason: `desktop hamburger display is ${hamburgerStyle.display}` };
+      }
+
+      return { ok: true, reason: 'desktop header ok' };
+    }, profile.name);
+
+    if (!headerResult.ok) {
+      throw new Error(`${profile.name} header: ${headerResult.reason}`);
+    }
+
+    if (profile.name.startsWith('mobile')) {
+      await page.locator('.hamburger-btn').click({ force: true });
+      await page.waitForSelector('.site-header.menu-open .mobile-nav', {
+        state: 'visible',
+      });
+      await page.mouse.wheel(0, 900);
+      await page.waitForTimeout(220);
+
+      const menuHeaderResult = await page.evaluate(() => {
+        const header = document.querySelector('.site-header');
+        if (!(header instanceof HTMLElement)) {
+          return { ok: false, reason: 'site header is missing after menu open' };
+        }
+
+        const style = getComputedStyle(header);
+        if (Number(style.opacity) === 0 || style.pointerEvents === 'none') {
+          return {
+            ok: false,
+            reason: `menu-open header hidden: opacity ${style.opacity}, pointer-events ${style.pointerEvents}`,
+          };
+        }
+
+        return { ok: true, reason: 'menu-open header remains visible' };
+      });
+
+      if (!menuHeaderResult.ok) {
+        throw new Error(`${profile.name} header: ${menuHeaderResult.reason}`);
+      }
+
+      await page.locator('.hamburger-btn').click({ force: true });
+      await page.waitForTimeout(120);
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(120);
+    }
+
     for (const target of scrollTargets) {
       await page.waitForSelector(target, { state: 'attached' });
       await page.locator(target).scrollIntoViewIfNeeded();

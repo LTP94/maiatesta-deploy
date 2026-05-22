@@ -1552,3 +1552,55 @@ a.site-footer__cta:hover {
     flex-direction: column;
   }
 }
+
+.scroll-reveal {
+  opacity: 1;
+}
+
+@media (max-width: 920px) {
+  #services {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 1180px;
+  }
+
+  #projects {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 920px;
+  }
+
+  #local-faq {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
+
+  #contact {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 980px;
+  }
+
+  .site-footer {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 760px;
+  }
+}
+
+html.is-scrolling .page-meteor,
+html.is-scrolling .stars-bg__layer,
+html.is-scrolling .hero-aurora,
+html.is-scrolling .hero-orb,
+html.is-scrolling .hero-shooting-star,
+html.is-scrolling .persona-orbit-ring,
+html.is-scrolling .persona-orbit-star,
+html.is-scrolling .persona-portrait::before,
+html.is-scrolling .service-axis,
+html.is-scrolling .service-deck,
+html.is-scrolling .service-preview-skeleton,
+html.is-scrolling .milky-way-divider::before,
+html.is-scrolling .milky-way-divider__band,
+html.is-scrolling .milky-way-divider__core,
+html.is-scrolling .milky-way-divider__dust,
+html.is-scrolling .scroll-track__fill,
+html.is-scrolling .scroll-comet,
+html.is-scrolling .scroll-node__burst {
+  animation-play-state: paused !important;
+}

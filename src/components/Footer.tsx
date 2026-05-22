@@ -127,7 +127,7 @@ export function Footer({ content }: FooterProps) {
               <FooterIcon type="whatsapp" />
             </a>
             <a
-              href={emailChannel?.href ?? 'mailto:maiatesta@gmail.com'}
+              href={emailChannel?.href ?? 'mailto:ventas@maiatesta.com'}
               aria-label="Enviar email a Maiatesta"
             >
               <FooterIcon type="email" />

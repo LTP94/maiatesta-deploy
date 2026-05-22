@@ -5,3 +5,7 @@ vite-dev*.log
 .DS_Store
 public/assets/*.mov
 public/assets/*.MOV
+assets-source/videos-raw/*.mov
+assets-source/videos-raw/*.MOV
+assets-source/images-raw/
+.ssg-server/

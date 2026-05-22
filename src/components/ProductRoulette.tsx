@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { siteContent } from '../data/siteContent';
 import type { LocalizedContent } from '../data/siteContent';
@@ -64,7 +64,6 @@ export function ProductRoulette({
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
-  const scrollPauseTimeoutRef = useRef<number | null>(null);
   // Initialize to 1024 (matches SSR) to avoid hydration mismatch.
   // The useEffect reads the real width after hydration.
   const [windowWidth, setWindowWidth] = useState(1024);
@@ -117,33 +116,24 @@ export function ProductRoulette({
   }, [services]);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !isMobileViewport) {
+    if (typeof document === 'undefined') {
       return;
     }
 
-    const handleScroll = () => {
-      setIsUserScrolling(true);
-
-      if (scrollPauseTimeoutRef.current !== null) {
-        window.clearTimeout(scrollPauseTimeoutRef.current);
-      }
-
-      scrollPauseTimeoutRef.current = window.setTimeout(() => {
-        scrollPauseTimeoutRef.current = null;
-        setIsUserScrolling(false);
-      }, 900);
+    const syncScrollActivity = (event: Event) => {
+      const customEvent = event as CustomEvent<{ isScrolling?: boolean }>;
+      setIsUserScrolling(Boolean(customEvent.detail?.isScrolling));
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    document.addEventListener('maiatesta:scroll-activity', syncScrollActivity);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (scrollPauseTimeoutRef.current !== null) {
-        window.clearTimeout(scrollPauseTimeoutRef.current);
-        scrollPauseTimeoutRef.current = null;
-      }
+      document.removeEventListener(
+        'maiatesta:scroll-activity',
+        syncScrollActivity,
+      );
     };
-  }, [isMobileViewport]);
+  }, []);
 
   // Rotacion automatica de cartas. 4500ms deja tiempo para leer titulo, texto y frase final.
   useEffect(() => {
