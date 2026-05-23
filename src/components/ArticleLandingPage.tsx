@@ -22,6 +22,71 @@ const articleHighlightPhrases = [
   'pymes',
 ];
 
+const articleEditorialImages = {
+  'cuanto-cuesta-chatbot-whatsapp-ecuador': {
+    filename: 'guide-chatbot-lead-flow',
+    placement: 'intro',
+    alt: 'Simulación de interfaz de chat con flujos lógicos estructurados para captación automatizada de leads calificados.',
+    caption:
+      'Los flujos automatizados pre-califican tráfico masivo antes de enviarlo a asesores comerciales.',
+  },
+  'pagina-web-negocio-pequeno-quito': {
+    filename: 'guide-web-pyme-local-seo',
+    placement: 'after-first-section',
+    alt: 'Sitio web corporativo de alto rendimiento desplegado en una pantalla portátil con optimización SEO local.',
+    caption:
+      'Una presencia web veloz convierte visitantes locales en clientes activos sin depender de presupuestos masivos.',
+  },
+  'software-inventario-pymes-quito': {
+    filename: 'guide-inventory-logistics-dashboard',
+    placement: 'Señales de que Excel ya no alcanza',
+    alt: 'Panel táctil de gestión logística y control de existencias en tiempo real con diseño responsivo.',
+    caption:
+      'La transición de hojas de cálculo a sistemas dedicados previene pérdidas ocultas en el inventario.',
+  },
+  'automatizar-reportes-excel-pyme': {
+    filename: 'guide-excel-reporting-dashboard',
+    placement: 'Qué reportes conviene automatizar',
+    alt: 'Gráficos vectoriales y visualizaciones analíticas unificadas en un tablero operativo automatizado.',
+    caption:
+      'La centralización de reportes comerciales provee visibilidad financiera inmediata a la gerencia.',
+  },
+} satisfies Record<
+  ArticleRouteSlug,
+  { filename: string; placement: string; alt: string; caption: string }
+>;
+
+function EditorialFigure({
+  filename,
+  alt,
+  caption,
+}: {
+  filename: string;
+  alt: string;
+  caption: string;
+}) {
+  return (
+    <figure className='content-figure content-figure--wide w-full overflow-hidden rounded-xl bg-[#0B0B0F] my-8'>
+      <picture className='block w-full aspect-[16/9] bg-[#0B0B0F]'>
+        <source srcSet={`/assets/editorial/${filename}.avif`} type='image/avif' />
+        <source srcSet={`/assets/editorial/${filename}.webp`} type='image/webp' />
+        <img
+          src={`/assets/editorial/${filename}.webp`}
+          alt={alt}
+          width='960'
+          height='540'
+          loading='lazy'
+          decoding='async'
+          className='w-full h-auto aspect-[16/9] object-cover block transition-opacity duration-300'
+        />
+      </picture>
+      <figcaption className='text-sm text-gray-400 mt-2 px-1 architectural-caption'>
+        {caption}
+      </figcaption>
+    </figure>
+  );
+}
+
 export function ArticleLandingPage({
   slug,
   language,
@@ -68,6 +133,7 @@ export function ArticleLandingPage({
   const whatsappHref = `https://wa.me/593963092859?text=${encodeURIComponent(
     article.ctaMessage,
   )}`;
+  const editorialImage = articleEditorialImages[slug];
 
   return (
     <div className='app-shell service-page-shell' data-palette='atlantic'>
@@ -124,6 +190,13 @@ export function ArticleLandingPage({
 
       <main className='service-page-main article-page-main'>
         <article className='section article-body-section'>
+          {editorialImage.placement === 'intro' ? (
+            <EditorialFigure
+              filename={editorialImage.filename}
+              alt={editorialImage.alt}
+              caption={editorialImage.caption}
+            />
+          ) : null}
           {article.sections.map((section, index) => (
             <section
               className='article-content-block scroll-reveal'
@@ -134,6 +207,21 @@ export function ArticleLandingPage({
               {section.body.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
+              {editorialImage.placement === 'after-first-section' &&
+              index === 0 ? (
+                <EditorialFigure
+                  filename={editorialImage.filename}
+                  alt={editorialImage.alt}
+                  caption={editorialImage.caption}
+                />
+              ) : null}
+              {editorialImage.placement === section.heading ? (
+                <EditorialFigure
+                  filename={editorialImage.filename}
+                  alt={editorialImage.alt}
+                  caption={editorialImage.caption}
+                />
+              ) : null}
             </section>
           ))}
         </article>

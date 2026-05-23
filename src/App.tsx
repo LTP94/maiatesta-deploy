@@ -428,14 +428,6 @@ export default function App({ routePath }: AppProps) {
     const pendingSelectors = pendingHydrationSelectors.current;
     let hydrationSettleTimeout = 0;
 
-    if (window.innerWidth > 920) {
-      void Promise.all(gatedSectionPreloaders.map(({ preload: loader }) => loader())).then(() => {
-        setHydratedSections(
-          new Set(['#services', '#projects', '#local-faq']),
-        );
-      });
-    }
-
     const preload = (selector: string, loader: () => Promise<unknown>) => {
       if (loaded.has(selector)) return;
       loaded.add(selector);
@@ -454,7 +446,7 @@ export default function App({ routePath }: AppProps) {
     const activateSection = (selector: string) => {
       const target = document.querySelector(selector);
 
-      const shouldWaitForIdle = window.innerWidth <= 920 && scrollingRef.current;
+      const shouldWaitForIdle = scrollingRef.current;
 
       if (
         !target ||
@@ -501,7 +493,7 @@ export default function App({ routePath }: AppProps) {
         window.clearTimeout(hydrationSettleTimeout);
         hydrationSettleTimeout = window.setTimeout(
           processPendingHydration,
-          window.innerWidth <= 920 ? 720 : 180,
+          720,
         );
       }
     };
@@ -528,7 +520,7 @@ export default function App({ routePath }: AppProps) {
     const preloadDistancePx = Math.ceil(
       window.innerHeight * preloadDistanceMultiplier,
     );
-    const hydrationDistancePx = window.innerWidth <= 920 ? 0 : preloadDistancePx;
+    const hydrationDistancePx = 0;
 
     const preloadObserver = new IntersectionObserver(
       (entries) => {

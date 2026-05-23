@@ -29,6 +29,31 @@ export function Projects({ content }: ProjectsProps) {
         </h2>
         <p>{content.sections.projects.body}</p>
       </div>
+      <figure className='content-figure content-figure--wide w-full overflow-hidden rounded-xl bg-[#0B0B0F] my-8'>
+        <picture className='block w-full aspect-[16/9] bg-[#0B0B0F]'>
+          <source
+            srcSet='/assets/editorial/homepage-projects-dark-workstation.avif'
+            type='image/avif'
+          />
+          <source
+            srcSet='/assets/editorial/homepage-projects-dark-workstation.webp'
+            type='image/webp'
+          />
+          <img
+            src='/assets/editorial/homepage-projects-dark-workstation.webp'
+            alt='Estación de trabajo digital en modo oscuro mostrando interfaces de administración y optimización de rendimiento.'
+            width='960'
+            height='540'
+            loading='lazy'
+            decoding='async'
+            className='w-full h-auto aspect-[16/9] object-cover block transition-opacity duration-300'
+          />
+        </picture>
+        <figcaption className='text-sm text-gray-400 mt-2 px-1 architectural-caption'>
+          Infraestructura robusta diseñada para mantener el flujo de caja
+          constante mediante procesos escalables.
+        </figcaption>
+      </figure>
       <div className='project-grid'>
         {content.projects.map((project, index) => (
           <article

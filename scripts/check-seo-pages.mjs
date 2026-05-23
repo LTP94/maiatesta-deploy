@@ -5,6 +5,22 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const distDir = path.join(root, 'dist');
 const sitemapPath = path.join(distDir, 'sitemap.xml');
+const remoteEditorialHosts = [
+  'unsplash.com',
+  'images.unsplash.com',
+  'pexels.com',
+  'images.pexels.com',
+  'pixabay.com',
+  'cdn.pixabay.com',
+];
+const expectedEditorialAssets = [
+  'homepage-services-automation-dashboard',
+  'homepage-projects-dark-workstation',
+  'guide-chatbot-lead-flow',
+  'guide-web-pyme-local-seo',
+  'guide-inventory-logistics-dashboard',
+  'guide-excel-reporting-dashboard',
+];
 
 const sitemap = await fs.readFile(sitemapPath, 'utf8');
 const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
@@ -27,6 +43,42 @@ function routeToHtmlPath(url) {
 function fail(url, message) {
   hasFailure = true;
   console.error(`${url}: ${message}`);
+}
+
+async function collectHtmlFiles(directory) {
+  const entries = await fs.readdir(directory, { withFileTypes: true });
+  const files = await Promise.all(
+    entries.map(async (entry) => {
+      const entryPath = path.join(directory, entry.name);
+
+      if (entry.isDirectory()) {
+        return collectHtmlFiles(entryPath);
+      }
+
+      return entry.isFile() && entry.name.endsWith('.html') ? [entryPath] : [];
+    }),
+  );
+
+  return files.flat();
+}
+
+async function collectBuildTextFiles(directory) {
+  const entries = await fs.readdir(directory, { withFileTypes: true });
+  const files = await Promise.all(
+    entries.map(async (entry) => {
+      const entryPath = path.join(directory, entry.name);
+
+      if (entry.isDirectory()) {
+        return collectBuildTextFiles(entryPath);
+      }
+
+      return entry.isFile() && /\.(html|js|css)$/.test(entry.name)
+        ? [entryPath]
+        : [];
+    }),
+  );
+
+  return files.flat();
 }
 
 for (const url of urls) {
@@ -112,8 +164,75 @@ for (const url of urls) {
   }
 }
 
+for (const assetName of expectedEditorialAssets) {
+  for (const extension of ['avif', 'webp']) {
+    const assetPath = path.join(
+      distDir,
+      'assets',
+      'editorial',
+      `${assetName}.${extension}`,
+    );
+
+    try {
+      await fs.access(assetPath);
+    } catch {
+      fail('editorial assets', `missing ${path.relative(root, assetPath)}`);
+    }
+  }
+}
+
+const htmlFiles = await collectHtmlFiles(distDir);
+const buildTextFiles = await collectBuildTextFiles(distDir);
+let buildText = '';
+
+for (const filePath of buildTextFiles) {
+  const fileText = await fs.readFile(filePath, 'utf8');
+  buildText += `\n/* ${path.relative(distDir, filePath)} */\n${fileText}`;
+}
+
+remoteEditorialHosts.forEach((host) => {
+  if (buildText.includes(host)) {
+    fail('dist', `build output contains remote image host: ${host}`);
+  }
+});
+
+expectedEditorialAssets.forEach((assetName) => {
+  if (!buildText.includes(`/assets/editorial/${assetName}.webp`)) {
+    fail('dist', `build output does not reference ${assetName}.webp`);
+  }
+});
+
+for (const htmlPath of htmlFiles) {
+  const html = await fs.readFile(htmlPath, 'utf8');
+  const relativePath = path.relative(distDir, htmlPath);
+
+  const editorialImageTags = [
+    ...html.matchAll(/<img\b[^>]*src="\/assets\/editorial\/[^"]+\.webp"[^>]*>/g),
+  ];
+
+  editorialImageTags.forEach(([tag]) => {
+    if (!/\bwidth="960"/.test(tag)) {
+      fail(relativePath, `editorial image missing width="960": ${tag}`);
+    }
+
+    if (!/\bheight="540"/.test(tag)) {
+      fail(relativePath, `editorial image missing height="540": ${tag}`);
+    }
+
+    if (!/\bloading="lazy"/.test(tag)) {
+      fail(relativePath, `editorial image missing loading="lazy": ${tag}`);
+    }
+
+    if (!/\bdecoding="async"/.test(tag)) {
+      fail(relativePath, `editorial image missing decoding="async": ${tag}`);
+    }
+  });
+}
+
 if (hasFailure) {
   process.exit(1);
 }
 
-console.log(`SEO OK: ${urls.length} sitemap URLs passed metadata, schema, canonical, and indexability checks.`);
+console.log(
+  `SEO OK: ${urls.length} sitemap URLs passed metadata, schema, canonical, indexability, and editorial image checks.`,
+);

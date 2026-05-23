@@ -164,6 +164,31 @@ export function ProductRoulette({
         </h2>
         <p>{content.sections.services.body}</p>
       </div>
+      <figure className='content-figure content-figure--wide w-full overflow-hidden rounded-xl bg-[#0B0B0F] my-8'>
+        <picture className='block w-full aspect-[16/9] bg-[#0B0B0F]'>
+          <source
+            srcSet='/assets/editorial/homepage-services-automation-dashboard.avif'
+            type='image/avif'
+          />
+          <source
+            srcSet='/assets/editorial/homepage-services-automation-dashboard.webp'
+            type='image/webp'
+          />
+          <img
+            src='/assets/editorial/homepage-services-automation-dashboard.webp'
+            alt='Panel de control moderno con flujos de datos automatizados y métricas avanzadas optimizadas para agencias de alto volumen.'
+            width='960'
+            height='540'
+            loading='lazy'
+            decoding='async'
+            className='w-full h-auto aspect-[16/9] object-cover block transition-opacity duration-300'
+          />
+        </picture>
+        <figcaption className='text-sm text-gray-400 mt-2 px-1 architectural-caption'>
+          La automatización centralizada elimina cuellos de botella operativos
+          en canales digitales.
+        </figcaption>
+      </figure>
       <div
         className='roulette-layout'
         onMouseEnter={() => setIsPaused(true)}

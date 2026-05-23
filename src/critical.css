@@ -1255,6 +1255,106 @@ textarea {
   font-size: clamp(1.35rem, 2.4vw, 2rem);
 }
 
+.content-figure {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  max-width: 960px;
+  margin: clamp(24px, 5vw, 42px) auto;
+  overflow: hidden;
+  border: 1px solid rgba(246, 248, 251, 0.12);
+  border-radius: 12px;
+  background: #0b0b0f;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.22);
+}
+
+.content-figure--wide {
+  grid-column: 1 / -1;
+}
+
+.content-figure picture,
+.content-figure img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #0b0b0f;
+}
+
+.content-figure img {
+  height: auto;
+  object-fit: cover;
+}
+
+.architectural-caption {
+  margin: 0;
+  padding: 0 4px 12px;
+  color: rgba(220, 229, 238, 0.72);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.rounded-xl {
+  border-radius: 12px;
+}
+
+.bg-\[\#0B0B0F\] {
+  background: #0b0b0f;
+}
+
+.my-8 {
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
+.block {
+  display: block;
+}
+
+.aspect-\[16\/9\] {
+  aspect-ratio: 16 / 9;
+}
+
+.h-auto {
+  height: auto;
+}
+
+.object-cover {
+  object-fit: cover;
+}
+
+.transition-opacity {
+  transition-property: opacity;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+.text-sm {
+  font-size: 0.9rem;
+}
+
+.text-gray-400 {
+  color: rgba(220, 229, 238, 0.72);
+}
+
+.mt-2 {
+  margin-top: 8px;
+}
+
+.px-1 {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
 .local-faq-item {
   padding: 0;
   overflow: hidden;
@@ -1619,14 +1719,16 @@ a.site-footer__cta:hover {
 
 @media (max-width: 920px) {
   :root {
-    --services-shell-height: 1180px;
-    --projects-shell-height: 920px;
+    --services-shell-height: 1780px;
+    --projects-shell-height: 1520px;
     --faq-shell-height: 900px;
+    --article-body-shell-height: 2200px;
   }
 
   #services,
   #projects,
   #local-faq,
+  .article-body-section,
   .section-hydration-shell {
     contain: layout paint style;
     transform: translateZ(0);
@@ -1646,6 +1748,11 @@ a.site-footer__cta:hover {
   #local-faq {
     content-visibility: auto;
     contain-intrinsic-size: auto var(--faq-shell-height);
+  }
+
+  .article-body-section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto var(--article-body-shell-height);
   }
 
   #contact {
