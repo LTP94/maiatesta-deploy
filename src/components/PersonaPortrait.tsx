@@ -9,6 +9,7 @@ type PersonaPortraitProps = {
   onToggle: () => void;
 };
 
+/** Interactive circular portrait with orbital ring and coin-flip animation triggered on click or Enter/Space. */
 export function PersonaPortrait({
   image,
   alt,

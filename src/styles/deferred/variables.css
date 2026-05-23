@@ -1,0 +1,176 @@
+/* Variables base de color, sombras y tipografia usadas por toda la interfaz. */
+:root {
+  --paper: #eeeeee;
+  --muted: #686d76;
+  --steel: #373a40;
+  --ember: #dc5f00;
+  --ink: #15171b;
+  --logo-bg: #ffffff;
+  --line: rgba(238, 238, 238, 0.16);
+  --panel: rgba(55, 58, 64, 0.76);
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
+  --app-ink: #070707;
+  --app-graphite: #14100e;
+  --app-charcoal: #3a241a;
+  --app-smoke: #4b4039;
+  --app-steel: #7b716a;
+  --app-silver: #e2ded8;
+  --app-paper: #f8f8f8;
+  --app-bronze: #c9865e;
+  --app-copper: #ffb38a;
+  --app-olive-signal: #c9ef55;
+  --app-warm-shadow: #4a2618;
+  --app-line: rgba(255, 179, 138, 0.26);
+  --app-panel: rgba(20, 16, 14, 0.82);
+  --app-glow: 0 0 58px rgba(255, 179, 138, 0.3);
+  color: var(--paper);
+  background: var(--ink);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--app-ink);
+}
+
+.app-shell {
+  min-height: 100vh;
+  color: var(--paper);
+  background: var(--app-ink);
+}
+
+/* Paleta alternativa: al cambiar data-palette en App.tsx se sustituyen estas variables. */
+.app-shell[data-palette='atlantic'] {
+  --paper: #f6f8fb;
+  --muted: #d8bd78;
+  --steel: #1b2f49;
+  --ember: #d8bd78;
+  --ink: #07111f;
+  --logo-bg: #ffffff;
+  --line: rgba(246, 248, 251, 0.18);
+  --panel: rgba(27, 47, 73, 0.8);
+  --shadow: 0 24px 80px rgba(3, 8, 16, 0.44);
+  --app-ink: #07111f;
+  --app-graphite: #0e1b2d;
+  --app-charcoal: #1b2f49;
+  --app-smoke: #263d5d;
+  --app-steel: #6f8faf;
+  --app-silver: #dce5ee;
+  --app-paper: #f6f8fb;
+  --app-bronze: #d8bd78;
+  --app-copper: #d8bd78;
+  --app-olive-signal: #88b4cf;
+  --app-warm-shadow: #0e1b2d;
+  --app-line: rgba(216, 189, 120, 0.42);
+  --app-panel: rgba(10, 22, 38, 0.92);
+  --app-glow: 0 0 72px rgba(111, 143, 175, 0.38);
+}
+
+.app-shell[data-palette='tropical'] {
+  --paper: #f5e9d8;
+  --muted: #ffbf91;
+  --steel: #f5e9d8;
+  --ember: #e76f2e;
+  --ink: #173f51;
+  --logo-bg: #f5e9d8;
+  --line: rgba(245, 233, 216, 0.22);
+  --panel: rgba(23, 63, 81, 0.8);
+  --shadow: 0 24px 80px rgba(12, 48, 66, 0.42);
+  --app-ink: #173f51;
+  --app-graphite: #1f6888;
+  --app-charcoal: #2fa4d7;
+  --app-smoke: #276f8e;
+  --app-steel: #2fa4d7;
+  --app-silver: #f5e9d8;
+  --app-paper: #fff8ef;
+  --app-bronze: #e76f2e;
+  --app-copper: #e76f2e;
+  --app-olive-signal: #f5e9d8;
+  --app-warm-shadow: #3e2c23;
+  --app-line: rgba(231, 111, 46, 0.3);
+  --app-panel: rgba(23, 63, 81, 0.84);
+  --app-glow: 0 0 58px rgba(47, 164, 215, 0.34);
+}
+
+.app-shell[data-palette='sunset'] {
+  --paper: #fff0be;
+  --muted: #ffe2af;
+  --steel: #fff0be;
+  --ember: #ffd6a6;
+  --ink: #54251f;
+  --logo-bg: #fff0be;
+  --line: rgba(255, 240, 190, 0.2);
+  --panel: rgba(84, 37, 31, 0.78);
+  --shadow: 0 24px 80px rgba(84, 37, 31, 0.42);
+  --app-ink: #54251f;
+  --app-graphite: #7f3b32;
+  --app-charcoal: #ff9a86;
+  --app-smoke: #b86253;
+  --app-steel: #ffb399;
+  --app-silver: #fff0be;
+  --app-paper: #fff8df;
+  --app-bronze: #ffd6a6;
+  --app-copper: #ffd6a6;
+  --app-olive-signal: #fff0be;
+  --app-warm-shadow: #54251f;
+  --app-line: rgba(255, 214, 166, 0.34);
+  --app-panel: rgba(84, 37, 31, 0.84);
+  --app-glow: 0 0 58px rgba(255, 154, 134, 0.38);
+}
+
+.app-shell[data-palette='sand'] {
+  --paper: #efe3ca;
+  --muted: #8acbd0;
+  --steel: #170c79;
+  --ember: #56b6c6;
+  --ink: #12095f;
+  --logo-bg: #efe3ca;
+  --line: rgba(239, 227, 202, 0.22);
+  --panel: rgba(23, 12, 121, 0.78);
+  --shadow: 0 24px 80px rgba(18, 9, 95, 0.42);
+  --app-ink: #12095f;
+  --app-graphite: #170c79;
+  --app-charcoal: #24149a;
+  --app-smoke: #3154a8;
+  --app-steel: #56b6c6;
+  --app-silver: #8acbd0;
+  --app-paper: #efe3ca;
+  --app-bronze: #8acbd0;
+  --app-copper: #56b6c6;
+  --app-olive-signal: #efe3ca;
+  --app-warm-shadow: #170c79;
+  --app-line: rgba(86, 182, 198, 0.34);
+  --app-panel: rgba(23, 12, 121, 0.84);
+  --app-glow: 0 0 58px rgba(86, 182, 198, 0.38);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+

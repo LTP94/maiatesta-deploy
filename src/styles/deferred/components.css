@@ -1,0 +1,646 @@
+/* ══════════════════════════════════════════════════════════════════════
+   Full-page Star Field — extends across Hero + all sections
+   Capa global de estrellas posicionada fuera del Hero, debajo
+   de todos los componentes, manteniendo profesionalismo.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.stars-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.stars-bg__layer {
+  position: absolute;
+  inset: -200vh 0;
+  background-repeat: repeat;
+  will-change: transform;
+}
+
+/* ── Far layer: tiny dim dots, slow breathe ─────────────────────────── */
+.stars-bg__layer--far {
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.75), transparent),
+    radial-gradient(1px 1px at 28% 42%, rgba(255,255,255,0.50), transparent),
+    radial-gradient(1px 1px at 45%  8%, rgba(255,255,255,0.80), transparent),
+    radial-gradient(1px 1px at 72% 31%, rgba(255,255,255,0.60), transparent),
+    radial-gradient(1px 1px at 88% 19%, rgba(255,255,255,0.65), transparent),
+    radial-gradient(1px 1px at  5% 65%, rgba(255,255,255,0.55), transparent),
+    radial-gradient(1px 1px at 32% 78%, rgba(255,255,255,0.75), transparent),
+    radial-gradient(1px 1px at 61% 52%, rgba(255,255,255,0.40), transparent),
+    radial-gradient(1px 1px at 83% 71%, rgba(255,255,255,0.65), transparent),
+    radial-gradient(1px 1px at 17% 88%, rgba(255,255,255,0.50), transparent),
+    radial-gradient(1px 1px at 40% 25%, rgba(255,255,255,0.60), transparent),
+    radial-gradient(1px 1px at 55% 68%, rgba(255,255,255,0.70), transparent),
+    radial-gradient(1px 1px at 91% 45%, rgba(255,255,255,0.55), transparent),
+    radial-gradient(1px 1px at 24% 33%, rgba(255,255,255,0.80), transparent),
+    radial-gradient(1px 1px at 67% 82%, rgba(255,255,255,0.45), transparent),
+    radial-gradient(1px 1px at 13% 47%, rgba(255,255,255,0.65), transparent),
+    radial-gradient(1px 1px at 79% 12%, rgba(255,255,255,0.75), transparent),
+    radial-gradient(1px 1px at 36% 91%, rgba(255,255,255,0.50), transparent),
+    radial-gradient(1px 1px at 52% 39%, rgba(255,255,255,0.60), transparent),
+    radial-gradient(1px 1px at  8% 82%, rgba(255,255,255,0.70), transparent),
+    radial-gradient(1px 1px at 94% 62%, rgba(255,255,255,0.55), transparent),
+    radial-gradient(1px 1px at 43% 57%, rgba(255,255,255,0.65), transparent),
+    radial-gradient(1px 1px at 19% 74%, rgba(255,255,255,0.75), transparent),
+    radial-gradient(1px 1px at 71% 94%, rgba(255,255,255,0.40), transparent),
+    radial-gradient(1px 1px at 37% 16%, rgba(255,255,255,0.70), transparent),
+    radial-gradient(1px 1px at 84% 37%, rgba(255,255,255,0.50), transparent),
+    radial-gradient(1px 1px at 26% 59%, rgba(255,255,255,0.60), transparent),
+    radial-gradient(1px 1px at 58% 84%, rgba(255,255,255,0.65), transparent),
+    radial-gradient(1px 1px at 11% 29%, rgba(255,255,255,0.55), transparent),
+    radial-gradient(1px 1px at 66% 48%, rgba(255,255,255,0.75), transparent),
+    radial-gradient(1px 1px at 48% 73%, rgba(255,255,255,0.50), transparent),
+    radial-gradient(1px 1px at  3% 38%, rgba(255,255,255,0.70), transparent),
+    radial-gradient(1px 1px at 77% 56%, rgba(255,255,255,0.60), transparent),
+    radial-gradient(1px 1px at 31% 11%, rgba(255,255,255,0.80), transparent),
+    radial-gradient(1px 1px at 89% 88%, rgba(255,255,255,0.55), transparent),
+    radial-gradient(1px 1px at 22% 54%, rgba(255,255,255,0.65), transparent),
+    radial-gradient(1px 1px at 64% 14%, rgba(255,255,255,0.50), transparent),
+    radial-gradient(1px 1px at 50% 93%, rgba(255,255,255,0.70), transparent),
+    radial-gradient(1px 1px at 97% 34%, rgba(255,255,255,0.60), transparent),
+    radial-gradient(1px 1px at 41% 46%, rgba(255,255,255,0.75), transparent);
+  background-size: 100% 100%;
+  animation: stars-breathe-far 11s ease-in-out infinite alternate;
+}
+
+/* ── Near layer: slightly larger, brighter dots, faster pulse ──────── */
+.stars-bg__layer--near {
+  background-image:
+    radial-gradient(1.5px 1.5px at 15% 22%, rgba(220,235,255,0.88), transparent),
+    radial-gradient(2px   2px   at 62%  8%, rgba(255,255,255,0.82), transparent),
+    radial-gradient(1.5px 1.5px at 80% 55%, rgba(255,245,220,0.78), transparent),
+    radial-gradient(2px   2px   at 33% 72%, rgba(255,255,255,0.88), transparent),
+    radial-gradient(1.5px 1.5px at 50% 40%, rgba(200,220,255,0.72), transparent),
+    radial-gradient(2px   2px   at  8% 50%, rgba(255,255,255,0.82), transparent),
+    radial-gradient(1.5px 1.5px at 72% 28%, rgba(255,240,200,0.78), transparent),
+    radial-gradient(2px   2px   at 45% 85%, rgba(255,255,255,0.68), transparent),
+    radial-gradient(1.5px 1.5px at 25% 10%, rgba(220,240,255,0.88), transparent),
+    radial-gradient(2px   2px   at 90% 42%, rgba(255,255,255,0.82), transparent),
+    radial-gradient(1.5px 1.5px at 56% 62%, rgba(255,245,220,0.72), transparent),
+    radial-gradient(2px   2px   at 18% 80%, rgba(255,255,255,0.78), transparent),
+    radial-gradient(1.5px 1.5px at 75% 75%, rgba(200,225,255,0.82), transparent),
+    radial-gradient(2px   2px   at 38% 35%, rgba(255,255,255,0.88), transparent),
+    radial-gradient(1.5px 1.5px at 95% 20%, rgba(255,240,210,0.72), transparent),
+    radial-gradient(2px   2px   at 12% 68%, rgba(255,255,255,0.80), transparent),
+    radial-gradient(1.5px 1.5px at 60% 42%, rgba(220,235,255,0.76), transparent),
+    radial-gradient(2px   2px   at 30% 55%, rgba(255,255,255,0.84), transparent),
+    radial-gradient(1.5px 1.5px at 82% 10%, rgba(255,245,220,0.70), transparent),
+    radial-gradient(2px   2px   at 48% 22%, rgba(255,255,255,0.86), transparent);
+  background-size: 100% 100%;
+  animation: stars-breathe-near 7s ease-in-out infinite alternate-reverse;
+}
+
+/* ── Twinkle keyframes ──────────────────────────────────────────────── */
+@keyframes stars-breathe-far {
+  0%   { opacity: 0.55; transform: translateY(0); }
+  100% { opacity: 1;    transform: translateY(-4px); }
+}
+
+@keyframes stars-breathe-near {
+  0%   { opacity: 0.60; transform: translateY(0); }
+  100% { opacity: 1;    transform: translateY(-3px); }
+}
+
+/* ── Reduced motion: freeze stars ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .stars-bg__layer,
+  .section::after {
+    animation: none !important;
+    opacity: 0.8;
+  }
+
+  .page-meteor {
+    animation: none !important;
+    opacity: 0;
+  }
+}
+
+/* ── Mobile: fewer, dimmer stars for performance ────────────────────── */
+@media (max-width: 768px) {
+  .stars-bg__layer--near {
+    opacity: 0.5;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   PAGE-LEVEL SHOOTING STARS
+   Fixed overlay spanning the entire viewport at z-index 10, so meteors
+   streak across all sections. pointer-events: none keeps them non-blocking.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.page-meteors {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.page-meteor {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.40);
+  opacity: 0;
+}
+
+.page-meteor::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  transform: translateY(-50%);
+  width: 110px;
+  height: 1px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.62), transparent);
+}
+
+.page-meteor--a { top: 18%; left: 82%; animation: page-meteor-fall 12s  2s ease-in infinite; }
+.page-meteor--b { top:  8%; left: 71%; animation: page-meteor-fall 12s  7s ease-in infinite; }
+.page-meteor--c { top: 36%; left: 94%; animation: page-meteor-fall 12s 15s ease-in infinite; }
+.page-meteor--d { top: 22%; left: 60%; animation: page-meteor-fall 12s 22s ease-in infinite; }
+
+@keyframes page-meteor-fall {
+  0%   { transform: translate(0, 0) rotate(-28deg); opacity: 0; }
+  3%   { opacity: 1; }
+  18%  { opacity: 0; transform: translate(-280px, 122px) rotate(-28deg); }
+  100% { opacity: 0; transform: translate(-280px, 122px) rotate(-28deg); }
+}
+
+/* ── Twinkling animation for section::after star layer ──────────────── */
+@keyframes section-stars-twinkle {
+  from { opacity: 0.14; }
+  to   { opacity: 0.34; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   SCROLL CONSTELLATION NAVIGATOR
+   Fixed right-side track: comet progress indicator + section star nodes
+   ══════════════════════════════════════════════════════════════════════ */
+
+.scroll-constellation {
+  position: fixed;
+  right: 24px;
+  top: 140px;
+  bottom: 64px;
+  z-index: 50;
+  width: 20px;
+  pointer-events: none;
+}
+
+/* ── Track line ──────────────────────────────────────────────────────── */
+.scroll-track {
+  position: relative;
+  width: 2px;
+  height: 100%;
+  margin: 0 auto;
+  background: rgba(140, 180, 255, 0.08);
+  border-radius: 2px;
+}
+
+/* Subtle star dots along the unvisited track */
+.scroll-track::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 50% 12%, rgba(180, 210, 255, 0.28), transparent),
+    radial-gradient(1px 1px at 50% 30%, rgba(180, 210, 255, 0.20), transparent),
+    radial-gradient(1px 1px at 50% 50%, rgba(180, 210, 255, 0.24), transparent),
+    radial-gradient(1px 1px at 50% 70%, rgba(180, 210, 255, 0.18), transparent),
+    radial-gradient(1px 1px at 50% 88%, rgba(180, 210, 255, 0.22), transparent);
+  background-size: 2px 100%;
+  pointer-events: none;
+}
+
+/* ── Progress fill (visited portion) — height set via inline style ──── */
+.scroll-track__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0; /* overridden by React inline style */
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(100, 160, 255, 0.22) 30%,
+    rgba(130, 195, 255, 0.58)
+  );
+  border-radius: 2px;
+}
+
+/* ── Comet head — top position set via React inline style ───────────── */
+.scroll-comet {
+  position: absolute;
+  left: 50%;
+  top: 0; /* overridden by React inline style */
+  transform: translate(-50%, -50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 5px 2px rgba(160, 210, 255, 0.90),
+    0 0 14px 5px rgba(100, 165, 255, 0.46),
+    0 0 28px 8px rgba(80,  140, 255, 0.20);
+  animation: comet-glow 2.2s ease-in-out infinite;
+}
+
+/* Comet tail pointing upward (direction of travel) */
+.scroll-comet::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 34px;
+  background: linear-gradient(to top, rgba(140, 200, 255, 0.65), transparent);
+}
+
+/* ── Section node stars ──────────────────────────────────────────────── */
+.scroll-node {
+  position: absolute;
+  left: 50%;
+  /* Always the active (largest) size in layout; scale down to appear smaller.
+     transform: scale() is composited — no layout recalc when toggling active. */
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(160, 200, 255, 0.36);
+  border: 1px solid rgba(180, 220, 255, 0.28);
+  box-shadow: 0 0 4px 1px rgba(120, 175, 255, 0.26);
+  padding: 0;
+  appearance: none;
+  cursor: pointer;
+  pointer-events: all;
+  /* scale(0.667) ≈ 6/9 — visually matches the old 6px inactive size */
+  transform: translate(-50%, -50%) scale(0.667);
+  transition: transform 280ms ease;
+}
+
+/* Enlarged invisible hit area for easy clicking */
+.scroll-node::before {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+}
+
+.scroll-node.is-active {
+  background: rgba(210, 235, 255, 0.92);
+  border-color: rgba(230, 245, 255, 0.80);
+  box-shadow:
+    0 0 8px 3px rgba(150, 210, 255, 0.72),
+    0 0 18px 6px rgba(100, 170, 255, 0.36);
+  animation: node-pulse 2.6s ease-in-out infinite;
+}
+
+/* ── Sparkle burst on first activation ──────────────────────────────── */
+.scroll-node__burst {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(200, 230, 255, 0.7) 0%, transparent 65%);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0);
+}
+
+.scroll-node.is-sparkling .scroll-node__burst {
+  animation: node-sparkle 0.65s ease-out forwards;
+}
+
+/* ── Tooltip label ───────────────────────────────────────────────────── */
+.scroll-node__label {
+  position: absolute;
+  right: calc(100% + 14px);
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font-size: 10px;
+  font-family: var(--font-mono, monospace);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(175, 215, 255, 0.70);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+  user-select: none;
+  background: rgba(4, 8, 18, 0.60);
+  padding: 3px 8px;
+  border-radius: 3px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.scroll-node:hover .scroll-node__label {
+  opacity: 1;
+}
+
+/* ── Constellation keyframes ─────────────────────────────────────────── */
+@keyframes comet-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 5px 2px  rgba(160, 210, 255, 0.90),
+      0 0 14px 5px rgba(100, 165, 255, 0.46),
+      0 0 28px 8px rgba(80,  140, 255, 0.20);
+  }
+  50% {
+    box-shadow:
+      0 0 8px 3px  rgba(185, 228, 255, 1.00),
+      0 0 20px 7px rgba(120, 182, 255, 0.65),
+      0 0 40px 12px rgba(90, 155, 255, 0.30);
+  }
+}
+
+/* node-pulse: transform-only animation on the scale — composited */
+@keyframes node-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%       { transform: translate(-50%, -50%) scale(1.18); }
+}
+
+/* node-sparkle: opacity + scale only (composited) */
+@keyframes node-sparkle {
+  0%   { opacity: 0.9; transform: scale(0.2); }
+  100% { opacity: 0;   transform: scale(1); }
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 1280px) {
+  .scroll-constellation {
+    right: 10px;
+  }
+}
+
+/* Mobile: compact right-edge tracker, no labels */
+@media (max-width: 1535px) {
+  .scroll-constellation {
+    display: none;
+  }
+  .scroll-track {
+    width: 1.5px;
+  }
+  .scroll-comet {
+    width: 5px;
+    height: 5px;
+    box-shadow:
+      0 0 4px 2px rgba(160, 210, 255, 0.90),
+      0 0 10px 4px rgba(100, 165, 255, 0.46);
+  }
+  .scroll-comet::before {
+    height: 20px;
+  }
+  .scroll-node {
+    width: 4px;
+    height: 4px;
+  }
+  .scroll-node.is-active {
+    width: 6px;
+    height: 6px;
+  }
+  .scroll-node__label {
+    display: none;
+  }
+}
+
+/* ── Reduced motion: freeze all constellation animations ─────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .sticky-whatsapp-button svg,
+  .scroll-comet,
+  .scroll-node,
+  .scroll-node__burst {
+    animation: none !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   MOBILE PERFORMANCE — disable GPU-heavy decorative effects on phones.
+   All rules below are purely cosmetic. Content and layout are unaffected.
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Hero orbs: large blurred gradient circles with continuous animations
+     are the single biggest GPU drain on mobile. Remove filter and animation;
+     keep the subtle base gradient colour for visual depth. */
+  .hero-orb {
+    filter: none;
+    animation: none;
+    opacity: 0.5;
+  }
+
+  /* Aurora: already hidden at ≤620px via critical.css; also hide at 621-768px
+     (tablets and large phones in landscape) to stop the 72px blur + rotation. */
+  .hero-aurora {
+    display: none;
+  }
+
+  /* Grain: the 0.8 s loop causes frequent style recalcs on mobile. Static noise
+     is visually identical and costs nothing. */
+  .hero-grain {
+    animation: none;
+  }
+
+  /* Page meteors: four fixed-position animated elements trigger full-viewport
+     repaints on every frame. Hide on mobile — invisible at small sizes anyway. */
+  .page-meteor {
+    display: none;
+  }
+
+  /* Hero shooting stars: similar to page meteors — small screens don't benefit. */
+  .hero-shooting-star {
+    display: none;
+  }
+
+  /* Stars-bg: reduce twinkle frequency to cut down GPU composite layers. */
+  .stars-bg__layer--far,
+  .stars-bg__layer--near {
+    animation-duration: 20s;
+  }
+}
+
+.scroll-reveal {
+  opacity: 1;
+}
+
+.section-hydration-shell {
+  isolation: isolate;
+}
+
+.section-shell--services {
+  min-height: 820px;
+}
+
+.section-shell--projects {
+  min-height: 660px;
+}
+
+.section-shell--faq {
+  min-height: 620px;
+}
+
+.section-shell-card,
+.service-shell-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.service-shell-card {
+  width: min(400px, 72vw);
+  min-height: 520px;
+  margin: 48px auto 0;
+  padding: 24px;
+  border: 1px solid rgba(246, 248, 251, 0.14);
+  border-radius: 8px;
+  background: rgba(14, 27, 45, 0.78);
+  color: var(--app-paper);
+}
+
+.section-shell-line {
+  display: block;
+  width: 100%;
+  height: 12px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(246, 248, 251, 0.1),
+    rgba(216, 189, 120, 0.18),
+    rgba(246, 248, 251, 0.1)
+  );
+}
+
+.section-shell-line--title {
+  width: 72%;
+  height: 18px;
+}
+
+.section-shell-line--short {
+  width: 48%;
+}
+
+.service-shell-card .service-preview-frame {
+  height: 100%;
+}
+
+@media (max-width: 920px) {
+  :root {
+    --services-shell-height: 1780px;
+    --projects-shell-height: 1520px;
+    --faq-shell-height: 900px;
+    --article-body-shell-height: 2200px;
+  }
+
+  #services,
+  #projects,
+  #local-faq,
+  .article-body-section,
+  .section-hydration-shell {
+    contain: layout paint style;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  #services {
+    content-visibility: auto;
+    contain-intrinsic-size: auto var(--services-shell-height);
+  }
+
+  #projects {
+    content-visibility: auto;
+    contain-intrinsic-size: auto var(--projects-shell-height);
+  }
+
+  #local-faq {
+    content-visibility: auto;
+    contain-intrinsic-size: auto var(--faq-shell-height);
+  }
+
+  .article-body-section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto var(--article-body-shell-height);
+  }
+
+  #contact {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 980px;
+  }
+
+  .site-footer {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 760px;
+  }
+
+  .section-shell--services {
+    min-height: var(--services-shell-height);
+  }
+
+  .section-shell--projects {
+    min-height: var(--projects-shell-height);
+  }
+
+  .section-shell--faq {
+    min-height: var(--faq-shell-height);
+  }
+
+  .service-shell-card {
+    width: clamp(200px, 72vw, 260px);
+    min-height: clamp(336px, 92vw, 376px);
+    margin-top: 34px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 920px) {
+  html.is-scrolling #services,
+  html.is-scrolling #projects,
+  html.is-scrolling #local-faq {
+    will-change: transform;
+  }
+}
+
+html.is-scrolling .page-meteor,
+html.is-scrolling .stars-bg__layer,
+html.is-scrolling .hero-aurora,
+html.is-scrolling .hero-orb,
+html.is-scrolling .hero-shooting-star,
+html.is-scrolling .persona-orbit-ring,
+html.is-scrolling .persona-orbit-star,
+html.is-scrolling .persona-portrait::before,
+html.is-scrolling .service-axis,
+html.is-scrolling .service-deck,
+html.is-scrolling .service-preview-skeleton,
+html.is-scrolling .milky-way-divider::before,
+html.is-scrolling .milky-way-divider__band,
+html.is-scrolling .milky-way-divider__core,
+html.is-scrolling .milky-way-divider__dust,
+html.is-scrolling .scroll-track__fill,
+html.is-scrolling .scroll-comet,
+html.is-scrolling .scroll-node__burst {
+  animation-play-state: paused !important;
+}
+
+html.is-flicking .page-meteor,
+html.is-flicking .stars-bg__layer,
+html.is-flicking .hero-aurora,
+html.is-flicking .hero-orb,
+html.is-flicking .hero-shooting-star,
+html.is-flicking .persona-orbit-ring,
+html.is-flicking .persona-orbit-star,
+html.is-flicking .persona-portrait::before,
+html.is-flicking .service-axis,
+html.is-flicking .service-deck,
+html.is-flicking .service-preview-skeleton,
+html.is-flicking .milky-way-divider::before,
+html.is-flicking .milky-way-divider__band,
+html.is-flicking .milky-way-divider__core,
+html.is-flicking .milky-way-divider__dust,
+html.is-flicking .scroll-track__fill,
+html.is-flicking .scroll-comet,
+html.is-flicking .scroll-node__burst {
+  animation-play-state: paused !important;
+}

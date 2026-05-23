@@ -22,6 +22,7 @@ type HeroProps = {
   palette: string;
 };
 
+/** Full-page hero section: renders the Header, luminous headline, persona portrait and scroll CTA. */
 export function Hero({
   content,
   language,

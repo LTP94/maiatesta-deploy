@@ -58,6 +58,7 @@ type ContactFormProps = {
   content: LocalizedContent;
 };
 
+/** Contact section: channel cards (WhatsApp, email, etc.) + form submission via Formspree. */
 export function ContactForm({ content }: ContactFormProps) {
   const whatsappChannel = content.contact.channels.find(
     (channel) => channel.label.toLowerCase() === "whatsapp",

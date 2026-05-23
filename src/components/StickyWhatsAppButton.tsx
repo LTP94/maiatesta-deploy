@@ -4,6 +4,7 @@ type StickyWhatsAppButtonProps = {
   content: LocalizedContent;
 };
 
+/** Fixed bottom-right WhatsApp CTA button. Pre-fills a message with the active product name and opens the WhatsApp deep link. */
 export function StickyWhatsAppButton({ content }: StickyWhatsAppButtonProps) {
   const whatsappChannel = content.contact.channels.find(
     (channel) => channel.label.toLowerCase() === 'whatsapp',

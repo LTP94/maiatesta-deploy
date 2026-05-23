@@ -1,0 +1,550 @@
+/* Carrusel 3D: las tarjetas giran alrededor de un eje y resumen el servicio activo. */
+.service-carousel {
+  --service-summary-bottom: clamp(-56px, -25vw, -24px);
+  --service-indicators-bottom: clamp(-108px, -15vw, -72px);
+  --service-controls-clearance: clamp(120px, 14vw, 180px);
+  /* Caja total de la ruleta. Aumenta width/min-height si las tarjetas se salen. */
+  position: relative;
+  width: min(100%, 760px);
+  min-height: clamp(390px, 48vw, 500px);
+  /* Espacio real para que Work methodology empiece debajo del resumen e indicadores. */
+  margin-bottom: var(--service-controls-clearance);
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 28px 80px rgba(0, 0, 0, 0.26));
+}
+
+.service-scene {
+  /* Escenario 3D real. Debe crecer junto con .service-card y cellSize en ProductRoulette.tsx. */
+  position: relative;
+  width: 24px;
+  height: 250px;
+  /* perspective controla la profundidad: menor = efecto 3D mas fuerte. */
+  perspective: 1400px;
+  margin: 56px auto 200px;
+}
+
+.service-axis {
+  /* Eje recto — solo flota suavemente en Y, sin inclinacion. */
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: service-axis-float 4s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.service-deck {
+  /* Deck giratorio: ProductRoulette.tsx rota este contenedor para mostrar la tarjeta activa. */
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.service-card {
+  /* Tarjeta individual de servicio. width, min-height, gap y padding definen su tamano. */
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  width: 350px;
+  min-height: 450px;
+  display: flex;
+  flex-direction: column;
+  /* Distancia vertical entre numero, titulo, texto/preview y frase final. */
+  gap: 20px;
+  /* Distribuye el contenido a lo alto de la tarjeta; usa flex-start si lo quieres mas junto arriba. */
+  justify-content: space-between;
+  /* Espacio interno entre el borde de la tarjeta y los textos/imagenes. */
+  padding: 40px;
+  color: var(--paper);
+  border: 2px solid rgba(248, 248, 248, 0.18);
+  background:
+    linear-gradient(145deg, rgba(248, 248, 248, 0.12), transparent 36%),
+    radial-gradient(
+      circle at 86% 12%,
+      rgba(255, 179, 138, 0.28),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 14% 86%,
+      rgba(201, 239, 85, 0.08),
+      transparent 32%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(75, 64, 57, 0.98),
+      rgba(20, 16, 14, 0.96) 58%,
+      rgba(74, 38, 24, 0.94)
+    );
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.36),
+    0 0 22px rgba(255, 179, 138, 0.08);
+  transform-style: preserve-3d;
+  transition: opacity 180ms ease;
+  backface-visibility: visible;
+}
+
+.app-shell[data-palette='atlantic'] .service-card {
+  border-color: rgba(246, 248, 251, 0.22);
+  background:
+    linear-gradient(145deg, rgba(246, 248, 251, 0.12), transparent 36%),
+    radial-gradient(
+      circle at 86% 12%,
+      rgba(111, 143, 175, 0.3),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 14% 86%,
+      rgba(216, 189, 120, 0.14),
+      transparent 32%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(27, 47, 73, 0.98),
+      rgba(14, 27, 45, 0.99) 58%,
+      rgba(7, 17, 31, 0.98)
+    );
+  box-shadow:
+    0 24px 70px rgba(3, 8, 16, 0.46),
+    0 0 22px rgba(111, 143, 175, 0.14);
+}
+
+.app-shell[data-palette='tropical'] .service-card,
+.app-shell[data-palette='sunset'] .service-card,
+.app-shell[data-palette='sand'] .service-card {
+  border-color: color-mix(in srgb, var(--app-paper) 22%, transparent);
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--app-paper) 12%, transparent),
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 86% 12%,
+      color-mix(in srgb, var(--app-steel) 34%, transparent),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 14% 86%,
+      color-mix(in srgb, var(--app-copper) 18%, transparent),
+      transparent 32%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--app-charcoal) 96%, transparent),
+      color-mix(in srgb, var(--app-graphite) 98%, transparent) 58%,
+      color-mix(in srgb, var(--app-ink) 96%, transparent)
+    );
+  box-shadow:
+    0 24px 70px color-mix(in srgb, var(--app-ink) 42%, transparent),
+    0 0 22px color-mix(in srgb, var(--app-steel) 16%, transparent);
+}
+
+.service-card::before,
+.service-card::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.service-card::before {
+  /* Reflejo diagonal superior de cada tarjeta. */
+  inset: 0;
+  background:
+    linear-gradient(
+      115deg,
+      transparent 0 35%,
+      rgba(248, 248, 248, 0.13) 44%,
+      transparent 54%
+    ),
+    radial-gradient(
+      circle at 88% 16%,
+      rgba(255, 179, 138, 0.34),
+      transparent 28%
+    );
+  opacity: 0.76;
+}
+
+.service-card::after {
+  /* Detalle circular decorativo en la esquina inferior. */
+  right: 18px;
+  bottom: 18px;
+  width: 72px;
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 179, 138, 0.38);
+  border-radius: 50%;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(248, 248, 248, 0.08) 0 1px,
+    transparent 1px 8px
+  );
+  opacity: 0.48;
+}
+
+.service-card.active {
+  /* Estado de la tarjeta al frente de la ruleta. */
+  border-color: var(--app-copper);
+  box-shadow:
+    0 32px 92px rgba(0, 0, 0, 0.48),
+    0 0 52px rgba(255, 179, 138, 0.38),
+    0 0 24px rgba(201, 239, 85, 0.13),
+    0 0 1px rgba(248, 248, 248, 0.72);
+}
+
+.app-shell[data-palette='atlantic'] .service-card.active {
+  box-shadow:
+    0 32px 92px rgba(3, 8, 16, 0.52),
+    0 0 52px rgba(111, 143, 175, 0.36),
+    0 0 24px rgba(216, 189, 120, 0.2),
+    0 0 1px rgba(246, 248, 251, 0.72);
+}
+
+.app-shell[data-palette='tropical'] .service-card.active,
+.app-shell[data-palette='sunset'] .service-card.active,
+.app-shell[data-palette='sand'] .service-card.active {
+  box-shadow:
+    0 32px 92px color-mix(in srgb, var(--app-ink) 48%, transparent),
+    0 0 52px color-mix(in srgb, var(--app-steel) 42%, transparent),
+    0 0 24px color-mix(in srgb, var(--app-copper) 20%, transparent),
+    0 0 1px color-mix(in srgb, var(--app-paper) 72%, transparent);
+}
+
+.service-side-hotspot {
+  position: absolute;
+  top: 72px;
+  bottom: 112px;
+  z-index: 23;
+  width: clamp(104px, 16vw, 180px);
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.service-side-hotspot--previous {
+  left: 0;
+}
+
+.service-side-hotspot--next {
+  right: 0;
+}
+
+.service-side-hotspot:focus-visible {
+  outline: 2px solid var(--app-copper);
+  outline-offset: 4px;
+  background: rgba(216, 189, 120, 0.08);
+}
+
+.service-card-index,
+.service-card h3,
+.service-card-preview,
+.service-card p,
+.service-card strong,
+.service-page-link {
+  position: relative;
+  z-index: 1;
+}
+
+.service-card-index,
+.service-card strong,
+.service-page-link {
+  color: var(--app-copper);
+  font-weight: 800;
+  text-shadow: 0 0 16px rgba(255, 179, 138, 0.24);
+}
+
+.service-card h3 {
+  /* Titulo de la tarjeta; se mantiene separado del cuerpo <p>. */
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.05;
+}
+
+.service-card-preview {
+  display: block;
+  width: 100%;
+  height: clamp(150px, 14vw, 176px);
+  margin-top: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(248, 248, 248, 0.22);
+  border-radius: 6px;
+  background: rgba(7, 7, 7, 0.66);
+  color: inherit;
+  text-decoration: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 14px 28px rgba(0, 0, 0, 0.24);
+}
+
+.service-card-preview:hover .service-preview-overlay,
+.service-card-preview:focus-visible .service-preview-overlay {
+  opacity: 1;
+}
+
+.service-preview-bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 14px;
+  padding: 0 7px;
+  background: rgba(248, 248, 248, 0.12);
+  border-bottom: 1px solid rgba(248, 248, 248, 0.1);
+}
+
+.service-preview-bar span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--app-copper);
+  opacity: 0.82;
+}
+
+.service-preview-frame {
+  position: relative;
+  display: block;
+  height: calc(100% - 14px);
+  overflow: hidden;
+}
+
+.service-preview-frame img,
+.service-preview-frame video,
+.service-preview-skeleton {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.service-preview-frame img {
+  object-fit: cover;
+  filter: saturate(0.94) contrast(1.04) brightness(0.86);
+}
+
+.service-card-preview.has-video .service-preview-frame img,
+.service-card-preview.has-video .service-preview-frame video {
+  object-fit: contain;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(111, 143, 175, 0.18), transparent 44%),
+    #06101c;
+  filter: saturate(0.96) contrast(1.03) brightness(0.9);
+}
+
+.service-preview-skeleton {
+  background:
+    linear-gradient(90deg, transparent, rgba(248, 248, 248, 0.14), transparent),
+    linear-gradient(135deg, rgba(84, 122, 149, 0.38), rgba(16, 24, 33, 0.86));
+  background-size: 180% 100%, 100% 100%;
+  animation: preview-skeleton 1200ms ease-in-out infinite;
+}
+
+.service-preview-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 4px;
+  padding: 12px;
+  color: #ffffff;
+  background: linear-gradient(180deg, transparent, rgba(7, 14, 22, 0.86));
+  text-align: center;
+  opacity: 0.92;
+  transition: opacity 180ms ease;
+}
+
+.service-preview-overlay strong {
+  color: #ffffff;
+  font-size: 0.86rem;
+  text-transform: none;
+}
+
+.service-preview-overlay small {
+  color: rgba(248, 248, 248, 0.78);
+  font-size: 0.68rem;
+  line-height: 1.2;
+}
+
+.service-card p {
+  /* Cuerpo de texto de la tarjeta. Aqui vive tambien el preview cuando hay previewUrl. */
+  margin: 0;
+  color: rgba(248, 248, 248, 0.74);
+  font-size: 1rem;
+  /* Distancia entre lineas del texto descriptivo de la tarjeta. */
+  line-height: 1.42;
+}
+
+.service-card strong {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.service-page-link {
+  width: fit-content;
+  font-size: 0.86rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.service-orbit-shadow {
+  /* Sombra eliptica falsa para reforzar que la ruleta flota en 3D. */
+  position: absolute;
+  left: 50%;
+  bottom: 0%;
+  width: min(78%, 430px);
+  height: 72px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    rgba(0, 0, 0, 0.46),
+    rgba(48, 36, 24, 0.18) 44%,
+    transparent 70%
+  );
+  transform: translateX(-50%) rotateX(62deg);
+  pointer-events: none;
+}
+
+.service-active-summary {
+  /* Resumen flotante de la tarjeta activa, debajo de la ruleta. */
+  position: absolute;
+  left: 50%;
+  /* Mueve el resumen activo desde --service-summary-bottom en .service-carousel. */
+  bottom: var(--service-summary-bottom);
+  z-index: 24;
+  /* Ancho maximo del resumen activo. */
+  width: min(82%, 360px);
+  margin: 0;
+  /* Espacio interno del resumen activo. */
+  padding: 12px 14px;
+  color: rgba(248, 248, 248, 0.82);
+  border: 1px solid rgba(248, 248, 248, 0.14);
+  background: rgba(12, 12, 12, 0.68);
+  backdrop-filter: blur(14px);
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 700;
+  transform: translateX(-50%);
+}
+
+.service-indicators {
+  /* Puntos/barras inferiores para seleccionar una tarjeta sin esperar la rotacion. */
+  position: absolute;
+  left: 50%;
+  /* Mueve los indicadores desde --service-indicators-bottom en .service-carousel. */
+  bottom: var(--service-indicators-bottom);
+  z-index: 24;
+  display: flex;
+  gap: 20px;
+  transform: translateX(-50%);
+}
+
+.service-indicator {
+  position: relative;
+  width: 26px;
+  height: 25px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(248, 248, 248, 0.24);
+  cursor: pointer;
+  overflow: hidden;
+  /* Width snaps (layout-change without transition is imperceptible here).
+     Background fades via ::after opacity — composited. */
+}
+
+.service-indicator::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--app-copper);
+  opacity: 0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+}
+
+.service-indicator.active {
+  width: 42px;
+  box-shadow:
+    0 0 18px rgba(255, 179, 138, 0.52),
+    0 0 8px rgba(201, 239, 85, 0.22);
+}
+
+.service-indicator.active::after {
+  opacity: 1;
+}
+
+.app-shell[data-palette='atlantic'] .service-indicator.active {
+  box-shadow:
+    0 0 18px rgba(194, 165, 109, 0.44),
+    0 0 8px rgba(84, 122, 149, 0.28);
+}
+
+@media (min-width: 921px) {
+  .project-card-package.featured {
+    transform: scale(1.05);
+  }
+
+  .project-card-package.featured:hover {
+    transform: translateY(-8px) scale(1.05);
+  }
+}
+
+/* Bloque de proceso: muestra pasos breves despues de la ruleta de servicios. */
+.process-block {
+  display: grid;
+  position: relative;
+  width: 100%;
+  gap: 18px;
+}
+
+/* Right-edge fade hint — signals there is more content to scroll */
+.process-block::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 20px;
+  width: clamp(48px, 8vw, 96px);
+  height: calc(100% - 60px);
+  background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.72));
+  pointer-events: none;
+  z-index: 2;
+  border-radius: 0 8px 8px 0;
+}
+
+.process-title {
+  margin: 0;
+  color: var(--app-paper);
+  font-size: clamp(1.25rem, 2vw, 1.85rem);
+  line-height: 1.08;
+  text-align: center;
+  text-shadow:
+    0 2px 0 rgba(7, 7, 7, 0.44),
+    0 10px 26px rgba(0, 0, 0, 0.48);
+}
+
+.process-list {
+  /* Horizontal Apple-style snap scroll — cards slide laterally */
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 14px;
+  padding-bottom: 20px;
+  /* Extend to bleed past section padding for full-width feel */
+  margin-inline: calc(-1 * clamp(16px, 4vw, 48px));
+  padding-inline: clamp(16px, 4vw, 48px);
+}
+
+.process-list::-webkit-scrollbar {
+  display: none;
+}
+

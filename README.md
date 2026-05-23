@@ -33,16 +33,43 @@ npm run build
 
 ## Project Map
 
-- `src/App.tsx`: route shell, lazy loading, homepage composition.
-- `src/entry-server.tsx`: SSG route list, SEO metadata, JSON-LD schema.
-- `scripts/prerender.mjs`: turns the Vite build into static HTML pages.
-- `src/data/siteContent.ts`: homepage/service copy.
-- `src/data/servicePages.ts`: service landing pages.
-- `src/data/articlePages.ts`: SEO guide pages.
-- `src/critical.css`: above-the-fold and no-FOUC baseline CSS.
-- `src/deferred.css`: below-fold and richer visual styling.
-- `public/assets`: deployable optimized assets only.
-- `assets-source`: local/raw source assets, ignored by git unless intentionally managed with LFS or external storage.
+```
+src/
+├── App.tsx                  ← route shell + homepage composition (~325 lines)
+├── entry-server.tsx         ← SSG route list, SEO metadata, JSON-LD schema
+├── critical.css             ← @import assembler → src/styles/critical/
+├── deferred.css             ← @import assembler → src/styles/deferred/
+├── components/
+│   ├── Shells.tsx           ← hydration-shell + fallback components
+│   └── *.tsx                ← all other React components (JSDoc on every export)
+├── hooks/
+│   ├── useScrollActivity.ts ← scroll state + emitScrollActivity
+│   ├── useSectionHydration.ts ← IntersectionObserver-based lazy hydration
+│   ├── useScrollConstellation.ts ← media-query gate for constellation
+│   ├── usePaletteSync.ts    ← localStorage palette persistence + PaletteName type
+│   ├── useHashNavigation.ts ← scroll-to-hash on language change
+│   ├── useScrolled.ts       ← `is-scrolled` class gate
+│   └── useScrollReveal.ts   ← .scroll-reveal IntersectionObserver
+├── data/
+│   ├── siteContent.ts       ← assembler (re-exports types, brand, en, es)
+│   ├── content/             ← types.ts, brand.ts, en.ts, es.ts
+│   ├── servicePages.ts      ← assembler (re-exports services/index.ts)
+│   ├── services/            ← one file per service page + index.ts
+│   ├── articlePages.ts      ← assembler (re-exports articles/index.ts)
+│   └── articles/            ← one file per article + index.ts
+└── styles/
+    ├── critical/            ← variables.css, reset.css, hero.css, persona.css, sections.css
+    └── deferred/            ← variables.css, hero-effects.css, header.css, persona.css,
+                                sections.css, carousel.css, cards.css, contact-footer.css,
+                                animations.css, components.css
+scripts/
+└── prerender.mjs            ← turns Vite build into static HTML pages
+docs/
+├── ARCHITECTURE.md          ← technical design decisions
+├── CSS_TOKENS.md            ← CSS custom property reference
+├── DATA_SCHEMA.md           ← how to add services/articles/copy
+└── SEO_CONTENT_SYSTEM.md    ← SEO workflow and content rules
+```
 
 ## Required Before Deploy
 

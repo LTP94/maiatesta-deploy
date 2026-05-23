@@ -10,6 +10,7 @@ type GuidesIndexPageProps = {
   onLanguageChange: (language: LanguageCode) => void;
 };
 
+/** Full guides index page listing all SEO article cards, their sections and read-time estimates. */
 export function GuidesIndexPage({
   language,
   onLanguageChange,

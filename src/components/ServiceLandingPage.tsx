@@ -22,6 +22,7 @@ const serviceHighlightPhrases = [
   'software',
 ];
 
+/** Full service landing page: hero with ambient video, detail cards, process steps, related services and contact CTA. */
 export function ServiceLandingPage({
   slug,
   language,

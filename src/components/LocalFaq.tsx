@@ -13,6 +13,7 @@ type LocalFaqProps = {
   content: LocalizedContent;
 };
 
+/** FAQ accordion section. Renders the first N items expanded and shows a "load more" button for the rest. */
 export function LocalFaq({ content }: LocalFaqProps) {
   const [showAllFaqs, setShowAllFaqs] = useState(false);
   const visibleFaqCount = 3;

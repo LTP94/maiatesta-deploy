@@ -10,6 +10,7 @@ type ServicePreviewProps = {
   videoWebm?: string;
 };
 
+/** Service card mini-browser preview: renders an image or auto-playing video thumbnail when the card is active and near the viewport. */
 export function ServicePreview({
   href,
   image,

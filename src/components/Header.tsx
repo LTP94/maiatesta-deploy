@@ -10,6 +10,7 @@ type HeaderProps = {
   navHrefPrefix?: string;
 };
 
+/** Fixed glass-morphism site header with logo, navigation links, language switcher and mobile hamburger menu. */
 export function Header({
   content,
   language,

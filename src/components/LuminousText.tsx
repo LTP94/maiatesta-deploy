@@ -8,6 +8,7 @@ function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+/** Wraps matching phrases inside `text` with a luminous accent span. Phrases are matched longest-first to avoid partial overlaps. */
 export function LuminousText({
   text,
   phrases,

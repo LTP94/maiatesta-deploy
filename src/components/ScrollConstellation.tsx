@@ -10,6 +10,7 @@ const SECTIONS = [
 const useBrowserLayoutEffect =
   typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
+/** Decorative right-edge scroll tracker: comet head + section-node stars that light up as the user scrolls. Only mounted at ≥ 1536 px. */
 export function ScrollConstellation() {
   const nodePositionsRef = useRef<number[]>([]);
   const rafRef           = useRef<number>(0);

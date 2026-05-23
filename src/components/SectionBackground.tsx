@@ -4,6 +4,7 @@ type SectionBackgroundProps = {
   src: string;
 };
 
+/** Lazy-loaded ambient video background for landing page sections. Skips loading on reduced-motion, constrained networks, and viewports narrower than 1280 px. */
 export function SectionBackground({ src }: SectionBackgroundProps) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const [shouldLoad, setShouldLoad] = useState(false);

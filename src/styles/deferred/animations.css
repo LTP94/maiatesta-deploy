@@ -1,0 +1,673 @@
+/* Clase aplicada por el hook de reveal para animar elementos al entrar en pantalla. */
+.reveal {
+  animation: reveal-up 700ms ease both;
+}
+
+/* Animaciones globales de entrada, brillo, escaneo, carrusel y logo. */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes preview-skeleton {
+  from {
+    background-position: 120% 0, 0 0;
+  }
+
+  to {
+    background-position: -80% 0, 0 0;
+  }
+}
+
+@keyframes pulse-ring {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: scale(0.96);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes service-grid-spin {
+  to {
+    transform: translate(-50%, -50%) rotateX(68deg) rotateZ(342deg);
+  }
+}
+
+@keyframes service-deck-hover {
+  0%,
+  100% {
+    transform: translateY(54px) rotateX(58deg) rotateZ(-14deg);
+  }
+
+  50% {
+    transform: translateY(46px) rotateX(58deg) rotateZ(-14deg);
+  }
+}
+
+@keyframes roulette-core-scan {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes banner-signal {
+  0%,
+  28% {
+    opacity: 0.22;
+    transform: translateX(-62%);
+  }
+
+  52% {
+    opacity: 0.58;
+  }
+
+  82%,
+  100% {
+    opacity: 0.18;
+    transform: translateX(62%);
+  }
+}
+
+@keyframes milky-band-breathe {
+  0%,
+  100% {
+    opacity: 0.84;
+    filter: blur(0.45px) saturate(1.02);
+    transform: rotate(-8deg) scaleX(0.985);
+  }
+
+  50% {
+    opacity: 0.98;
+    filter: blur(0.36px) saturate(1.14);
+    transform: rotate(-8deg) scaleX(1.015);
+  }
+}
+
+@keyframes milky-core-pulse {
+  0%,
+  100% {
+    opacity: 0.38;
+    transform: rotate(-8deg) scale(0.96);
+  }
+
+  50% {
+    opacity: 0.58;
+    transform: rotate(-8deg) scale(1.04);
+  }
+}
+
+@keyframes milky-stars-twinkle {
+  0%,
+  100% {
+    opacity: 0.54;
+  }
+
+  42% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes milky-dust-drift {
+  from {
+    transform: translate3d(-8px, 0, 0);
+  }
+
+  to {
+    transform: translate3d(8px, -3px, 0);
+  }
+}
+
+@keyframes card-sheen {
+  0%,
+  42% {
+    opacity: 0;
+    transform: translateX(-52%);
+  }
+
+  58% {
+    opacity: 1;
+  }
+
+  78%,
+  100% {
+    opacity: 0;
+    transform: translateX(52%);
+  }
+}
+
+@keyframes card-glow-opacity {
+  0%, 100% { opacity: 0; }
+  50%       { opacity: 1; }
+}
+
+@keyframes persona-focus {
+  0%,
+  100% {
+    transform: translate(-50%, -42%) translateZ(28px) scale(1);
+  }
+
+  50% {
+    transform: translate(-50%, -43.2%) translateZ(28px) scale(1.025);
+  }
+}
+
+@keyframes persona-cosmic-glow {
+  0%,
+  100% {
+    opacity: 0.48;
+  }
+
+  50% {
+    opacity: 0.72;
+  }
+}
+
+@keyframes coin-flip {
+  0% {
+    transform: perspective(900px) rotateY(0deg) scale(1);
+  }
+
+  15% {
+    transform: perspective(900px) rotateY(90deg) scale(0.92);
+  }
+
+  48% {
+    transform: perspective(900px) rotateY(360deg) scale(1.06);
+  }
+
+  84% {
+    transform: perspective(900px) rotateY(630deg) scale(0.96);
+  }
+
+  100% {
+    transform: perspective(900px) rotateY(720deg) scale(1);
+  }
+}
+
+@keyframes persona-orbit-drift {
+  0%,
+  100% {
+    transform: rotate(-18deg);
+  }
+
+  50% {
+    transform: rotate(342deg);
+  }
+}
+
+@keyframes persona-star-pulse {
+  0%,
+  100% {
+    opacity: 0.44;
+    transform: scale(0.92);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes logo-scan {
+  0%,
+  24% {
+    transform: translateX(-120%);
+  }
+
+  42%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes logo-pulse {
+  0%,
+  92%,
+  100% {
+    filter: contrast(1.08) drop-shadow(0 0 0 rgba(220, 95, 0, 0));
+    transform: translateX(0);
+  }
+
+  94% {
+    filter: contrast(1.24) drop-shadow(2px 0 0 rgba(220, 95, 0, 0.34));
+    transform: translateX(1px);
+  }
+
+  96% {
+    filter: contrast(1.16) drop-shadow(-2px 0 0 rgba(55, 58, 64, 0.26));
+    transform: translateX(-1px);
+  }
+}
+
+/* Accesibilidad: reduce transiciones y animaciones para usuarios sensibles al movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+
+  .persona-orbit-ring,
+  .persona-orbit-star,
+  .persona-portrait::before,
+  .milky-way-divider::before,
+  .milky-way-divider__band,
+  .milky-way-divider__core,
+  .milky-way-divider__dust {
+    animation: none !important;
+  }
+}
+
+/* Tablet: simplifica navegacion y pasa layouts complejos a menos columnas. */
+@media (max-width: 920px) {
+  .site-header {
+    top: 12px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: auto;
+    padding: 10px 12px 10px 14px;
+    gap: 12px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .hamburger-btn {
+    display: flex;
+  }
+
+  .header-action {
+    display: none;
+  }
+
+  .hero-content,
+  .roulette-layout,
+  .contact-section,
+  .site-main-typebot-chat {
+    grid-template-columns: 1fr;
+  }
+
+  .bot-invite {
+    position: static;
+  }
+
+  .hero-content {
+    padding-top: 52px;
+    gap: 24px;
+  }
+
+  .service-page-hero__inner {
+    grid-template-columns: 1fr;
+    padding-top: 52px;
+    gap: 24px;
+  }
+
+  .service-detail-grid,
+  .service-related-grid,
+  .guides-card-grid,
+  .service-process-list {
+    grid-template-columns: 1fr;
+  }
+
+  /* Portrait stacks ABOVE text on tablet/mobile */
+  .persona-panel {
+    --portrait-size: clamp(190px, 38vw, 260px);
+    grid-row: 1;
+    justify-self: center;
+    width: min(100%, 290px);
+  }
+
+  .hero-copy {
+    grid-row: 2;
+    text-align: center;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .project-grid,
+  .review-track {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .project-grid,
+  .review-track {
+    grid-template-columns: 1fr;
+  }
+
+  /* Roulette: shrink cards on tablet so they don't overflow medium screens */
+  .service-carousel {
+    width: min(100%, 580px);
+    /* clip 3D children that rotate past the carousel edge */
+    clip-path: inset(0 0 -220px 0);
+  }
+
+  .service-card {
+    /* Center card on the 3D scene axis (scene is 24px wide, center = 12px) */
+    left: calc(12px - clamp(270px, 58vw, 330px) / 2);
+    width: clamp(270px, 58vw, 330px);
+    min-height: 400px;
+    padding: 28px;
+  }
+
+  .service-scene {
+    margin-top: 52px;
+    margin-bottom: 200px;
+  }
+}
+
+/* Movil: compacta cabecera, hero, tarjetas y formulario para pantallas estrechas. */
+@media (max-width: 620px) {
+  .hero-section {
+    min-height: auto;
+    padding-top: 162px;
+  }
+
+  .hero-scrim {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(12, 12, 12, 0.36),
+        rgba(12, 12, 12, 0.94) 28%,
+        rgba(12, 12, 12, 0.98)
+      ),
+      linear-gradient(90deg, rgba(12, 12, 12, 0.98), rgba(49, 43, 38, 0.72));
+  }
+
+  .app-shell[data-palette='atlantic'] .hero-scrim {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(7, 17, 31, 0.4),
+        rgba(7, 17, 31, 0.95) 28%,
+        rgba(7, 17, 31, 0.99)
+      ),
+      linear-gradient(90deg, rgba(7, 17, 31, 0.99), rgba(27, 47, 73, 0.76));
+  }
+
+  .hero-aurora {
+    display: none;
+  }
+
+  .site-header {
+    width: min(100% - 20px, 1180px);
+    top: 10px;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    padding: 8px 10px 8px 12px;
+    border-radius: 16px;
+  }
+
+  .brand-mark {
+    width: min(100%, 190px);
+  }
+
+  .brand-mark img {
+    height: 38px;
+    object-position: left center;
+  }
+
+  .header-controls {
+    justify-content: flex-end;
+  }
+
+  .header-action {
+    display: none;
+  }
+
+  .language-option {
+    min-width: 32px;
+    min-height: 30px;
+    font-size: 0.78rem;
+  }
+
+  .mobile-nav {
+    margin-top: 6px;
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .hero-content,
+  .section,
+  .milky-way-divider,
+  .site-footer {
+    width: min(100% - 24px, 1180px);
+  }
+
+  .site-footer__main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .site-footer__brand {
+    grid-column: 1 / -1;
+  }
+
+  .hero-content {
+    /* Already single-column from 920px; just adjust spacing */
+    padding-top: 28px;
+    gap: 20px;
+  }
+
+  .service-page-hero {
+    min-height: auto;
+    padding-top: 162px;
+  }
+
+  .service-page-hero__inner {
+    width: min(100% - 24px, 1180px);
+    padding-top: 28px;
+    gap: 20px;
+  }
+
+  .service-page-copy h1 {
+    max-width: 100%;
+    font-size: clamp(1.72rem, 6vw, 2.2rem);
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+
+  .service-proof-card,
+  .service-detail-card,
+  .service-process-step,
+  .service-related-card,
+  .guide-card,
+  .service-cta-section {
+    padding: 18px;
+  }
+
+  .persona-panel {
+    --portrait-size: clamp(180px, 52vw, 240px);
+    width: var(--portrait-size);
+  }
+
+  .persona-portrait {
+    width: clamp(180px, 52vw, 240px);
+  }
+
+  .hero-copy h1 {
+    max-width: 100%;
+    font-size: clamp(1.72rem, 6vw, 2.2rem);
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+
+  .hero-body {
+    max-width: 100%;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .hero-copy.reveal,
+  .persona-panel.reveal {
+    animation: none;
+  }
+
+  .persona-signal,
+  .contact-form,
+  .process-list article {
+    grid-template-columns: 1fr;
+  }
+
+  .persona-signal {
+    position: relative;
+    bottom: auto;
+    margin-top: -20px;
+    display: none;
+  }
+
+  .service-carousel {
+    min-height: 380px;
+    margin-inline: 0;
+    --service-controls-clearance: 130px;
+    --service-summary-bottom: -48px;
+    --service-indicators-bottom: -92px;
+    filter: none;
+    /* clip-path clips 3D-transformed children (overflow:hidden does not) */
+    clip-path: inset(0 0 -220px 0);
+  }
+
+  .palette-switcher {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .palette-options {
+    justify-content: stretch;
+  }
+
+  .palette-option {
+    flex: 1 1 140px;
+    justify-content: space-between;
+  }
+
+  .service-scene {
+    margin-top: 34px;
+    margin-bottom: 138px;
+    height: 318px;
+    perspective: none;
+  }
+
+  .service-axis,
+  .service-deck {
+    transform-style: flat;
+    animation: none;
+  }
+
+  .service-deck {
+    transition: none;
+  }
+
+  .service-card {
+    /* Center card on the 3D scene axis and fit on 320-390px phones */
+    left: calc(12px - clamp(200px, 72vw, 260px) / 2);
+    width: clamp(200px, 72vw, 260px);
+    min-height: clamp(336px, 92vw, 376px);
+    padding: 16px;
+    gap: 10px;
+    transform-style: flat;
+    box-shadow:
+      0 18px 46px rgba(3, 8, 16, 0.38),
+      0 0 18px rgba(111, 143, 175, 0.1);
+  }
+
+  .service-card::before,
+  .service-card::after {
+    opacity: 0.26;
+  }
+
+  /* On mobile, hide all non-active cards — only the front card is shown */
+  .service-card:not(.active) {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .service-card-preview {
+    height: clamp(126px, 38vw, 152px);
+    margin-top: 10px;
+  }
+
+  .service-side-hotspot {
+    display: none;
+  }
+
+  .service-preview-overlay {
+    padding: 8px;
+  }
+
+  .service-preview-overlay small {
+    display: none;
+  }
+
+  .service-card h3 {
+    font-size: 1.08rem;
+  }
+
+  .service-card p {
+    font-size: 0.86rem;
+    line-height: 1.34;
+  }
+
+  .service-preview-skeleton {
+    animation: none;
+  }
+
+  .project-card::after,
+  .guide-card::after,
+  .service-detail-card::after {
+    animation: none;
+  }
+
+  .project-card,
+  .guide-card,
+  .local-faq-item,
+  .contact-form,
+  .site-main-typebot-chat__placeholder {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .milky-way-divider::before,
+  .milky-way-divider__band,
+  .milky-way-divider__core,
+  .milky-way-divider__dust {
+    animation: none;
+  }
+
+  .contact-channels a {
+    gap: 10px;
+  }
+
+  .site-footer {
+    padding: 56px 0 30px;
+  }
+
+  .site-footer__main {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .site-footer__brand {
+    grid-column: auto;
+  }
+
+  .site-footer__bottom {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+

@@ -29,6 +29,18 @@ function neutralizeDeferredCssForBuild(command: string): Plugin {
   };
 }
 
+/** Reads a CSS file and recursively inlines any @import statements so split
+ * partial files work even though Vite's CSS pipeline is bypassed for these
+ * raw-file reads. */
+function readCssResolvingImports(filePath: string): string {
+  const content = fs.readFileSync(filePath, "utf8");
+  const dir = path.dirname(filePath);
+  return content.replace(/@import\s+['"](.+?)['"]\s*;/g, (_match: string, importPath: string) => {
+    const resolved = path.resolve(dir, importPath);
+    return readCssResolvingImports(resolved);
+  });
+}
+
 function htmlPerformanceAssets(isSsrBuild: boolean, command: string): Plugin {
   const deferredCssFileName = "assets/deferred.css";
 
@@ -38,7 +50,7 @@ function htmlPerformanceAssets(isSsrBuild: boolean, command: string): Plugin {
       order: "post",
       handler(html: string) {
         const criticalCssPath = path.join(rootDir, "src", "critical.css");
-        const criticalCss = fs.readFileSync(criticalCssPath, "utf8");
+        const criticalCss = readCssResolvingImports(criticalCssPath);
         const deferredCssHref = `/${deferredCssFileName}`;
 
         return html
@@ -52,7 +64,7 @@ function htmlPerformanceAssets(isSsrBuild: boolean, command: string): Plugin {
       }
 
       const deferredCssPath = path.join(rootDir, "src", "deferred.css");
-      const rawCss = fs.readFileSync(deferredCssPath, "utf8");
+      const rawCss = readCssResolvingImports(deferredCssPath);
       const { code: minifiedCss } = transformSync(rawCss, { loader: 'css', minify: true });
       this.emitFile({
         type: "asset",

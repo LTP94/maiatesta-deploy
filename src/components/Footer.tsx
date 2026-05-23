@@ -44,6 +44,7 @@ function FooterIcon({ type }: { type: 'email' | 'whatsapp' | 'instagram' }) {
   );
 }
 
+/** Site footer: brand column, navigation columns, social links and copyright bar. */
 export function Footer({ content }: FooterProps) {
   const whatsappChannel = content.contact.channels.find(
     (channel) => channel.label === 'WhatsApp',

@@ -2,6 +2,7 @@ import { articlePages } from '../data/articlePages';
 
 const featuredGuides = articlePages.slice(0, 3);
 
+/** Teaser grid of the latest SEO guides. Statically renders links to article pages. */
 export function GuidesTeaser() {
   return (
     <section className='section guides-teaser-section' aria-labelledby='guides-teaser-title'>

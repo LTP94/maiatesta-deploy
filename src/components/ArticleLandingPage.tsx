@@ -87,6 +87,7 @@ function EditorialFigure({
   );
 }
 
+/** Full SEO article page: hero, structured body sections with editorial images, related service CTA and footer. */
 export function ArticleLandingPage({
   slug,
   language,

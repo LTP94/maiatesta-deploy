@@ -112,6 +112,7 @@ function applyTypebotSurfaceStyles() {
   return true;
 }
 
+/** Lazily loads and initialises the Typebot chatbot after the user has been idle for ~1.4 s. Falls back gracefully when the SDK is unavailable. */
 export function TypebotStandardChat({ content }: { content: LocalizedContent }) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [shouldLoadTypebot, setShouldLoadTypebot] = useState(false);

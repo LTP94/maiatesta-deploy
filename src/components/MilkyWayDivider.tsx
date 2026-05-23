@@ -1,3 +1,4 @@
+/** Animated milky-way band used as a decorative section divider between Projects and FAQ. */
 export function MilkyWayDivider() {
   return (
     <section className='milky-way-divider scroll-reveal' aria-hidden='true'>
