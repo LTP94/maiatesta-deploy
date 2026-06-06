@@ -103,8 +103,8 @@
   }
 
   50% {
-    opacity: 0.58;
-    transform: rotate(-8deg) scale(1.04);
+    opacity: 0.72;
+    transform: rotate(-8deg) scale(1.06);
   }
 }
 
@@ -249,6 +249,11 @@
     filter: contrast(1.16) drop-shadow(-2px 0 0 rgba(55, 58, 64, 0.26));
     transform: translateX(-1px);
   }
+}
+
+@keyframes hero-breathe {
+  from { opacity: 0.85; }
+  to   { opacity: 1; }
 }
 
 /* Accesibilidad: reduce transiciones y animaciones para usuarios sensibles al movimiento. */
@@ -518,9 +523,35 @@
   }
 
   .persona-signal,
-  .contact-form,
-  .process-list article {
+  .contact-form {
     grid-template-columns: 1fr;
+  }
+
+  /* Process steps: 2×2 grid — all 4 steps visible at once, no swipe needed */
+  .process-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow-x: visible;
+    scroll-snap-type: none;
+    margin-inline: 0;
+    padding-inline: 0;
+    padding-bottom: 0;
+    gap: 10px;
+  }
+
+  .process-list article {
+    flex: none;
+    width: auto;
+    grid-template-columns: 32px 1fr;
+    gap: 10px;
+    padding: 14px 12px;
+    align-items: start;
+    scroll-snap-align: none;
+  }
+
+  /* Right-edge fade hint no longer needed without horizontal scroll */
+  .process-block::after {
+    display: none;
   }
 
   .persona-signal {

@@ -512,3 +512,64 @@
     );
 }
 
+/* ── Ambient video background (desktop only) ────────────────────── */
+.hero-video-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-video-bg__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 600ms ease;
+  filter: brightness(0.68) saturate(1.1) contrast(1.06);
+}
+
+.hero-video-bg__media.is-ready {
+  opacity: 1;
+}
+
+.hero-video-bg__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(12, 12, 12, 0.58) 0%,
+    rgba(49, 43, 38, 0.38) 100%
+  );
+  mix-blend-mode: multiply;
+}
+
+/* ── Mobile (≤768px): kill all GPU-heavy hero effects ───────────── */
+@media (max-width: 768px) {
+  .hero-aurora,
+  .hero-orbs,
+  .hero-stars,
+  .hero-grain,
+  .hero-shooting-stars {
+    display: none;
+  }
+
+  .hero-section::before {
+    background:
+      linear-gradient(135deg, rgba(12, 12, 12, 0.72), rgba(49, 43, 38, 0.56)),
+      url('/assets/hero-mobile.webp') center / cover no-repeat;
+    animation: hero-breathe 6s ease-in-out infinite alternate;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-section::before,
+  .hero-grain {
+    animation: none !important;
+  }
+}
+

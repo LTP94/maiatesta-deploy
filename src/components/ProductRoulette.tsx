@@ -64,7 +64,6 @@ export function ProductRoulette({
   const services = content.products;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [isUserScrolling, setIsUserScrolling] = useState(false);
   // Initialize to 1024 (matches SSR) to avoid hydration mismatch.
   // The useEffect reads the real width after hydration.
   const [windowWidth, setWindowWidth] = useState(1024);
@@ -116,33 +115,13 @@ export function ProductRoulette({
     setActiveIndex(0);
   }, [services]);
 
-  useEffect(() => {
-    if (typeof document === 'undefined') {
-      return;
-    }
-
-    const syncScrollActivity = (event: Event) => {
-      const customEvent = event as CustomEvent<{ isScrolling?: boolean }>;
-      setIsUserScrolling(Boolean(customEvent.detail?.isScrolling));
-    };
-
-    document.addEventListener('maiatesta:scroll-activity', syncScrollActivity);
-
-    return () => {
-      document.removeEventListener(
-        'maiatesta:scroll-activity',
-        syncScrollActivity,
-      );
-    };
-  }, []);
-
   // Rotacion automatica de cartas. 4500ms deja tiempo para leer titulo, texto y frase final.
   useEffect(() => {
     if (typeof window === 'undefined') {
       return;
     }
 
-    if (isPaused || isUserScrolling || cellCount < 2) {
+    if (isPaused || cellCount < 2) {
       return;
     }
 
@@ -151,7 +130,7 @@ export function ProductRoulette({
     }, cardAutoRotateMs);
 
     return () => window.clearInterval(intervalId);
-  }, [cellCount, isPaused, isUserScrolling]);
+  }, [cellCount, isPaused]);
 
   return (
     <section className='section services-section' id='services'>

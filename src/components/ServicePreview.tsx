@@ -26,11 +26,9 @@ export function ServicePreview({
   const [hasIntent, setHasIntent] = useState(false);
   const [isSmallViewport, setIsSmallViewport] = useState(false);
   const [isStableActive, setIsStableActive] = useState(false);
-  const [isScrollIdle, setIsScrollIdle] = useState(true);
   const hasVideo = Boolean(videoMp4 || videoWebm);
   const shouldLoadVideo =
     hasVideo &&
-    isScrollIdle &&
     (hasIntent ||
       (isActive && isInView && (!isSmallViewport || isStableActive)));
   const previewClassName = hasVideo
@@ -102,45 +100,13 @@ export function ServicePreview({
       return;
     }
 
-    const syncScrollActivity = (event?: Event) => {
-      const customEvent = event as
-        | CustomEvent<{ isScrolling?: boolean }>
-        | undefined;
-      const isScrolling =
-        customEvent?.detail?.isScrolling ??
-        document.documentElement.classList.contains('is-scrolling');
-
-      setIsScrollIdle(!isScrolling);
-
-      if (isScrolling) {
-        videoRef.current?.pause();
-      }
-    };
-
-    syncScrollActivity();
-
-    document.addEventListener('maiatesta:scroll-activity', syncScrollActivity);
-
-    return () => {
-      document.removeEventListener(
-        'maiatesta:scroll-activity',
-        syncScrollActivity,
-      );
-    };
-  }, []);
-
-  useEffect(() => {
-    if (typeof document === 'undefined') {
-      return;
-    }
-
     const handleVisibilityChange = () => {
       const video = videoRef.current;
       if (!video) {
         return;
       }
 
-      if (document.hidden || !isInView || !isActive || !isScrollIdle) {
+      if (document.hidden || !isInView || !isActive) {
         video.pause();
         return;
       }
@@ -154,7 +120,7 @@ export function ServicePreview({
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [isActive, isInView, isScrollIdle, shouldLoadVideo]);
+  }, [isActive, isInView, shouldLoadVideo]);
 
   const media = (
     <>

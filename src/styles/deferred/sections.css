@@ -779,7 +779,10 @@
     378px -28px 0 rgba(111, 143, 175, 0.56),
     456px 20px 0 rgba(246, 248, 251, 0.72),
     540px -10px 0 rgba(111, 143, 175, 0.7),
-    640px 18px 0 rgba(246, 248, 251, 0.5);
+    640px 18px 0 rgba(246, 248, 251, 0.5),
+    710px -14px 0 rgba(216, 189, 120, 0.58),
+    784px 22px 0 rgba(246, 248, 251, 0.44),
+    860px -8px 0 rgba(111, 143, 175, 0.62);
   opacity: 0.74;
   animation: milky-stars-twinkle 5.6s ease-in-out infinite;
 }
