@@ -3,12 +3,14 @@ import { Footer } from './Footer';
 import { LuminousText } from './LuminousText';
 import { articlePages } from '../data/articlePages';
 import { siteContent } from '../data/siteContent';
+import { pillarPagesBySlug } from '../data/pillarPages';
+import type { PillarRouteSlug } from '../data/pillarRoutes';
 import { servicePagesBySlug } from '../data/servicePages';
 import type { ServiceRouteSlug } from '../data/serviceRoutes';
 import type { LanguageCode } from '../data/siteContent';
 
 type ServiceLandingPageProps = {
-  slug: ServiceRouteSlug;
+  slug: ServiceRouteSlug | PillarRouteSlug;
   language: LanguageCode;
   onLanguageChange: (language: LanguageCode) => void;
 };
@@ -28,7 +30,7 @@ export function ServiceLandingPage({
   language,
   onLanguageChange,
 }: ServiceLandingPageProps) {
-  const page = servicePagesBySlug[slug];
+  const page = servicePagesBySlug[slug as ServiceRouteSlug] ?? pillarPagesBySlug[slug as PillarRouteSlug];
   const content = siteContent.locales.es;
 
   if (!page) {

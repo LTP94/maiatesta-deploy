@@ -5,6 +5,8 @@ import { PassThrough } from 'node:stream';
 import App from './App';
 import { articlePages, getArticlePageByPath } from './data/articlePages';
 import { articleRouteSlugs } from './data/articleRoutes';
+import { getPillarPageByPath } from './data/pillarPages';
+import { pillarRouteSlugs } from './data/pillarRoutes';
 import { servicePages, getServicePageByPath } from './data/servicePages';
 import { serviceRouteSlugs } from './data/serviceRoutes';
 
@@ -84,6 +86,7 @@ export function getStaticRoutes() {
     '/guias/',
     ...serviceRouteSlugs.map((slug) => `/servicios/${slug}/`),
     ...articleRouteSlugs.map((slug) => `/guias/${slug}/`),
+    ...pillarRouteSlugs.map((slug) => `/${slug}/`),
   ];
 }
 
@@ -91,6 +94,7 @@ export function getRouteSeo(routePath = '/') {
   const normalizedPath = normalizeRoutePath(routePath);
   const articlePage = getArticlePageByPath(normalizedPath);
   const servicePage = getServicePageByPath(normalizedPath);
+  const pillarPage = getPillarPageByPath(normalizedPath);
   const isGuidesIndex = normalizedPath === '/guias/';
   const url = `${siteUrl}${normalizedPath === '/' ? '/' : normalizedPath}`;
 
@@ -136,18 +140,31 @@ export function getRouteSeo(routePath = '/') {
     };
   }
 
+  if (pillarPage) {
+    return {
+      title: pillarPage.metaTitle,
+      description: pillarPage.metaDescription,
+      canonical: url,
+      ogTitle: pillarPage.metaTitle,
+      ogDescription: pillarPage.metaDescription,
+      ogUrl: url,
+      twitterTitle: pillarPage.metaTitle,
+      twitterDescription: pillarPage.metaDescription,
+    };
+  }
+
   return {
-    title: 'Maiatesta | Desarrollo Web, Software y Chatbots en Quito',
+    title: 'Desarrollo de Software, Web y Automatización en Quito | Maiatesta',
     description:
-      'Maiatesta es una agencia digital en Quito para páginas web, software para pymes, chatbots de WhatsApp, tiendas online e inventario en Ecuador.',
+      'Maiatesta es una agencia digital en Quito especializada en desarrollo de software, páginas web, tiendas online, chatbots de WhatsApp y automatización para pymes.',
     canonical: `${siteUrl}/`,
-    ogTitle: 'Maiatesta | Desarrollo Web, Software y Chatbots en Quito',
+    ogTitle: 'Desarrollo de Software, Web y Automatización en Quito | Maiatesta',
     ogDescription:
-      'Maiatesta es una agencia digital en Quito para páginas web, software para pymes, chatbots de WhatsApp, tiendas online e inventario en Ecuador.',
+      'Maiatesta es una agencia digital en Quito especializada en desarrollo de software, páginas web, tiendas online, chatbots de WhatsApp y automatización para pymes.',
     ogUrl: `${siteUrl}/`,
-    twitterTitle: 'Maiatesta | Desarrollo Web, Software y Chatbots en Quito',
+    twitterTitle: 'Desarrollo de Software, Web y Automatización en Quito | Maiatesta',
     twitterDescription:
-      'Maiatesta es una agencia digital en Quito para páginas web, software para pymes, chatbots de WhatsApp, tiendas online e inventario en Ecuador.',
+      'Maiatesta es una agencia digital en Quito especializada en desarrollo de software, páginas web, tiendas online, chatbots de WhatsApp y automatización para pymes.',
   };
 }
 
@@ -155,6 +172,7 @@ export function getRouteStructuredData(routePath = '/') {
   const normalizedPath = normalizeRoutePath(routePath);
   const articlePage = getArticlePageByPath(normalizedPath);
   const servicePage = getServicePageByPath(normalizedPath);
+  const pillarPage = getPillarPageByPath(normalizedPath);
   const isGuidesIndex = normalizedPath === '/guias/';
   const graph: Array<Record<string, unknown>> = [
     localBusinessSchema,
@@ -218,6 +236,28 @@ export function getRouteStructuredData(routePath = '/') {
         url: `${siteUrl}${normalizedPath}`,
       },
       mainEntityOfPage: `${siteUrl}${normalizedPath}`,
+    });
+  } else if (pillarPage) {
+    graph.push({
+      '@type': 'Service',
+      '@id': `${siteUrl}${normalizedPath}#service`,
+      name: pillarPage.title,
+      serviceType: pillarPage.primaryKeyword,
+      description: pillarPage.metaDescription,
+      provider: { '@id': `${siteUrl}/#localbusiness` },
+      areaServed: [
+        { '@type': 'City', name: 'Quito' },
+        { '@type': 'AdministrativeArea', name: 'Pichincha' },
+        { '@type': 'Country', name: 'Ecuador' },
+      ],
+      mainEntityOfPage: `${siteUrl}${normalizedPath}`,
+    });
+    graph.push({
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+        { '@type': 'ListItem', position: 2, name: pillarPage.title, item: `${siteUrl}${normalizedPath}` },
+      ],
     });
   } else {
     graph[0] = {

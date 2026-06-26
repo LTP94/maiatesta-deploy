@@ -14,8 +14,8 @@ export const enLocale: LocalizedContent = {
   hero: {
     eyebrow: 'Accessible digital agency in Quito, Pichincha',
     title:
-      'Websites, online stores, and automation for Quito small businesses.',
-    body: 'Maiatesta helps local shops, restaurants, clinics, professionals, and growing SMEs in Quito Norte, Centro, Sur, and Pichincha get more leads online with clear, affordable web development, e-commerce, WhatsApp chatbots, inventory tools, custom software, and Excel automation.',
+      'Software development, websites, and automation for SMEs in Quito.',
+    body: 'We build inventory software, online stores, WhatsApp chatbots, websites, and automations for businesses that want to sell more and streamline operations.',
     primaryCta: 'Quote on WhatsApp',
     secondaryCta: 'Explore services',
     metrics: [

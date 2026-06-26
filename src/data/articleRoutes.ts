@@ -3,6 +3,8 @@ export const articleRouteSlugs = [
   'pagina-web-negocio-pequeno-quito',
   'software-inventario-pymes-quito',
   'automatizar-reportes-excel-pyme',
+  'cuanto-cuesta-software-a-medida-ecuador',
+  'software-a-medida-vs-excel-pyme',
 ] as const;
 
 export type ArticleRouteSlug = (typeof articleRouteSlugs)[number];

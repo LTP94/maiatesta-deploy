@@ -19,6 +19,9 @@ export const softwareAMedidaPymesEcuador = {
     'Paneles, usuarios, formularios y reportes según necesidad.',
     'Menos dependencia de hojas manuales y tareas repetidas.',
     'Arquitectura web para crecer con nuevos módulos.',
+    'Ejemplos por sector: control de citas en consultorios, gestión de pedidos en restaurantes, seguimiento de proyectos en constructoras, reportes de ventas para distribuidoras.',
+    'Cuándo NO conviene: si un SaaS existente resuelve tu problema, si tu operación es simple y Excel funciona bien, o si no hay presupuesto para mantener el sistema después del lanzamiento.',
+    'Mantenimiento post-lanzamiento: correcciones, ajustes y soporte se definen por contrato, no se asumen como costo indefinido.',
   ],
   process: [
     'Diagnóstico del proceso y definición del problema principal.',
@@ -40,6 +43,21 @@ export const softwareAMedidaPymesEcuador = {
       question: '¿Puede conectarse con otros sistemas?',
       answer:
         'Sí, dependiendo de las APIs disponibles. Se puede evaluar conexión con formularios, pagos, CRM, reportes, inventario o facturación.',
+    },
+    {
+      question: '¿Cuánto tarda un proyecto de software a medida?',
+      answer:
+        'Un MVP operativo puede estar listo en semanas, no meses. Depende de la cantidad de módulos, integraciones y datos históricos que se necesiten migrar.',
+    },
+    {
+      question: '¿Software a medida o un sistema ya existente?',
+      answer:
+        'Si hay un SaaS que resuelve tu problema por un costo razonable, es mejor usarlo. Software a medida conviene cuando tu proceso es particular, necesitas control total de los datos o los sistemas genéricos obligan a duplicar trabajo.',
+    },
+    {
+      question: '¿Qué pasa después del lanzamiento?',
+      answer:
+        'Se define un plan de soporte y mantenimiento. Incluye correcciones, ajustes menores y actualizaciones. El costo depende del alcance y se acuerda por contrato.',
     },
   ],
   relatedServiceIds: ['inventory-software', 'spreadsheet-automation', 'ai-automation'],

@@ -4,6 +4,7 @@ import { ScrollConstellation } from './components/ScrollConstellation';
 import { siteContent } from './data/siteContent';
 import type { LanguageCode } from './data/siteContent';
 import { normalizeArticlePath } from './data/articleRoutes';
+import { normalizePillarPath } from './data/pillarRoutes';
 import { normalizeServicePath } from './data/serviceRoutes';
 import { useScrollReveal } from './hooks/useScrollReveal';
 import { useScrollActivity } from './hooks/useScrollActivity';
@@ -146,6 +147,7 @@ export default function App({ routePath }: AppProps) {
   const currentRoutePath = routePath ?? getInitialRoutePath();
   const serviceSlug = normalizeServicePath(currentRoutePath);
   const articleSlug = normalizeArticlePath(currentRoutePath);
+  const pillarSlug = normalizePillarPath(currentRoutePath);
   const isGuidesIndexRoute =
     currentRoutePath === '/guias' || currentRoutePath === '/guias/';
 
@@ -220,6 +222,26 @@ export default function App({ routePath }: AppProps) {
       >
         <ArticleLandingPage
           slug={articleSlug}
+          language={language}
+          onLanguageChange={handleLanguageChange}
+        />
+      </Suspense>
+    );
+  }
+
+  if (pillarSlug) {
+    return (
+      <Suspense
+        fallback={
+          <RouteFallback
+            eyebrow='Servicio local'
+            title='Desarrollo de software en Quito.'
+            body='Cargando la página de Maiatesta.'
+          />
+        }
+      >
+        <ServiceLandingPage
+          slug={pillarSlug}
           language={language}
           onLanguageChange={handleLanguageChange}
         />

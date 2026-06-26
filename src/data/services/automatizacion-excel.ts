@@ -2,9 +2,9 @@ export const automatizacionExcelQuito = {
   slug: 'automatizacion-excel-quito' as const,
   productId: 'spreadsheet-automation',
   title: 'Automatización de Excel en Quito',
-  metaTitle: 'Automatización de Excel en Quito | Reportes y Dashboards | Maiatesta',
+  metaTitle: 'Automatización de Excel para Pymes en Ecuador | Maiatesta',
   metaDescription:
-    'Automatización de Excel en Quito para pymes: reportes, dashboards, consolidación de datos y menos tareas manuales repetitivas.',
+    'Automatiza reportes, archivos y procesos repetitivos de Excel para ahorrar tiempo y reducir errores en tu negocio.',
   h1: 'Automatización de Excel en Quito para reportes y tareas repetitivas',
   intro:
     'Excel puede ser una gran herramienta, pero muchas empresas pierden horas copiando datos, armando reportes o corrigiendo errores manuales cada semana.',

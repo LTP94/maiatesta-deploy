@@ -2,9 +2,9 @@ export const chatbotsWhatsappEcuador = {
   slug: 'chatbots-whatsapp-ecuador' as const,
   productId: 'ai-automation',
   title: 'Chatbots de WhatsApp en Ecuador',
-  metaTitle: 'Chatbots de WhatsApp en Ecuador | IA para Pymes | Maiatesta',
+  metaTitle: 'Chatbots de WhatsApp en Ecuador para Pymes | Maiatesta',
   metaDescription:
-    'Chatbots de WhatsApp con IA para pymes en Ecuador. Responde preguntas, captura leads y filtra clientes desde Quito con Maiatesta.',
+    'Chatbots para responder clientes, captar datos y ordenar solicitudes por WhatsApp. Desde flujos básicos hasta IA e integraciones.',
   h1: 'Chatbots de WhatsApp en Ecuador para responder y captar clientes 24/7',
   intro:
     'En Ecuador muchas ventas empiezan por WhatsApp. Un chatbot bien diseñado ayuda a responder preguntas frecuentes, ordenar solicitudes y filtrar prospectos antes de que el cliente se enfríe.',
@@ -19,6 +19,9 @@ export const chatbotsWhatsappEcuador = {
     'Preguntas frecuentes, captura de datos y calificación de leads.',
     'Mensajes diseñados para el tono real del negocio.',
     'Posibilidad de conectar web, formularios, CRM o reportes según el caso.',
+    'Funciona para restaurantes, academias, consultorios, tiendas, servicios profesionales y cualquier negocio con preguntas repetidas.',
+    'Tres niveles: flujo básico (preguntas frecuentes y datos), chatbot con IA (respuestas generativas) y chatbot integrado (conectado a inventario, CRM o reservas).',
+    'No reemplaza a una persona: filtra y ordena los mensajes para que el equipo humano se concentre en los casos que realmente importan.',
   ],
   process: [
     'Mapear las preguntas reales que llegan por WhatsApp.',
@@ -40,6 +43,21 @@ export const chatbotsWhatsappEcuador = {
       question: '¿Puede capturar leads para ventas?',
       answer:
         'Sí. Puede pedir nombre, teléfono, necesidad, zona, presupuesto aproximado o servicio de interés antes de enviar el contacto al equipo.',
+    },
+    {
+      question: '¿Se conecta a WhatsApp Business o necesita API oficial?',
+      answer:
+        'Depende del alcance. Un chatbot básico puede funcionar con WhatsApp Business directamente. Si necesitas enviar mensajes masivos, integrar con CRM o manejar múltiples agentes, se usa la API oficial de WhatsApp.',
+    },
+    {
+      question: '¿Puede tomar reservas o pedidos?',
+      answer:
+        'Sí, si el flujo lo requiere. Se puede diseñar un chatbot que capture fecha, hora, servicio, cantidad o datos del cliente y los envíe al equipo o a un sistema.',
+    },
+    {
+      question: '¿Cuándo NO conviene un chatbot?',
+      answer:
+        'Si tu negocio recibe pocas consultas o cada caso es completamente distinto, un chatbot puede frustar más que ayudar. Conviene cuando hay un volumen real de preguntas repetidas.',
     },
   ],
   relatedServiceIds: ['web-development', 'custom-software', 'e-commerce'],

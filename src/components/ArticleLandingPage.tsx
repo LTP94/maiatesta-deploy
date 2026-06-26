@@ -51,10 +51,10 @@ const articleEditorialImages = {
     caption:
       'La centralización de reportes comerciales provee visibilidad financiera inmediata a la gerencia.',
   },
-} satisfies Record<
+} satisfies Partial<Record<
   ArticleRouteSlug,
   { filename: string; placement: string; alt: string; caption: string }
->;
+>>;
 
 function EditorialFigure({
   filename,
@@ -134,7 +134,7 @@ export function ArticleLandingPage({
   const whatsappHref = `https://wa.me/593963092859?text=${encodeURIComponent(
     article.ctaMessage,
   )}`;
-  const editorialImage = articleEditorialImages[slug];
+  const editorialImage = (articleEditorialImages as Partial<Record<ArticleRouteSlug, { filename: string; placement: string; alt: string; caption: string }>>)[slug];
 
   return (
     <div className='app-shell service-page-shell' data-palette='atlantic'>
@@ -191,7 +191,7 @@ export function ArticleLandingPage({
 
       <main className='service-page-main article-page-main'>
         <article className='section article-body-section'>
-          {editorialImage.placement === 'intro' ? (
+          {editorialImage?.placement === 'intro' ? (
             <EditorialFigure
               filename={editorialImage.filename}
               alt={editorialImage.alt}
@@ -208,7 +208,7 @@ export function ArticleLandingPage({
               {section.body.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
-              {editorialImage.placement === 'after-first-section' &&
+              {editorialImage?.placement === 'after-first-section' &&
               index === 0 ? (
                 <EditorialFigure
                   filename={editorialImage.filename}
@@ -216,7 +216,7 @@ export function ArticleLandingPage({
                   caption={editorialImage.caption}
                 />
               ) : null}
-              {editorialImage.placement === section.heading ? (
+              {editorialImage?.placement === section.heading ? (
                 <EditorialFigure
                   filename={editorialImage.filename}
                   alt={editorialImage.alt}
