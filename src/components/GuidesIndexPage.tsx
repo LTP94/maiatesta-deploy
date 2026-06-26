@@ -2,8 +2,18 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { LuminousText } from './LuminousText';
 import { articlePages } from '../data/articlePages';
+import type { ArticleRouteSlug } from '../data/articleRoutes';
 import { siteContent } from '../data/siteContent';
 import type { LanguageCode } from '../data/siteContent';
+
+const guideThumbnails: Partial<Record<ArticleRouteSlug, string>> = {
+  'cuanto-cuesta-chatbot-whatsapp-ecuador': '/assets/previews/guide-chatbot-thumb.webp',
+  'pagina-web-negocio-pequeno-quito': '/assets/previews/guide-web-pyme-thumb.webp',
+  'software-inventario-pymes-quito': '/assets/previews/guide-inventory-thumb.webp',
+  'automatizar-reportes-excel-pyme': '/assets/previews/guide-excel-thumb.webp',
+  'cuanto-cuesta-software-a-medida-ecuador': '/assets/previews/guide-software-cost-thumb.webp',
+  'software-a-medida-vs-excel-pyme': '/assets/previews/guide-software-vs-excel-thumb.webp',
+};
 
 type GuidesIndexPageProps = {
   language: LanguageCode;
@@ -88,6 +98,17 @@ export function GuidesIndexPage({
                 key={guide.slug}
                 style={{ animationDelay: `${index * 70}ms` }}
               >
+                {guideThumbnails[guide.slug] ? (
+                  <img
+                    className='guide-card-thumb'
+                    src={guideThumbnails[guide.slug]}
+                    alt=''
+                    width='320'
+                    height='200'
+                    loading='lazy'
+                    decoding='async'
+                  />
+                ) : null}
                 <span>{guide.primaryKeyword}</span>
                 <h2>{guide.title}</h2>
                 <p>{guide.excerpt}</p>

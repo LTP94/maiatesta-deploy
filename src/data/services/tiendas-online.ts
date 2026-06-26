@@ -43,4 +43,10 @@ export const tiendasOnlineEcuador = {
     },
   ],
   relatedServiceIds: ['web-development', 'ai-automation', 'inventory-software', 'software-development-quito'],
+  featureImage: {
+    src: '/assets/previews/service-ecommerce-feature.webp',
+    alt: 'Mockup abstracto de una tienda online con productos y carrito',
+    width: 960,
+    height: 540,
+  },
 };

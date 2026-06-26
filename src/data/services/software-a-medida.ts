@@ -61,4 +61,10 @@ export const softwareAMedidaPymesEcuador = {
     },
   ],
   relatedServiceIds: ['inventory-software', 'spreadsheet-automation', 'ai-automation', 'software-development-quito'],
+  featureImage: {
+    src: '/assets/previews/service-custom-feature.webp',
+    alt: 'Mockup abstracto de un sistema modular con usuarios, formularios y reportes',
+    width: 960,
+    height: 540,
+  },
 };

@@ -43,4 +43,10 @@ export const controlComprasCostosQuito = {
     },
   ],
   relatedServiceIds: ['inventory-software', 'spreadsheet-automation', 'custom-software', 'software-development-quito'],
+  featureImage: {
+    src: '/assets/previews/service-purchases-feature.webp',
+    alt: 'Mockup abstracto de control de compras, proveedores y costos',
+    width: 960,
+    height: 540,
+  },
 };

@@ -46,8 +46,8 @@
 .hero-orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  will-change: transform;
+  filter: blur(24px);
+  will-change: auto;
 }
 
 .hero-orb--a {
@@ -56,7 +56,7 @@
   top: -10%;
   right: -8%;
   background: radial-gradient(circle, rgba(255, 155, 100, 0.22) 0%, transparent 70%);
-  animation: orb-drift-a 18s ease-in-out infinite alternate;
+  animation: none;
 }
 
 .hero-orb--b {
@@ -65,7 +65,7 @@
   bottom: 5%;
   left: -6%;
   background: radial-gradient(circle, rgba(84, 122, 149, 0.18) 0%, transparent 70%);
-  animation: orb-drift-b 22s ease-in-out infinite alternate;
+  animation: none;
 }
 
 .hero-orb--c {
@@ -74,7 +74,7 @@
   top: 40%;
   left: 38%;
   background: radial-gradient(circle, rgba(201, 239, 85, 0.08) 0%, transparent 70%);
-  animation: orb-drift-c 26s ease-in-out infinite alternate;
+  animation: none;
 }
 
 .hero-orb--d {
@@ -83,7 +83,7 @@
   top: 28%;
   right: 32%;
   background: radial-gradient(circle, rgba(110, 68, 210, 0.11) 0%, transparent 70%);
-  animation: orb-drift-d 34s ease-in-out infinite alternate;
+  animation: none;
 }
 
 @keyframes orb-drift-a {
@@ -212,9 +212,9 @@
     rgba(56, 138, 128, 0.20) 308deg,
     transparent 360deg
   );
-  filter: blur(72px);
-  animation: aurora-rotate 52s linear infinite;
-  will-change: transform;
+  filter: blur(20px);
+  animation: none;
+  will-change: auto;
 }
 
 @keyframes aurora-rotate {
@@ -252,22 +252,10 @@
   background: linear-gradient(to right, rgba(255, 255, 255, 0.65), transparent);
 }
 
-.hero-shooting-star--a {
-  top: 12%;
-  left: 78%;
-  animation: meteor-fall 10s 1.5s infinite;
-}
-
-.hero-shooting-star--b {
-  top: 6%;
-  left: 88%;
-  animation: meteor-fall 10s 6.5s infinite;
-}
-
+.hero-shooting-star--a,
+.hero-shooting-star--b,
 .hero-shooting-star--c {
-  top: 20%;
-  left: 68%;
-  animation: meteor-fall 10s 13s infinite;
+  display: none;
 }
 
 @keyframes meteor-fall {
@@ -298,8 +286,8 @@
   background-size: 180px 180px;
   background-position: 0 0;
   mix-blend-mode: overlay;
-  will-change: transform;
-  animation: grain-shift 0.8s steps(2) infinite;
+  will-change: auto;
+  animation: none;
 }
 
 @keyframes grain-shift {

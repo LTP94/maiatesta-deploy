@@ -61,4 +61,10 @@ export const chatbotsWhatsappEcuador = {
     },
   ],
   relatedServiceIds: ['web-development', 'custom-software', 'e-commerce', 'software-development-quito'],
+  featureImage: {
+    src: '/assets/previews/service-chatbot-feature.webp',
+    alt: 'Mockup abstracto de un flujo de chatbot conversacional',
+    width: 960,
+    height: 540,
+  },
 };

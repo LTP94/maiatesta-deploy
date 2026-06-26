@@ -169,6 +169,7 @@ export const esLocale: LocalizedContent = {
     {
       name: 'Página Web Express en Quito (desde $200)',
       type: 'Pago único',
+      image: '/assets/previews/package-web-express.webp',
       result:
         'Tu página web profesional lista en 3 a 5 días hábiles. Pago único, optimizada para celular y conectada a tu WhatsApp.',
       features: [
@@ -184,6 +185,7 @@ export const esLocale: LocalizedContent = {
     {
       name: 'Chatbot de WhatsApp con IA (desde US$ 60)',
       type: 'Más Popular',
+      image: '/assets/previews/package-web-chatbot.webp',
       result:
         'Un asistente virtual para WhatsApp o tu web que responde preguntas frecuentes y captura leads mientras trabajas.',
       badgeText: 'Más Popular',
@@ -208,6 +210,7 @@ export const esLocale: LocalizedContent = {
     {
       name: 'Control Operativo para Pymes',
       type: 'Software a medida, inventario y Excel',
+      image: '/assets/previews/package-full-digital.webp',
       result:
         'Sistemas internos, dashboards, agendas, alertas de stock, multiusuario, reportes, historial y trazabilidad para negocios en crecimiento.',
     },

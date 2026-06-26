@@ -67,4 +67,10 @@ export const automatizacionExcelQuito = {
     },
   ],
   relatedServiceIds: ['custom-software', 'inventory-software', 'purchase-optimization', 'software-development-quito'],
+  featureImage: {
+    src: '/assets/previews/service-excel-feature.webp',
+    alt: 'Comparación abstracta entre hojas manuales y dashboard automatizado',
+    width: 960,
+    height: 540,
+  },
 };

@@ -1,4 +1,5 @@
 import type { PillarRouteSlug } from './pillarRoutes';
+import type { FeatureImage } from './servicePages';
 import { allPillarPages } from './pillars/index';
 
 export type PillarPage = {
@@ -17,6 +18,7 @@ export type PillarPage = {
   process: string[];
   faqs: Array<{ question: string; answer: string }>;
   relatedServiceIds: string[];
+  featureImage?: FeatureImage;
 };
 
 export const pillarPages = allPillarPages satisfies PillarPage[];

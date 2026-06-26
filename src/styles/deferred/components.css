@@ -256,11 +256,9 @@
   pointer-events: none;
   transition: opacity 200ms ease;
   user-select: none;
-  background: rgba(4, 8, 18, 0.60);
+  background: rgba(4, 8, 18, 0.88);
   padding: 3px 8px;
   border-radius: 3px;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
 }
 
 .scroll-node:hover .scroll-node__label {

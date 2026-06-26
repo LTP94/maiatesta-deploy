@@ -64,7 +64,7 @@
     rgba(56, 138, 128, 0.2) 308deg,
     transparent 360deg
   );
-  filter: blur(72px);
+  filter: blur(20px);
 }
 
 .hero-scrim {
@@ -93,10 +93,8 @@
   padding: 10px 16px 10px 18px;
   border: 1px solid rgba(216, 189, 120, 0.3);
   background:
-    linear-gradient(135deg, rgba(7, 17, 31, 0.88), rgba(14, 27, 45, 0.78)),
-    rgba(7, 17, 31, 0.76);
-  -webkit-backdrop-filter: saturate(165%) blur(18px);
-  backdrop-filter: saturate(165%) blur(18px);
+    linear-gradient(135deg, rgba(7, 17, 31, 0.96), rgba(14, 27, 45, 0.92)),
+    rgba(7, 17, 31, 0.88);
   border-radius: 18px;
   box-shadow:
     0 18px 54px rgba(3, 8, 16, 0.48),

@@ -60,7 +60,7 @@
   opacity: 0.5;
   pointer-events: none;
   z-index: 1;
-  animation: persona-ring-breathe 5200ms ease-in-out infinite;
+  animation: none;
 }
 
 .persona-orbit-ring {
@@ -73,7 +73,7 @@
   border-radius: 50%;
   pointer-events: none;
   transform: rotate(-18deg);
-  animation: persona-orbit-drift 18s linear infinite;
+  animation: none;
 }
 
 .persona-orbit-ring::before,
@@ -115,7 +115,7 @@
     0 0 10px rgba(246, 248, 251, 0.9),
     0 0 22px rgba(216, 189, 120, 0.48);
   pointer-events: none;
-  animation: persona-star-pulse 4200ms ease-in-out infinite;
+  animation: none;
 }
 
 .persona-orbit-star--a {
@@ -174,7 +174,7 @@
     );
   mix-blend-mode: screen;
   opacity: 0.62;
-  animation: persona-cosmic-glow 5200ms ease-in-out infinite;
+  animation: none;
 }
 
 .persona-portrait::after {
@@ -224,8 +224,7 @@
 .persona-signal span {
   padding: 12px;
   border: 1px solid rgba(238, 238, 238, 0.18);
-  background: rgba(21, 23, 27, 0.7);
-  backdrop-filter: blur(16px);
+  background: rgba(21, 23, 27, 0.92);
   border-radius: 6px;
   color: rgba(238, 238, 238, 0.68);
   font-size: 0.72rem;

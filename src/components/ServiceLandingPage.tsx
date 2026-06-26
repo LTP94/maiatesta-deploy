@@ -146,6 +146,20 @@ export function ServiceLandingPage({
           </div>
         </section>
 
+        {page.featureImage ? (
+          <figure className='service-feature-figure scroll-reveal'>
+            <img
+              className='service-feature-image'
+              src={page.featureImage.src}
+              alt={page.featureImage.alt}
+              width={page.featureImage.width}
+              height={page.featureImage.height}
+              loading='lazy'
+              decoding='async'
+            />
+          </figure>
+        ) : null}
+
         <section className='section service-detail-section'>
           <div className='section-heading scroll-reveal'>
             <p className='eyebrow'>Proceso</p>

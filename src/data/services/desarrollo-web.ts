@@ -43,4 +43,10 @@ export const desarrolloWebQuito = {
     },
   ],
   relatedServiceIds: ['ai-automation', 'e-commerce', 'custom-software', 'software-development-quito'],
+  featureImage: {
+    src: '/assets/previews/service-web-feature.webp',
+    alt: 'Mockup abstracto de una página web profesional responsive',
+    width: 960,
+    height: 540,
+  },
 };

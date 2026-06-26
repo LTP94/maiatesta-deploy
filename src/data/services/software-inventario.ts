@@ -62,4 +62,10 @@ export const softwareInventarioQuito = {
     },
   ],
   relatedServiceIds: ['purchase-optimization', 'custom-software', 'spreadsheet-automation', 'software-development-quito'],
+  featureImage: {
+    src: '/assets/previews/service-inventory-feature.webp',
+    alt: 'Mockup abstracto de un panel de inventario con alertas y movimientos',
+    width: 960,
+    height: 540,
+  },
 };

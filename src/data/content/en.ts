@@ -170,6 +170,7 @@ export const enLocale: LocalizedContent = {
     {
       name: 'Express Website in Quito (from $200)',
       type: 'One-time payment',
+      image: '/assets/previews/package-web-express.webp',
       result:
         'A professional business website ready in 3 to 5 business days. One-time payment, mobile-first, and connected to your WhatsApp.',
       features: [
@@ -185,6 +186,7 @@ export const enLocale: LocalizedContent = {
     {
       name: 'AI WhatsApp Chatbot (from US$60)',
       type: 'Most Popular',
+      image: '/assets/previews/package-web-chatbot.webp',
       result:
         'A virtual assistant for WhatsApp or your website that answers common questions and captures leads while you work.',
       badgeText: 'Most Popular',
@@ -209,6 +211,7 @@ export const enLocale: LocalizedContent = {
     {
       name: 'Operational Control for SMEs',
       type: 'Custom software, inventory, and Excel',
+      image: '/assets/previews/package-full-digital.webp',
       result:
         'Internal systems, dashboards, appointments, stock alerts, multi-user access, reports, history, and traceability for growing businesses.',
     },

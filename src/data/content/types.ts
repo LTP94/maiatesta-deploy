@@ -63,6 +63,7 @@ export type LocalizedContent = {
     name: string;
     type: string;
     result: string;
+    image?: string;
     features?: Array<{ label: string; included: boolean; emphasized?: boolean }>;
     badgeText?: string;
     featured?: boolean;
