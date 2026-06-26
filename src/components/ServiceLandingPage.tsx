@@ -31,6 +31,7 @@ export function ServiceLandingPage({
   onLanguageChange,
 }: ServiceLandingPageProps) {
   const page = servicePagesBySlug[slug as ServiceRouteSlug] ?? pillarPagesBySlug[slug as PillarRouteSlug];
+  const pageType = slug in pillarPagesBySlug ? 'pillar' : 'service';
   const content = siteContent.locales.es;
 
   if (!page) {
@@ -109,6 +110,9 @@ export function ServiceLandingPage({
                 href={whatsappHref}
                 target='_blank'
                 rel='noreferrer'
+                data-conversion='whatsapp'
+                data-page-slug={page.slug}
+                data-page-type={pageType}
               >
                 Cotizar por WhatsApp
               </a>
@@ -167,7 +171,7 @@ export function ServiceLandingPage({
               <details
                 className='local-faq-item scroll-reveal'
                 key={faq.question}
-                style={{ animationDelay: `${index * 70}ms` }}
+                style={{ animationDelay: `${Math.min(index * 35, 120)}ms` }}
               >
                 <summary>
                   <span className='local-faq-question'>{faq.question}</span>
@@ -212,20 +216,37 @@ export function ServiceLandingPage({
                 (candidate) => candidate.productId === relatedId,
               );
 
-              if (!relatedProduct || !relatedPage) {
-                return null;
+              if (relatedProduct && relatedPage) {
+                return (
+                  <a
+                    className='service-related-card scroll-reveal'
+                    href={`/servicios/${relatedPage.slug}/`}
+                    key={relatedId}
+                  >
+                    <span>{relatedProduct.title}</span>
+                    <strong>{relatedProduct.accent}</strong>
+                  </a>
+                );
               }
 
-              return (
-                <a
-                  className='service-related-card scroll-reveal'
-                  href={`/servicios/${relatedPage.slug}/`}
-                  key={relatedId}
-                >
-                  <span>{relatedProduct.title}</span>
-                  <strong>{relatedProduct.accent}</strong>
-                </a>
+              const relatedPillar = Object.values(pillarPagesBySlug).find(
+                (candidate) => candidate.productId === relatedId,
               );
+
+              if (relatedPillar) {
+                return (
+                  <a
+                    className='service-related-card scroll-reveal'
+                    href={`/${relatedPillar.slug}/`}
+                    key={relatedId}
+                  >
+                    <span>{relatedPillar.title}</span>
+                    <strong>Soluciones de software para pymes en Quito</strong>
+                  </a>
+                );
+              }
+
+              return null;
             })}
           </div>
         </section>
@@ -243,6 +264,9 @@ export function ServiceLandingPage({
             href={whatsappHref}
             target='_blank'
             rel='noreferrer'
+            data-conversion='whatsapp'
+            data-page-slug={page.slug}
+            data-page-type={pageType}
           >
             Cotizar por WhatsApp
           </a>

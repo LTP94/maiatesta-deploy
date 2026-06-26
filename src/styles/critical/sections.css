@@ -825,26 +825,6 @@ a.site-footer__cta:hover {
     backface-visibility: hidden;
   }
 
-  #services {
-    content-visibility: auto;
-    contain-intrinsic-size: auto var(--services-shell-height);
-  }
-
-  #projects {
-    content-visibility: auto;
-    contain-intrinsic-size: auto var(--projects-shell-height);
-  }
-
-  #local-faq {
-    content-visibility: auto;
-    contain-intrinsic-size: auto var(--faq-shell-height);
-  }
-
-  .article-body-section {
-    content-visibility: auto;
-    contain-intrinsic-size: auto var(--article-body-shell-height);
-  }
-
   #contact {
     content-visibility: auto;
     contain-intrinsic-size: auto 980px;
@@ -923,4 +903,12 @@ html.is-flicking .scroll-track__fill,
 html.is-flicking .scroll-comet,
 html.is-flicking .scroll-node__burst {
   animation-play-state: paused !important;
+}
+
+/* During active scroll, content reveal must not hide elements. */
+html.is-scrolling .reveal,
+html.is-scrolling .scroll-reveal {
+  animation: none;
+  opacity: 1;
+  transform: none;
 }

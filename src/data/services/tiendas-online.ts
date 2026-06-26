@@ -42,5 +42,5 @@ export const tiendasOnlineEcuador = {
         'No. Se puede empezar con los productos más rentables o más consultados y ampliar el catálogo por etapas.',
     },
   ],
-  relatedServiceIds: ['web-development', 'ai-automation', 'inventory-software'],
+  relatedServiceIds: ['web-development', 'ai-automation', 'inventory-software', 'software-development-quito'],
 };

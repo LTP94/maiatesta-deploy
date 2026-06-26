@@ -215,6 +215,14 @@ export function getRouteStructuredData(routePath = '/') {
       about: articlePage.primaryKeyword,
       isPartOf: { '@id': `${siteUrl}/#website` },
     });
+    graph.push({
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+        { '@type': 'ListItem', position: 2, name: 'Guías', item: `${siteUrl}/guias/` },
+        { '@type': 'ListItem', position: 3, name: articlePage.title, item: `${siteUrl}${normalizedPath}` },
+      ],
+    });
   } else if (servicePage) {
     graph.push({
       '@type': 'Service',
@@ -236,6 +244,13 @@ export function getRouteStructuredData(routePath = '/') {
         url: `${siteUrl}${normalizedPath}`,
       },
       mainEntityOfPage: `${siteUrl}${normalizedPath}`,
+    });
+    graph.push({
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+        { '@type': 'ListItem', position: 2, name: servicePage.title, item: `${siteUrl}${normalizedPath}` },
+      ],
     });
   } else if (pillarPage) {
     graph.push({

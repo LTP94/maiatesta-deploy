@@ -42,5 +42,5 @@ export const desarrolloWebQuito = {
         'Sí. La estructura incluye títulos, contenido local, metadata, imágenes optimizadas y señales para que Google entienda el servicio y la ubicación.',
     },
   ],
-  relatedServiceIds: ['ai-automation', 'e-commerce', 'custom-software'],
+  relatedServiceIds: ['ai-automation', 'e-commerce', 'custom-software', 'software-development-quito'],
 };

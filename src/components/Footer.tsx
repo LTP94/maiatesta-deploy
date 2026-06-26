@@ -85,6 +85,7 @@ export function Footer({ content }: FooterProps) {
 
         <nav className="site-footer__nav" aria-label="Servicios">
           <h2>Servicios</h2>
+          <a href="/desarrollo-de-software-quito/">Desarrollo de software en Quito</a>
           {content.products.map((product) => {
             const serviceSlug = getServiceSlugForProductId(product.id);
 

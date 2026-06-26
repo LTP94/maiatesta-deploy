@@ -56,7 +56,7 @@ export function useSectionHydration(
     const activateSection = (selector: string) => {
       const target = document.querySelector(selector);
 
-      if (!target || !isNearViewport(target)) {
+      if (!target) {
         pendingSelectors.add(selector);
         return;
       }
@@ -92,10 +92,9 @@ export function useSectionHydration(
       const customEvent = event as CustomEvent<ScrollActivityDetail>;
       if (!customEvent.detail?.isScrolling && !customEvent.detail?.isFlicking) {
         window.clearTimeout(hydrationSettleTimeout);
-        hydrationSettleTimeout = window.setTimeout(
-          processPendingHydration,
-          720,
-        );
+        hydrationSettleTimeout = window.setTimeout(() => {
+          window.requestAnimationFrame(processPendingHydration);
+        }, 0);
       }
     };
 

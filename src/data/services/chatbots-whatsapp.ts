@@ -60,5 +60,5 @@ export const chatbotsWhatsappEcuador = {
         'Si tu negocio recibe pocas consultas o cada caso es completamente distinto, un chatbot puede frustar más que ayudar. Conviene cuando hay un volumen real de preguntas repetidas.',
     },
   ],
-  relatedServiceIds: ['web-development', 'custom-software', 'e-commerce'],
+  relatedServiceIds: ['web-development', 'custom-software', 'e-commerce', 'software-development-quito'],
 };

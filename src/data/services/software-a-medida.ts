@@ -60,5 +60,5 @@ export const softwareAMedidaPymesEcuador = {
         'Se define un plan de soporte y mantenimiento. Incluye correcciones, ajustes menores y actualizaciones. El costo depende del alcance y se acuerda por contrato.',
     },
   ],
-  relatedServiceIds: ['inventory-software', 'spreadsheet-automation', 'ai-automation'],
+  relatedServiceIds: ['inventory-software', 'spreadsheet-automation', 'ai-automation', 'software-development-quito'],
 };

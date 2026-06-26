@@ -61,5 +61,5 @@ export const softwareInventarioQuito = {
         'Tiendas de barrio, bodegas, restaurantes, talleres, distribuidoras, ferreterías, repuestos, insumos médicos y cualquier negocio donde el control de stock afecte las compras y las ventas.',
     },
   ],
-  relatedServiceIds: ['purchase-optimization', 'custom-software', 'spreadsheet-automation'],
+  relatedServiceIds: ['purchase-optimization', 'custom-software', 'spreadsheet-automation', 'software-development-quito'],
 };

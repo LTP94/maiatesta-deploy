@@ -51,6 +51,20 @@ const articleEditorialImages = {
     caption:
       'La centralización de reportes comerciales provee visibilidad financiera inmediata a la gerencia.',
   },
+  'cuanto-cuesta-software-a-medida-ecuador': {
+    filename: 'guide-software-cost-comparison',
+    placement: 'after-first-section',
+    alt: 'Comparación visual de rangos de inversión para software a medida en Ecuador',
+    caption:
+      'La inversión suele variar según módulos, integraciones, usuarios y nivel de soporte requerido.',
+  },
+  'software-a-medida-vs-excel-pyme': {
+    filename: 'guide-software-vs-excel-dashboard',
+    placement: 'after-first-section',
+    alt: 'Comparación visual entre reportes manuales en Excel y software a medida',
+    caption:
+      'Pasar de hojas manuales a un sistema propio ayuda a centralizar datos, permisos y reportes.',
+  },
 } satisfies Partial<Record<
   ArticleRouteSlug,
   { filename: string; placement: string; alt: string; caption: string }
@@ -172,6 +186,9 @@ export function ArticleLandingPage({
                 href={whatsappHref}
                 target='_blank'
                 rel='noreferrer'
+                data-conversion='whatsapp'
+                data-page-slug={article.slug}
+                data-page-type='article'
               >
                 Pedir recomendación por WhatsApp
               </a>
@@ -202,7 +219,7 @@ export function ArticleLandingPage({
             <section
               className='article-content-block scroll-reveal'
               key={section.heading}
-              style={{ animationDelay: `${index * 80}ms` }}
+              style={{ animationDelay: `${Math.min(index * 40, 120)}ms` }}
             >
               <h2>{section.heading}</h2>
               {section.body.map((paragraph) => (
@@ -237,7 +254,7 @@ export function ArticleLandingPage({
               <details
                 className='local-faq-item scroll-reveal'
                 key={faq.question}
-                style={{ animationDelay: `${index * 70}ms` }}
+                style={{ animationDelay: `${Math.min(index * 35, 120)}ms` }}
               >
                 <summary>
                   <span className='local-faq-question'>{faq.question}</span>
@@ -292,6 +309,9 @@ export function ArticleLandingPage({
             href={whatsappHref}
             target='_blank'
             rel='noreferrer'
+            data-conversion='whatsapp'
+            data-page-slug={article.slug}
+            data-page-type='article'
           >
             Pedir recomendación por WhatsApp
           </a>

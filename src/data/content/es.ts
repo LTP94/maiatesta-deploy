@@ -7,6 +7,7 @@ export const esLocale: LocalizedContent = {
     paletteSwitcher: 'Selector de paleta de colores',
   },
   nav: [
+    { label: 'Software', href: '/desarrollo-de-software-quito/' },
     { label: 'Servicios', href: '#services' },
     { label: 'Paquetes', href: '#projects' },
     { label: 'Contacto', href: '#contact' },

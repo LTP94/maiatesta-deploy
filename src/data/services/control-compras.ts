@@ -42,5 +42,5 @@ export const controlComprasCostosQuito = {
         'Sí. Compras e inventario suelen estar relacionados; se puede conectar stock bajo, proveedores y reposición según necesidad.',
     },
   ],
-  relatedServiceIds: ['inventory-software', 'spreadsheet-automation', 'custom-software'],
+  relatedServiceIds: ['inventory-software', 'spreadsheet-automation', 'custom-software', 'software-development-quito'],
 };
