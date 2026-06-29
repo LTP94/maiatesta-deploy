@@ -1,9 +1,11 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Hero } from './components/Hero';
+import { LegalPage } from './components/LegalPage';
 import { ScrollConstellation } from './components/ScrollConstellation';
 import { siteContent } from './data/siteContent';
 import type { LanguageCode } from './data/siteContent';
 import { normalizeArticlePath } from './data/articleRoutes';
+import { normalizeLegalPath } from './data/legalRoutes';
 import { normalizePillarPath } from './data/pillarRoutes';
 import { normalizeServicePath } from './data/serviceRoutes';
 import { useScrollReveal } from './hooks/useScrollReveal';
@@ -148,6 +150,7 @@ export default function App({ routePath }: AppProps) {
   const serviceSlug = normalizeServicePath(currentRoutePath);
   const articleSlug = normalizeArticlePath(currentRoutePath);
   const pillarSlug = normalizePillarPath(currentRoutePath);
+  const legalSlug = normalizeLegalPath(currentRoutePath);
   const isGuidesIndexRoute =
     currentRoutePath === '/guias' || currentRoutePath === '/guias/';
 
@@ -226,6 +229,16 @@ export default function App({ routePath }: AppProps) {
           onLanguageChange={handleLanguageChange}
         />
       </Suspense>
+    );
+  }
+
+  if (legalSlug) {
+    return (
+      <LegalPage
+        slug={legalSlug}
+        language={language}
+        onLanguageChange={handleLanguageChange}
+      />
     );
   }
 

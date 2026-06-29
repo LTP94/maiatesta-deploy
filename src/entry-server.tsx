@@ -5,6 +5,8 @@ import { PassThrough } from 'node:stream';
 import App from './App';
 import { articlePages, getArticlePageByPath } from './data/articlePages';
 import { articleRouteSlugs } from './data/articleRoutes';
+import { getLegalPageByPath } from './data/legalPages';
+import { legalRouteSlugs } from './data/legalRoutes';
 import { getPillarPageByPath } from './data/pillarPages';
 import { pillarRouteSlugs } from './data/pillarRoutes';
 import { servicePages, getServicePageByPath } from './data/servicePages';
@@ -87,6 +89,7 @@ export function getStaticRoutes() {
     ...serviceRouteSlugs.map((slug) => `/servicios/${slug}/`),
     ...articleRouteSlugs.map((slug) => `/guias/${slug}/`),
     ...pillarRouteSlugs.map((slug) => `/${slug}/`),
+    ...legalRouteSlugs.map((slug) => `/${slug}/`),
   ];
 }
 
@@ -95,6 +98,7 @@ export function getRouteSeo(routePath = '/') {
   const articlePage = getArticlePageByPath(normalizedPath);
   const servicePage = getServicePageByPath(normalizedPath);
   const pillarPage = getPillarPageByPath(normalizedPath);
+  const legalPage = getLegalPageByPath(normalizedPath);
   const isGuidesIndex = normalizedPath === '/guias/';
   const url = `${siteUrl}${normalizedPath === '/' ? '/' : normalizedPath}`;
 
@@ -153,6 +157,19 @@ export function getRouteSeo(routePath = '/') {
     };
   }
 
+  if (legalPage) {
+    return {
+      title: legalPage.metaTitle,
+      description: legalPage.metaDescription,
+      canonical: url,
+      ogTitle: legalPage.metaTitle,
+      ogDescription: legalPage.metaDescription,
+      ogUrl: url,
+      twitterTitle: legalPage.metaTitle,
+      twitterDescription: legalPage.metaDescription,
+    };
+  }
+
   return {
     title: 'Desarrollo de Software, Web y Automatización en Quito | Maiatesta',
     description:
@@ -173,13 +190,22 @@ export function getRouteStructuredData(routePath = '/') {
   const articlePage = getArticlePageByPath(normalizedPath);
   const servicePage = getServicePageByPath(normalizedPath);
   const pillarPage = getPillarPageByPath(normalizedPath);
+  const legalPage = getLegalPageByPath(normalizedPath);
   const isGuidesIndex = normalizedPath === '/guias/';
   const graph: Array<Record<string, unknown>> = [
     localBusinessSchema,
     websiteSchema,
   ];
 
-  if (isGuidesIndex) {
+  if (legalPage) {
+    graph.push({
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+        { '@type': 'ListItem', position: 2, name: legalPage.title, item: `${siteUrl}${normalizedPath}` },
+      ],
+    });
+  } else if (isGuidesIndex) {
     graph.push({
       '@type': 'CollectionPage',
       '@id': `${siteUrl}/guias/#collection`,

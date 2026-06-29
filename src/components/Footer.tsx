@@ -152,6 +152,7 @@ export function Footer({ content }: FooterProps) {
         <span>
           {new Date().getFullYear()} {content.footer.rights}
         </span>
+        <a href="/politica-de-privacidad/">Política de Privacidad</a>
         <a href="/sitemap.xml">Sitemap</a>
       </div>
     </footer>
