@@ -123,9 +123,12 @@ export function getRouteSeo(routePath = '/') {
       title: articlePage.metaTitle,
       description: articlePage.metaDescription,
       canonical: url,
+      ogType: 'article',
       ogTitle: articlePage.metaTitle,
       ogDescription: articlePage.metaDescription,
       ogUrl: url,
+      ogArticlePublishedTime: `${articlePage.publishDate}T00:00:00Z`,
+      ogArticleModifiedTime: `${articlePage.updatedDate}T00:00:00Z`,
       twitterTitle: articlePage.metaTitle,
       twitterDescription: articlePage.metaDescription,
     };

@@ -36,7 +36,7 @@ export function GuidesTeaser() {
               <img
                 className='guide-card-thumb'
                 src={guideThumbnails[guide.slug]}
-                alt=''
+                alt={`Imagen ilustrativa para la guía: ${guide.title}`}
                 width='320'
                 height='200'
                 loading='lazy'

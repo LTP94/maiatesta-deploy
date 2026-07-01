@@ -1,4 +1,5 @@
 import type { LocalizedContent } from '../data/siteContent';
+import { trackWhatsAppClick } from '../utils/analytics';
 import { LuminousText } from './LuminousText';
 
 const projectsHighlightPhrases = [
@@ -89,6 +90,7 @@ export function Projects({ content }: ProjectsProps) {
                       target='_blank'
                       rel='noreferrer'
                       aria-label={project.ctaText}
+                      onClick={() => trackWhatsAppClick({ ctaLocation: 'package-card', pageType: 'home' })}
                     >
                       <svg
                         aria-hidden='true'

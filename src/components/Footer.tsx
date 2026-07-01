@@ -1,5 +1,6 @@
 import type { LocalizedContent } from "../data/siteContent";
 import { getServiceSlugForProductId } from "../data/serviceRoutes";
+import { trackEmailClick, trackWhatsAppClick } from "../utils/analytics";
 
 type FooterProps = {
   content: LocalizedContent;
@@ -113,10 +114,10 @@ export function Footer({ content }: FooterProps) {
 
         <section className="site-footer__contact" aria-label="Contacto">
           <h2>Contacto</h2>
-          <a href={whatsappHref} target="_blank" rel="noreferrer">
+          <a href={whatsappHref} target="_blank" rel="noreferrer" onClick={() => trackWhatsAppClick({ ctaLocation: 'footer' })}>
             {whatsappChannel?.value ?? '+593 963 092 859'}
           </a>
-          <a href={emailChannel?.href ?? 'mailto:maiatesta@gmail.com'}>
+          <a href={emailChannel?.href ?? 'mailto:maiatesta@gmail.com'} onClick={() => trackEmailClick('footer')}>
             {emailChannel?.value ?? 'maiatesta@gmail.com'}
           </a>
           <div className="site-footer__socials" aria-label="Redes y canales">
@@ -125,12 +126,14 @@ export function Footer({ content }: FooterProps) {
               target="_blank"
               rel="noreferrer"
               aria-label="Contactar a Maiatesta por WhatsApp"
+              onClick={() => trackWhatsAppClick({ ctaLocation: 'footer-icon' })}
             >
               <FooterIcon type="whatsapp" />
             </a>
             <a
               href={emailChannel?.href ?? 'mailto:ventas@maiatesta.com'}
               aria-label="Enviar email a Maiatesta"
+              onClick={() => trackEmailClick('footer-icon')}
             >
               <FooterIcon type="email" />
             </a>

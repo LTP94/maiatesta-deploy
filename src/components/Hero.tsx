@@ -1,5 +1,6 @@
 import { siteContent } from '../data/siteContent';
 import type { LanguageCode, LocalizedContent } from '../data/siteContent';
+import { trackWhatsAppClick } from '../utils/analytics';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { Header } from './Header';
 import { HeroVideoBackground } from './HeroVideoBackground';
@@ -83,6 +84,7 @@ export function Hero({
               href={whatsappChannel?.href ?? '#contact'}
               target={whatsappChannel ? '_blank' : undefined}
               rel={whatsappChannel ? 'noreferrer' : undefined}
+              onClick={() => trackWhatsAppClick({ ctaLocation: 'hero', pageType: 'home' })}
             >
               {content.hero.primaryCta}
             </a>

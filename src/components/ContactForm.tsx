@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import type { LocalizedContent } from "../data/siteContent";
+import { trackContactFormSubmit } from "../utils/analytics";
 import { LuminousText } from "./LuminousText";
 
 // Brand icons — keyed by channel label (case-insensitive match)
@@ -94,7 +95,12 @@ export function ContactForm({ content }: ContactFormProps) {
       return;
     }
 
-    window.location.href = `${whatsappChannel?.href ?? "https://wa.me/593963092859"}?text=${message}`;
+    const redirectUrl = `${whatsappChannel?.href ?? "https://wa.me/593963092859"}?text=${message}`;
+
+    trackContactFormSubmit({ serviceSelected: formState.service || undefined });
+    setTimeout(() => {
+      window.location.href = redirectUrl;
+    }, 300);
   };
 
   return (

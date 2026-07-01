@@ -2,6 +2,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { LuminousText } from './LuminousText';
 import { articlePages } from '../data/articlePages';
+import { trackWhatsAppClick } from '../utils/analytics';
 import { siteContent } from '../data/siteContent';
 import { pillarPagesBySlug } from '../data/pillarPages';
 import type { PillarRouteSlug } from '../data/pillarRoutes';
@@ -113,6 +114,7 @@ export function ServiceLandingPage({
                 data-conversion='whatsapp'
                 data-page-slug={page.slug}
                 data-page-type={pageType}
+                onClick={() => trackWhatsAppClick({ ctaLocation: 'hero', pageSlug: page.slug, pageType })}
               >
                 Cotizar por WhatsApp
               </a>
@@ -281,6 +283,7 @@ export function ServiceLandingPage({
             data-conversion='whatsapp'
             data-page-slug={page.slug}
             data-page-type={pageType}
+            onClick={() => trackWhatsAppClick({ ctaLocation: 'cta-section', pageSlug: page.slug, pageType })}
           >
             Cotizar por WhatsApp
           </a>

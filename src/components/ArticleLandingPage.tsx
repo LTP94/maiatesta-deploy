@@ -2,6 +2,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { LuminousText } from './LuminousText';
 import { siteContent } from '../data/siteContent';
+import { trackWhatsAppClick } from '../utils/analytics';
 import { articlePagesBySlug } from '../data/articlePages';
 import type { ArticleRouteSlug } from '../data/articleRoutes';
 import { servicePagesBySlug } from '../data/servicePages';
@@ -189,6 +190,7 @@ export function ArticleLandingPage({
                 data-conversion='whatsapp'
                 data-page-slug={article.slug}
                 data-page-type='article'
+                onClick={() => trackWhatsAppClick({ ctaLocation: 'hero', pageSlug: article.slug, pageType: 'article' })}
               >
                 Pedir recomendación por WhatsApp
               </a>
@@ -312,6 +314,7 @@ export function ArticleLandingPage({
             data-conversion='whatsapp'
             data-page-slug={article.slug}
             data-page-type='article'
+            onClick={() => trackWhatsAppClick({ ctaLocation: 'cta-section', pageSlug: article.slug, pageType: 'article' })}
           >
             Pedir recomendación por WhatsApp
           </a>
