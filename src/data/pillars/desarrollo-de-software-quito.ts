@@ -7,9 +7,10 @@ export const desarrolloDeSoftwareQuito = {
     'Creamos software a medida en Quito para controlar inventario, automatizar reportes, ordenar procesos, conectar WhatsApp y reducir trabajo manual en pymes.',
   h1: 'Desarrollo de software en Quito para pymes que necesitan ordenar su operación',
   intro:
-    'En Maiatesta ayudamos a pymes de Quito y Pichincha a resolver problemas operativos con software práctico: sistemas de inventario, automatización de reportes, chatbots de WhatsApp, tiendas online y herramientas internas. No todo negocio necesita una plataforma gigante. A veces la solución es un sistema simple que ordene un proceso, elimine trabajo manual o le dé visibilidad al dueño sobre lo que pasa en su operación. Trabajamos con presupuestos reales, empezamos pequeño y crecemos con el negocio.',
+    'En Maiatesta ayudamos a pymes de Quito y Pichincha a resolver problemas operativos con software práctico: sistemas de inventario, automatización de reportes, chatbots de WhatsApp, tiendas online y herramientas internas. No todo negocio necesita una plataforma gigante. A veces la solución es un sistema simple que ordene un proceso, elimine trabajo manual o le dé visibilidad al dueño sobre lo que pasa en su operación. Trabajamos con presupuestos reales, empezamos pequeño y crecemos con el negocio. Si buscas un sistema construido específicamente para tu operación — no una plantilla ni un SaaS genérico — la página de software a medida explica ese proceso en detalle.',
   priceHint: 'Cotización según alcance, módulos e integraciones del proyecto.',
   primaryKeyword: 'desarrollo de software Quito',
+  ctaLabel: 'Hablar con Maiatesta',
   ctaMessage:
     'Hola Maiatesta, vi la página de desarrollo de software en Quito y quiero conversar sobre un proyecto para mi negocio.',
   proof:

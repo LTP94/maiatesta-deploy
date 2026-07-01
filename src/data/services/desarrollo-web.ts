@@ -10,6 +10,7 @@ export const desarrolloWebQuito = {
     'Una página web útil no debe ser un adorno. Para negocios en Quito y Pichincha, la prioridad es aparecer bien, explicar rápido la oferta y llevar al visitante a WhatsApp sin fricción.',
   priceHint: 'Desde $200 para una página web express.',
   primaryKeyword: 'desarrollo web Quito',
+  ctaLabel: 'Cotizar mi página web',
   ctaMessage:
     'Hola Maiatesta, vi la página de desarrollo web en Quito y quiero cotizar una web para mi negocio.',
   proof:

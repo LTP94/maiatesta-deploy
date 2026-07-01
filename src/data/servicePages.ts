@@ -25,6 +25,7 @@ export type ServicePage = {
   faqs: Array<{ question: string; answer: string }>;
   relatedServiceIds: string[];
   featureImage?: FeatureImage;
+  ctaLabel?: string;
 };
 
 export const servicePages = allServicePages satisfies ServicePage[];

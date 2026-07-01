@@ -10,6 +10,7 @@ export const softwareInventarioQuito = {
     'Cuando el inventario vive en chats, hojas sueltas o memoria, el negocio pierde dinero. Un sistema simple ayuda a registrar entradas, salidas, alertas y reportes con trazabilidad.',
   priceHint: 'Cotización según módulos, usuarios y reportes necesarios.',
   primaryKeyword: 'software de inventario Quito',
+  ctaLabel: 'Revisar mi control de inventario',
   ctaMessage:
     'Hola Maiatesta, vi la página de software de inventario en Quito y quiero ordenar el stock de mi negocio.',
   proof:

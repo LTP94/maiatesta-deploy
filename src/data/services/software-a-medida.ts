@@ -5,15 +5,16 @@ export const softwareAMedidaPymesEcuador = {
   metaTitle: 'Software a Medida para Pymes en Ecuador | Maiatesta',
   metaDescription:
     'Desarrollo de software a medida para pymes en Ecuador: reservas, dashboards, formularios, reportes, usuarios y procesos internos.',
-  h1: 'Software a medida para pymes en Ecuador que necesitan ordenar su operación',
+  h1: 'Software a medida en Ecuador: sistemas propios para procesos que Excel ya no resuelve',
   intro:
-    'No todo negocio necesita una plataforma enorme. Muchas pymes necesitan un sistema claro para reservas, formularios, reportes, agendas, usuarios o procesos que Excel ya no resuelve bien.',
+    'Cuando las reservas se manejan por chat, las aprobaciones llegan por WhatsApp y los reportes se arman copiando celdas, el negocio ya necesita algo más que una hoja de cálculo. Un sistema propio organiza esos flujos sin obligarte a adaptarte a un SaaS genérico que no fue diseñado para tu operación.',
   priceHint: 'Cotización por alcance, módulos y complejidad del flujo.',
   primaryKeyword: 'software a medida pymes Ecuador',
+  ctaLabel: 'Diagnosticar mi proceso manual',
   ctaMessage:
     'Hola Maiatesta, vi la página de software a medida para pymes y quiero conversar sobre un sistema para mi operación.',
   proof:
-    'El enfoque es empezar pequeño: resolver el cuello de botella más caro primero y crecer el sistema con datos reales del negocio.',
+    'El enfoque es empezar pequeño: resolver el cuello de botella más caro primero y crecer el sistema con datos reales del negocio. Útil cuando tienes un proceso interno específico que ningún SaaS genérico resuelve bien: cotizadores propios, flujos de aprobación, reportes de tu industria o paneles de gestión.',
   benefits: [
     'Sistema adaptado al flujo real de la empresa.',
     'Paneles, usuarios, formularios y reportes según necesidad.',

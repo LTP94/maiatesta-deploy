@@ -10,6 +10,7 @@ export const chatbotsWhatsappEcuador = {
     'En Ecuador muchas ventas empiezan por WhatsApp. Un chatbot bien diseñado ayuda a responder preguntas frecuentes, ordenar solicitudes y filtrar prospectos antes de que el cliente se enfríe.',
   priceHint: 'Desde US$60 para un flujo básico de chatbot.',
   primaryKeyword: 'chatbot WhatsApp Ecuador',
+  ctaLabel: 'Automatizar mi WhatsApp',
   ctaMessage:
     'Hola Maiatesta, vi la página de chatbots de WhatsApp y quiero automatizar la atención de mi empresa.',
   proof:

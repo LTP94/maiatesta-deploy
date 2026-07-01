@@ -52,7 +52,7 @@ export const softwareInventarioPymesQuito = {
         'No necesariamente. Puede empezar como control de stock y luego conectarse a ventas, compras o reportes.',
     },
   ],
-  relatedServiceIds: ['inventory-software', 'purchase-optimization', 'spreadsheet-automation'],
+  relatedServiceIds: ['inventory-software', 'purchase-optimization', 'spreadsheet-automation', 'software-development-quito'],
   ctaMessage:
     'Hola Maiatesta, leí la guía de software de inventario para pymes en Quito y quiero ordenar mi stock.',
 };

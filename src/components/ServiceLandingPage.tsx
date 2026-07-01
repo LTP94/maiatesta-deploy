@@ -116,7 +116,7 @@ export function ServiceLandingPage({
                 data-page-type={pageType}
                 onClick={() => trackWhatsAppClick({ ctaLocation: 'hero', pageSlug: page.slug, pageType })}
               >
-                Cotizar por WhatsApp
+                {page.ctaLabel ?? 'Cotizar por WhatsApp'}
               </a>
               <a className='button button-secondary' href='/#projects'>
                 Ver paquetes

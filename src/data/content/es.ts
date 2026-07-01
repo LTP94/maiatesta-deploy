@@ -16,7 +16,7 @@ export const esLocale: LocalizedContent = {
     eyebrow: 'Agencia digital accesible en Quito, Pichincha',
     title:
       'Desarrollo de software, páginas web y automatización para pymes en Quito.',
-    body: 'Creamos software de inventario, tiendas online, chatbots de WhatsApp, páginas web y automatizaciones para negocios que quieren vender más y ordenar su operación.',
+    body: 'Creamos páginas web, tiendas online, software de inventario, sistemas a medida, chatbots de WhatsApp y automatizaciones de Excel para pymes en Quito y Ecuador que quieren vender más y operar con datos claros.',
     primaryCta: 'Cotizar por WhatsApp',
     secondaryCta: 'Ver servicios',
     metrics: [

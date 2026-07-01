@@ -10,6 +10,7 @@ export const controlComprasCostosQuito = {
     'Comprar sin datos claros afecta caja, márgenes y operación. Una herramienta simple puede comparar proveedores, ordenar cotizaciones y mostrar dónde se está yendo el presupuesto.',
   priceHint: 'Cotización según reportes, proveedores y flujo de aprobación.',
   primaryKeyword: 'control de compras y costos Quito',
+  ctaLabel: 'Revisar mis costos',
   ctaMessage:
     'Hola Maiatesta, vi la página de control de compras y costos y quiero ordenar compras en mi empresa.',
   proof:

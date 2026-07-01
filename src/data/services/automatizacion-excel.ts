@@ -5,11 +5,12 @@ export const automatizacionExcelQuito = {
   metaTitle: 'Automatización de Excel para Pymes en Ecuador | Maiatesta',
   metaDescription:
     'Automatiza reportes, archivos y procesos repetitivos de Excel para ahorrar tiempo y reducir errores en tu negocio.',
-  h1: 'Automatización de Excel en Quito para reportes y tareas repetitivas',
+  h1: 'Automatización de Excel para pymes en Ecuador: reportes que se hacen solos',
   intro:
-    'Excel puede ser una gran herramienta, pero muchas empresas pierden horas copiando datos, armando reportes o corrigiendo errores manuales cada semana.',
+    'Coordinadores, contadores y gerentes de pymes en Ecuador pasan horas cada semana armando el mismo reporte, copiando datos entre hojas o corrigiendo errores que se repiten. Eso es tiempo que el negocio pierde en tareas que se pueden automatizar.',
   priceHint: 'Cotización según archivos, fuentes de datos y reportes.',
   primaryKeyword: 'automatización Excel Quito',
+  ctaLabel: 'Automatizar mi Excel',
   ctaMessage:
     'Hola Maiatesta, vi la página de automatización de Excel en Quito y quiero automatizar reportes de mi negocio.',
   proof:

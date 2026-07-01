@@ -19,6 +19,7 @@ export type PillarPage = {
   faqs: Array<{ question: string; answer: string }>;
   relatedServiceIds: string[];
   featureImage?: FeatureImage;
+  ctaLabel?: string;
 };
 
 export const pillarPages = allPillarPages satisfies PillarPage[];
