@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { ClientLogos } from './components/ClientLogos';
 import { Hero } from './components/Hero';
 import { LegalPage } from './components/LegalPage';
 import { ScrollConstellation } from './components/ScrollConstellation';
@@ -307,6 +308,7 @@ export default function App({ routePath }: AppProps) {
         onPersonaPortraitToggle={handlePersonaPortraitToggle}
         palette={palette}
       />
+      <ClientLogos content={content} />
       <div className={hasScrolled ? 'site-main is-scrolled' : 'site-main'}>
         <Suspense fallback={<TypebotFallback content={content} />}>
           <TypebotStandardChat content={content} />

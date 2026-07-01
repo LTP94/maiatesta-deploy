@@ -28,7 +28,7 @@ const localBusinessSchema = {
   image: `${siteUrl}/assets/maiatesta-persona-hero.webp`,
   logo: `${siteUrl}/assets/maiatesta-logo.webp`,
   description:
-    'Maiatesta es una agencia digital accesible en Quito para desarrollo web, tiendas online, chatbots de WhatsApp, software para pymes, inventario y automatización de Excel.',
+    'Maiatesta es una agencia digital accesible en Quito para desarrollo web, tiendas online, chatbots de WhatsApp, software para pymes, inventario y automatización de Excel. Ha trabajado con empresas en Ecuador como Largenergy, Estudio 10, La Pulga Picosa y Galapagos Center.',
   email: 'maiatesta@gmail.com',
   telephone: '+593963092859',
   priceRange: '$60-$200+',

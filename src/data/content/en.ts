@@ -158,6 +158,11 @@ export const enLocale: LocalizedContent = {
         'Modern solutions, personalized attention, and real automation.',
       body: 'We apply technology to the business itself: more sales opportunities, fewer manual tasks, cleaner information, and better results.',
     },
+    clients: {
+      eyebrow: 'Proyectos reales en Ecuador',
+      title: 'Empresas y proyectos con los que hemos trabajado',
+      body: 'Algunos proyectos donde hemos aplicado desarrollo web, automatización, software e integraciones para negocios en Ecuador.',
+    },
   },
   process: [
     { title: 'Listen', body: 'Understand what you sell, where your clients come from, and what slows your team down.' },
@@ -216,6 +221,7 @@ export const enLocale: LocalizedContent = {
         'Internal systems, dashboards, appointments, stock alerts, multi-user access, reports, history, and traceability for growing businesses.',
     },
   ],
+  clients: [],
   reviews: [
     {
       quote:

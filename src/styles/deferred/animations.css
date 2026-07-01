@@ -3,6 +3,11 @@
   animation: reveal-up 350ms ease both;
 }
 
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
 /* Animaciones globales de entrada, brillo, escaneo, carrusel y logo. */
 @keyframes reveal-up {
   from {
