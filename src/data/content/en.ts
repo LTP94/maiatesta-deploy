@@ -159,9 +159,9 @@ export const enLocale: LocalizedContent = {
       body: 'We apply technology to the business itself: more sales opportunities, fewer manual tasks, cleaner information, and better results.',
     },
     clients: {
-      eyebrow: 'Proyectos reales en Ecuador',
-      title: 'Empresas y proyectos con los que hemos trabajado',
-      body: 'Algunos proyectos donde hemos aplicado desarrollo web, automatización, software e integraciones para negocios en Ecuador.',
+      eyebrow: 'Real projects in Ecuador',
+      title: 'Companies and projects we have worked with',
+      body: 'Projects where we have applied web development, automation, software, and integrations for businesses in Ecuador.',
     },
   },
   process: [
@@ -221,7 +221,44 @@ export const enLocale: LocalizedContent = {
         'Internal systems, dashboards, appointments, stock alerts, multi-user access, reports, history, and traceability for growing businesses.',
     },
   ],
-  clients: [],
+  clients: [
+    {
+      name: 'Largenergy',
+      sector: 'Energy · Ecuador',
+      logo: '/assets/clients/largenergy.webp',
+      alt: 'Largenergy logo — energy company in Ecuador',
+      href: 'https://largenergy.com.ec',
+      width: 360,
+      height: 135,
+    },
+    {
+      name: 'Estudio 10',
+      sector: 'Law firm · Ecuador',
+      logo: '/assets/clients/estudio-10.webp',
+      alt: 'Estudio 10 logo — law firm in Ecuador',
+      href: 'https://www.estudio10.com.ec',
+      width: 360,
+      height: 167,
+    },
+    {
+      name: 'La Pulga Picosa',
+      sector: 'Second-hand store · Ecuador',
+      logo: '/assets/clients/la-pulga-picosa.webp',
+      alt: 'La Pulga Picosa logo — second-hand store in Ecuador',
+      href: 'https://lapulgapicosa.kipuxbot.com',
+      width: 360,
+      height: 167,
+    },
+    {
+      name: 'Galapagos Center',
+      sector: 'Tour agency · Ecuador',
+      logo: '/assets/clients/galapagos-center.webp',
+      alt: 'Galapagos Center logo — tour agency in Ecuador',
+      href: 'https://galapagoscenter.com',
+      width: 360,
+      height: 155,
+    },
+  ],
   reviews: [
     {
       quote:
