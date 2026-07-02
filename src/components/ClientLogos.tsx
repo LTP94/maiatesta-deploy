@@ -33,7 +33,6 @@ export function ClientLogos({ content }: ClientLogosProps) {
                     alt={client.alt}
                     width={client.width}
                     height={client.height}
-                    loading='lazy'
                     decoding='async'
                   />
                 </li>
