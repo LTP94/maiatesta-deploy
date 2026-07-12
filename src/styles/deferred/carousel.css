@@ -425,8 +425,7 @@
   padding: 12px 14px;
   color: rgba(248, 248, 248, 0.82);
   border: 1px solid rgba(248, 248, 248, 0.14);
-  background: rgba(12, 12, 12, 0.68);
-  backdrop-filter: blur(14px);
+  background: rgba(12, 12, 12, 0.92);
   border-radius: 8px;
   text-align: center;
   font-weight: 700;

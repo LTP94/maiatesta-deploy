@@ -2,13 +2,16 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { LuminousText } from './LuminousText';
 import { articlePages } from '../data/articlePages';
+import { trackWhatsAppClick } from '../utils/analytics';
 import { siteContent } from '../data/siteContent';
+import { pillarPagesBySlug } from '../data/pillarPages';
+import type { PillarRouteSlug } from '../data/pillarRoutes';
 import { servicePagesBySlug } from '../data/servicePages';
 import type { ServiceRouteSlug } from '../data/serviceRoutes';
 import type { LanguageCode } from '../data/siteContent';
 
 type ServiceLandingPageProps = {
-  slug: ServiceRouteSlug;
+  slug: ServiceRouteSlug | PillarRouteSlug;
   language: LanguageCode;
   onLanguageChange: (language: LanguageCode) => void;
 };
@@ -28,7 +31,8 @@ export function ServiceLandingPage({
   language,
   onLanguageChange,
 }: ServiceLandingPageProps) {
-  const page = servicePagesBySlug[slug];
+  const page = servicePagesBySlug[slug as ServiceRouteSlug] ?? pillarPagesBySlug[slug as PillarRouteSlug];
+  const pageType = slug in pillarPagesBySlug ? 'pillar' : 'service';
   const content = siteContent.locales.es;
 
   if (!page) {
@@ -107,8 +111,12 @@ export function ServiceLandingPage({
                 href={whatsappHref}
                 target='_blank'
                 rel='noreferrer'
+                data-conversion='whatsapp'
+                data-page-slug={page.slug}
+                data-page-type={pageType}
+                onClick={() => trackWhatsAppClick({ ctaLocation: 'hero', pageSlug: page.slug, pageType })}
               >
-                Cotizar por WhatsApp
+                {page.ctaLabel ?? 'Cotizar por WhatsApp'}
               </a>
               <a className='button button-secondary' href='/#projects'>
                 Ver paquetes
@@ -140,6 +148,20 @@ export function ServiceLandingPage({
           </div>
         </section>
 
+        {page.featureImage ? (
+          <figure className='service-feature-figure scroll-reveal'>
+            <img
+              className='service-feature-image'
+              src={page.featureImage.src}
+              alt={page.featureImage.alt}
+              width={page.featureImage.width}
+              height={page.featureImage.height}
+              loading='lazy'
+              decoding='async'
+            />
+          </figure>
+        ) : null}
+
         <section className='section service-detail-section'>
           <div className='section-heading scroll-reveal'>
             <p className='eyebrow'>Proceso</p>
@@ -165,7 +187,7 @@ export function ServiceLandingPage({
               <details
                 className='local-faq-item scroll-reveal'
                 key={faq.question}
-                style={{ animationDelay: `${index * 70}ms` }}
+                style={{ animationDelay: `${Math.min(index * 35, 120)}ms` }}
               >
                 <summary>
                   <span className='local-faq-question'>{faq.question}</span>
@@ -210,20 +232,37 @@ export function ServiceLandingPage({
                 (candidate) => candidate.productId === relatedId,
               );
 
-              if (!relatedProduct || !relatedPage) {
-                return null;
+              if (relatedProduct && relatedPage) {
+                return (
+                  <a
+                    className='service-related-card scroll-reveal'
+                    href={`/servicios/${relatedPage.slug}/`}
+                    key={relatedId}
+                  >
+                    <span>{relatedProduct.title}</span>
+                    <strong>{relatedProduct.accent}</strong>
+                  </a>
+                );
               }
 
-              return (
-                <a
-                  className='service-related-card scroll-reveal'
-                  href={`/servicios/${relatedPage.slug}/`}
-                  key={relatedId}
-                >
-                  <span>{relatedProduct.title}</span>
-                  <strong>{relatedProduct.accent}</strong>
-                </a>
+              const relatedPillar = Object.values(pillarPagesBySlug).find(
+                (candidate) => candidate.productId === relatedId,
               );
+
+              if (relatedPillar) {
+                return (
+                  <a
+                    className='service-related-card scroll-reveal'
+                    href={`/${relatedPillar.slug}/`}
+                    key={relatedId}
+                  >
+                    <span>{relatedPillar.title}</span>
+                    <strong>Soluciones de software para pymes en Quito</strong>
+                  </a>
+                );
+              }
+
+              return null;
             })}
           </div>
         </section>
@@ -241,6 +280,10 @@ export function ServiceLandingPage({
             href={whatsappHref}
             target='_blank'
             rel='noreferrer'
+            data-conversion='whatsapp'
+            data-page-slug={page.slug}
+            data-page-type={pageType}
+            onClick={() => trackWhatsAppClick({ ctaLocation: 'cta-section', pageSlug: page.slug, pageType })}
           >
             Cotizar por WhatsApp
           </a>

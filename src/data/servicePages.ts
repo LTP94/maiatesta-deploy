@@ -1,6 +1,13 @@
 import type { ServiceRouteSlug } from './serviceRoutes';
 import { allServicePages } from './services/index';
 
+export type FeatureImage = {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+};
+
 export type ServicePage = {
   slug: ServiceRouteSlug;
   productId: string;
@@ -17,6 +24,8 @@ export type ServicePage = {
   process: string[];
   faqs: Array<{ question: string; answer: string }>;
   relatedServiceIds: string[];
+  featureImage?: FeatureImage;
+  ctaLabel?: string;
 };
 
 export const servicePages = allServicePages satisfies ServicePage[];

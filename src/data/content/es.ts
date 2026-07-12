@@ -7,6 +7,7 @@ export const esLocale: LocalizedContent = {
     paletteSwitcher: 'Selector de paleta de colores',
   },
   nav: [
+    { label: 'Software', href: '/desarrollo-de-software-quito/' },
     { label: 'Servicios', href: '#services' },
     { label: 'Paquetes', href: '#projects' },
     { label: 'Contacto', href: '#contact' },
@@ -14,8 +15,8 @@ export const esLocale: LocalizedContent = {
   hero: {
     eyebrow: 'Agencia digital accesible en Quito, Pichincha',
     title:
-      'Páginas web, tiendas online y automatización para pymes de Quito.',
-    body: 'Maiatesta ayuda a negocios, emprendimientos y profesionales en Quito Norte, Centro, Sur y Pichincha a conseguir más clientes por internet con desarrollo web accesible, e-commerce, chatbots para WhatsApp, inventario, software a medida y automatización de Excel.',
+      'Desarrollo de software, páginas web y automatización para pymes en Quito.',
+    body: 'Creamos páginas web, tiendas online, software de inventario, sistemas a medida, chatbots de WhatsApp y automatizaciones de Excel para pymes en Quito y Ecuador que quieren vender más y operar con datos claros.',
     primaryCta: 'Cotizar por WhatsApp',
     secondaryCta: 'Ver servicios',
     metrics: [
@@ -156,7 +157,50 @@ export const esLocale: LocalizedContent = {
         'Soluciones modernas, atención personalizada y automatización real.',
       body: 'Aplicamos tecnología al negocio: más oportunidades de venta, menos tareas manuales, información más clara y mejores resultados.',
     },
+    clients: {
+      eyebrow: 'Proyectos reales en Ecuador',
+      title: 'Empresas y proyectos con los que hemos trabajado',
+      body: 'Algunos proyectos donde hemos aplicado desarrollo web, automatización, software e integraciones para negocios en Ecuador.',
+    },
   },
+  clients: [
+    {
+      name: 'Largenergy',
+      sector: 'Energía · Ecuador',
+      logo: '/assets/clients/largenergy.webp',
+      alt: 'Logo de Largenergy, empresa de energía en Ecuador',
+      href: 'https://largenergy.com.ec',
+      width: 360,
+      height: 135,
+    },
+    {
+      name: 'Estudio 10',
+      sector: 'Estudio jurídico · Ecuador',
+      logo: '/assets/clients/estudio-10.webp',
+      alt: 'Logo de Estudio 10, estudio jurídico en Ecuador',
+      href: 'https://www.estudio10.com.ec',
+      width: 360,
+      height: 167,
+    },
+    {
+      name: 'La Pulga Picosa',
+      sector: 'Tienda de segunda mano · Ecuador',
+      logo: '/assets/clients/la-pulga-picosa.webp',
+      alt: 'Logo de La Pulga Picosa, tienda de segunda mano en Ecuador',
+      href: 'https://lapulgapicosa.kipuxbot.com',
+      width: 360,
+      height: 167,
+    },
+    {
+      name: 'Galapagos Center',
+      sector: 'Agencia de turismo · Ecuador',
+      logo: '/assets/clients/galapagos-center.webp',
+      alt: 'Logo de Galapagos Center, agencia de turismo en Ecuador',
+      href: 'https://galapagoscenter.com',
+      width: 360,
+      height: 155,
+    },
+  ],
   process: [
     { title: 'Escuchar', body: 'Entiendo qué vendes, de dónde vienen tus clientes y qué frena tu operación.' },
     { title: 'Priorizar', body: 'Elegimos primero la solución de menor fricción: web, bot de WhatsApp, tienda, Excel, inventario o software.' },
@@ -168,6 +212,7 @@ export const esLocale: LocalizedContent = {
     {
       name: 'Página Web Express en Quito (desde $200)',
       type: 'Pago único',
+      image: '/assets/previews/package-web-express.webp',
       result:
         'Tu página web profesional lista en 3 a 5 días hábiles. Pago único, optimizada para celular y conectada a tu WhatsApp.',
       features: [
@@ -183,6 +228,7 @@ export const esLocale: LocalizedContent = {
     {
       name: 'Chatbot de WhatsApp con IA (desde US$ 60)',
       type: 'Más Popular',
+      image: '/assets/previews/package-web-chatbot.webp',
       result:
         'Un asistente virtual para WhatsApp o tu web que responde preguntas frecuentes y captura leads mientras trabajas.',
       badgeText: 'Más Popular',
@@ -207,6 +253,7 @@ export const esLocale: LocalizedContent = {
     {
       name: 'Control Operativo para Pymes',
       type: 'Software a medida, inventario y Excel',
+      image: '/assets/previews/package-full-digital.webp',
       result:
         'Sistemas internos, dashboards, agendas, alertas de stock, multiusuario, reportes, historial y trazabilidad para negocios en crecimiento.',
     },

@@ -825,26 +825,6 @@ a.site-footer__cta:hover {
     backface-visibility: hidden;
   }
 
-  #services {
-    content-visibility: auto;
-    contain-intrinsic-size: auto var(--services-shell-height);
-  }
-
-  #projects {
-    content-visibility: auto;
-    contain-intrinsic-size: auto var(--projects-shell-height);
-  }
-
-  #local-faq {
-    content-visibility: auto;
-    contain-intrinsic-size: auto var(--faq-shell-height);
-  }
-
-  .article-body-section {
-    content-visibility: auto;
-    contain-intrinsic-size: auto var(--article-body-shell-height);
-  }
-
   #contact {
     content-visibility: auto;
     contain-intrinsic-size: auto 980px;
@@ -923,4 +903,140 @@ html.is-flicking .scroll-track__fill,
 html.is-flicking .scroll-comet,
 html.is-flicking .scroll-node__burst {
   animation-play-state: paused !important;
+}
+
+/* During active scroll, content reveal must not hide elements. */
+html.is-scrolling .reveal,
+html.is-scrolling .scroll-reveal {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Client logo ticker (critical: above-fold, must size images before deferred loads) ── */
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.client-ticker {
+  overflow: hidden;
+  width: 100%;
+  border-top: 1px solid rgba(216, 189, 120, 0.12);
+  border-bottom: 1px solid rgba(216, 189, 120, 0.12);
+  background: rgba(7, 17, 31, 0.65);
+}
+
+.client-ticker__layout {
+  display: flex;
+  align-items: center;
+  height: 68px;
+}
+
+.client-ticker__label {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: clamp(170px, 16vw, 220px);
+  padding: 0 clamp(14px, 2.5vw, 28px);
+  height: 100%;
+  border-right: 1px solid rgba(216, 189, 120, 0.22);
+  color: rgba(216, 189, 120, 1);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+}
+
+.client-ticker__track {
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.client-ticker__inner {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: ticker-scroll 26s linear infinite;
+  will-change: transform;
+}
+
+.client-ticker__list {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  padding-right: 40px;
+  flex-shrink: 0;
+}
+
+.client-ticker__item {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 8px;
+  padding: 7px 18px;
+}
+
+.client-ticker__item img {
+  display: block;
+  height: 32px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+}
+
+.client-ticker:hover .client-ticker__inner {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .client-ticker__inner {
+    animation: none;
+  }
+
+  .client-ticker__list[aria-hidden='true'] {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .client-ticker__layout {
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+  }
+
+  .client-ticker__label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    padding: 9px 16px 6px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(216, 189, 120, 0.15);
+    font-size: 0.7rem;
+    text-align: center;
+  }
+
+  .client-ticker__track {
+    height: 52px;
+  }
+
+  .client-ticker__item {
+    padding: 6px 12px;
+  }
+
+  .client-ticker__item img {
+    height: 30px;
+    max-width: 115px;
+  }
 }

@@ -1,6 +1,9 @@
 import { siteContent } from '../data/siteContent';
 import type { LanguageCode, LocalizedContent } from '../data/siteContent';
+import { trackWhatsAppClick } from '../utils/analytics';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import { Header } from './Header';
+import { HeroVideoBackground } from './HeroVideoBackground';
 import { LuminousText } from './LuminousText';
 import { PersonaPortrait } from './PersonaPortrait';
 
@@ -31,6 +34,7 @@ export function Hero({
   onPersonaPortraitToggle,
   palette,
 }: HeroProps) {
+  const isDesktop = useMediaQuery('(min-width: 769px)');
   const personaImage =
     palette === 'atlantic'
       ? siteContent.brand.atlanticPersona
@@ -41,7 +45,8 @@ export function Hero({
 
   return (
     <section className='hero-section' id='top'>
-      {/* Animated CSS background — GPU-only, no videos */}
+      {isDesktop && <HeroVideoBackground />}
+      {/* CSS background layers — hidden on mobile via media query in hero-effects.css */}
       <div className='hero-stars hero-stars--far' aria-hidden='true' />
       <div className='hero-stars hero-stars--near' aria-hidden='true' />
       <div className='hero-aurora' aria-hidden='true' />
@@ -79,6 +84,7 @@ export function Hero({
               href={whatsappChannel?.href ?? '#contact'}
               target={whatsappChannel ? '_blank' : undefined}
               rel={whatsappChannel ? 'noreferrer' : undefined}
+              onClick={() => trackWhatsAppClick({ ctaLocation: 'hero', pageType: 'home' })}
             >
               {content.hero.primaryCta}
             </a>

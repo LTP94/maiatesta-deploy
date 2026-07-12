@@ -10,6 +10,7 @@ export const tiendasOnlineEcuador = {
     'Una tienda online para una pyme ecuatoriana debe facilitar la compra, no complicarla. El objetivo es mostrar productos, recibir pedidos y cerrar ventas por el canal que el cliente ya usa.',
   priceHint: 'Cotización según catálogo, pagos, pedidos e integraciones.',
   primaryKeyword: 'tienda online Ecuador',
+  ctaLabel: 'Evaluar mi tienda online',
   ctaMessage:
     'Hola Maiatesta, vi la página de tiendas online en Ecuador y quiero cotizar un e-commerce para mi negocio.',
   proof:
@@ -42,5 +43,11 @@ export const tiendasOnlineEcuador = {
         'No. Se puede empezar con los productos más rentables o más consultados y ampliar el catálogo por etapas.',
     },
   ],
-  relatedServiceIds: ['web-development', 'ai-automation', 'inventory-software'],
+  relatedServiceIds: ['web-development', 'ai-automation', 'inventory-software', 'software-development-quito'],
+  featureImage: {
+    src: '/assets/previews/service-ecommerce-feature.webp',
+    alt: 'Mockup abstracto de una tienda online con productos y carrito',
+    width: 960,
+    height: 540,
+  },
 };

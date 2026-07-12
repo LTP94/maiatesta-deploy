@@ -1,11 +1,18 @@
 <!doctype html>
 <html lang="es">
   <head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-5H28W9NK');</script>
+    <!-- End Google Tag Manager -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Maiatesta es una agencia digital en Quito para páginas web, software para pymes, chatbots de WhatsApp, tiendas online e inventario en Ecuador."
+      content="Maiatesta es una agencia digital en Quito especializada en desarrollo de software, páginas web, tiendas online, chatbots de WhatsApp y automatización para pymes."
     />
     <meta name="author" content="Maiatesta" />
     <meta name="robots" content="index, follow" />
@@ -17,17 +24,18 @@
     <meta name="geo.position" content="-0.1807;-78.4678" />
     <meta name="ICBM" content="-0.1807, -78.4678" />
 
-    <title>Maiatesta | Desarrollo Web, Software y Chatbots en Quito</title>
+    <title>Desarrollo de Software, Web y Automatización en Quito | Maiatesta</title>
     <link rel="icon" href="/assets/maiatesta-favicon.png" type="image/png" />
 
     <!-- Canonical & hreflang -->
     <link rel="canonical" href="https://maiatesta.com/" />
     <link rel="alternate" hreflang="es" href="https://maiatesta.com/" />
-    <link rel="alternate" hreflang="x-default" href="https://maiatesta.com/" />
 
     <!-- Preload critical above-the-fold brand and hero images only -->
     <link rel="preload" as="image" href="/assets/maiatesta-logo.webp" type="image/webp" />
     <link rel="preload" as="image" href="/assets/maiatesta-persona-hero.webp" type="image/webp" />
+    <!-- Mobile hero background — preloaded only on small viewports -->
+    <link rel="preload" as="image" href="/assets/hero-mobile.webp" type="image/webp" media="(max-width: 768px)" />
     <style data-critical-css><!--critical-css--></style>
     <link rel="preload" as="style" href="/src/deferred.css" />
     <link rel="stylesheet" href="/src/deferred.css" media="print" onload="this.media='all'" />
@@ -39,10 +47,10 @@
     <meta property="og:site_name" content="Maiatesta" />
     <meta property="og:locale" content="es_EC" />
     <meta property="og:locale:alternate" content="en_US" />
-    <meta property="og:title" content="Maiatesta | Desarrollo Web, Software y Chatbots en Quito" />
+    <meta property="og:title" content="Desarrollo de Software, Web y Automatización en Quito | Maiatesta" />
     <meta
       property="og:description"
-      content="Maiatesta es una agencia digital en Quito para páginas web, software para pymes, chatbots de WhatsApp, tiendas online e inventario en Ecuador."
+      content="Maiatesta es una agencia digital en Quito especializada en desarrollo de software, páginas web, tiendas online, chatbots de WhatsApp y automatización para pymes."
     />
     <meta property="og:image" content="https://maiatesta.com/assets/maiatesta-persona-hero.webp" />
     <meta property="og:image:width" content="720" />
@@ -51,10 +59,10 @@
 
     <!-- Twitter / X Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Maiatesta | Desarrollo Web, Software y Chatbots en Quito" />
+    <meta name="twitter:title" content="Desarrollo de Software, Web y Automatización en Quito | Maiatesta" />
     <meta
       name="twitter:description"
-      content="Maiatesta es una agencia digital en Quito para páginas web, software para pymes, chatbots de WhatsApp, tiendas online e inventario en Ecuador."
+      content="Maiatesta es una agencia digital en Quito especializada en desarrollo de software, páginas web, tiendas online, chatbots de WhatsApp y automatización para pymes."
     />
     <meta name="twitter:image" content="https://maiatesta.com/assets/maiatesta-persona-hero.webp" />
     <meta name="twitter:image:alt" content="Maiatesta — Agencia digital en Quito, Ecuador" />
@@ -181,13 +189,17 @@
           "name": "Maiatesta",
           "description": "Maiatesta ofrece desarrollo web, chatbots de WhatsApp, tiendas online, inventario y automatización para pymes en Quito, Ecuador.",
           "publisher": { "@id": "https://maiatesta.com/#localbusiness" },
-          "inLanguage": ["es", "en"]
+          "inLanguage": "es"
         }
       ]
     }
     </script>
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5H28W9NK"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <div id="root"><!--app-html--></div>
     <script type="module" src="/src/entry-client.tsx"></script>
   </body>

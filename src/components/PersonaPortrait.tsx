@@ -71,6 +71,7 @@ export function PersonaPortrait({
             height='720'
             decoding='async'
             loading='eager'
+            fetchPriority='high'
           />
         </span>
       </div>

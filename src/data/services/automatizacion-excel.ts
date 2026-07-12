@@ -2,14 +2,15 @@ export const automatizacionExcelQuito = {
   slug: 'automatizacion-excel-quito' as const,
   productId: 'spreadsheet-automation',
   title: 'Automatización de Excel en Quito',
-  metaTitle: 'Automatización de Excel en Quito | Reportes y Dashboards | Maiatesta',
+  metaTitle: 'Automatización de Excel para Pymes en Ecuador | Maiatesta',
   metaDescription:
-    'Automatización de Excel en Quito para pymes: reportes, dashboards, consolidación de datos y menos tareas manuales repetitivas.',
-  h1: 'Automatización de Excel en Quito para reportes y tareas repetitivas',
+    'Automatiza reportes, archivos y procesos repetitivos de Excel para ahorrar tiempo y reducir errores en tu negocio.',
+  h1: 'Automatización de Excel para pymes en Ecuador: reportes que se hacen solos',
   intro:
-    'Excel puede ser una gran herramienta, pero muchas empresas pierden horas copiando datos, armando reportes o corrigiendo errores manuales cada semana.',
+    'Coordinadores, contadores y gerentes de pymes en Ecuador pasan horas cada semana armando el mismo reporte, copiando datos entre hojas o corrigiendo errores que se repiten. Eso es tiempo que el negocio pierde en tareas que se pueden automatizar.',
   priceHint: 'Cotización según archivos, fuentes de datos y reportes.',
   primaryKeyword: 'automatización Excel Quito',
+  ctaLabel: 'Automatizar mi Excel',
   ctaMessage:
     'Hola Maiatesta, vi la página de automatización de Excel en Quito y quiero automatizar reportes de mi negocio.',
   proof:
@@ -19,6 +20,10 @@ export const automatizacionExcelQuito = {
     'Dashboards y reportes más fáciles de actualizar.',
     'Consolidación de datos desde varias hojas o archivos.',
     'Paso intermedio antes de construir software a medida.',
+    'Para contadores, coordinadores, gerentes y pymes que dependen de reportes semanales o mensuales que alguien arma a mano.',
+    'Resuelve horas perdidas copiando datos entre hojas, errores por fórmulas rotas y reportes que cambian de formato cada vez.',
+    'Cuándo puede bastar con Excel normal: si el reporte es simple, se hace una vez al mes y una sola persona lo entiende, quizás no necesitas automatizar todavía.',
+    'Automatización vs software a medida: automatizar Excel es más rápido y económico cuando el problema vive en hojas. Si necesitas usuarios, permisos, historial o dashboards en tiempo real, ahí sí conviene un sistema propio.',
   ],
   process: [
     'Revisar archivos actuales, fórmulas y reportes críticos.',
@@ -41,6 +46,32 @@ export const automatizacionExcelQuito = {
       answer:
         'Sí. Según el flujo, se puede trabajar con Excel, Google Sheets o una combinación con reportes web.',
     },
+    {
+      question: '¿Cuánto tiempo toma automatizar mis reportes?',
+      answer:
+        'Depende de la complejidad. Un reporte simple puede estar listo en días. Si hay múltiples fuentes, cálculos cruzados o dashboards interactivos, puede tomar una o dos semanas.',
+    },
+    {
+      question: '¿Puedo seguir usando Excel después de automatizar?',
+      answer:
+        'Sí. La automatización trabaja dentro de Excel o Google Sheets. No necesitas cambiar de herramienta, solo deja de hacer las partes repetitivas a mano.',
+    },
+    {
+      question: '¿Cuándo no hace falta automatizar todavía?',
+      answer:
+        'Si haces un solo reporte al mes, es simple y lo entiende una sola persona, posiblemente Excel funcione bien tal como está. La automatización tiene más sentido cuando el volumen, la frecuencia o los errores justifican el cambio.',
+    },
+    {
+      question: '¿Funciona con Google Sheets?',
+      answer:
+        'Sí. Según el caso, se puede trabajar con Excel local, Google Sheets en la nube o una combinación de ambos con reportes web.',
+    },
   ],
-  relatedServiceIds: ['custom-software', 'inventory-software', 'purchase-optimization'],
+  relatedServiceIds: ['custom-software', 'inventory-software', 'purchase-optimization', 'software-development-quito'],
+  featureImage: {
+    src: '/assets/previews/service-excel-feature.webp',
+    alt: 'Comparación abstracta entre hojas manuales y dashboard automatizado',
+    width: 960,
+    height: 540,
+  },
 };

@@ -55,14 +55,8 @@ export function useSectionHydration(
 
     const activateSection = (selector: string) => {
       const target = document.querySelector(selector);
-      const shouldWaitForIdle = scrollingRef.current;
 
-      if (
-        !target ||
-        !isNearViewport(target) ||
-        flickingRef.current ||
-        shouldWaitForIdle
-      ) {
+      if (!target) {
         pendingSelectors.add(selector);
         return;
       }
@@ -98,10 +92,9 @@ export function useSectionHydration(
       const customEvent = event as CustomEvent<ScrollActivityDetail>;
       if (!customEvent.detail?.isScrolling && !customEvent.detail?.isFlicking) {
         window.clearTimeout(hydrationSettleTimeout);
-        hydrationSettleTimeout = window.setTimeout(
-          processPendingHydration,
-          720,
-        );
+        hydrationSettleTimeout = window.setTimeout(() => {
+          window.requestAnimationFrame(processPendingHydration);
+        }, 0);
       }
     };
 
@@ -154,15 +147,10 @@ export function useSectionHydration(
 
           if (!match) return;
 
-          if (flickingRef.current) {
-            pendingSelectors.add(match.selector);
-            return;
-          }
-
           activateSection(match.selector);
         });
       },
-      { root: null, rootMargin: '0px 0px', threshold: 0 },
+      { root: null, rootMargin: '0px 0px 800px 0px', threshold: 0 },
     );
 
     gatedPreloaders.forEach(({ selector }) => {

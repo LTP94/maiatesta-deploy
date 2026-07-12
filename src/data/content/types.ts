@@ -56,13 +56,24 @@ export type LocalizedContent = {
     services: { eyebrow: string; title: string; body: string };
     projects: { eyebrow: string; title: string; body: string };
     reviews: { eyebrow: string; title: string; body: string };
+    clients: { eyebrow: string; title: string; body: string };
   };
+  clients: Array<{
+    name: string;
+    sector: string;
+    logo: string;
+    alt: string;
+    href: string;
+    width: number;
+    height: number;
+  }>;
   process: Array<{ title: string; body: string }>;
   processTitle: string;
   projects: Array<{
     name: string;
     type: string;
     result: string;
+    image?: string;
     features?: Array<{ label: string; included: boolean; emphasized?: boolean }>;
     badgeText?: string;
     featured?: boolean;

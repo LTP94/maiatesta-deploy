@@ -10,6 +10,7 @@ export const controlComprasCostosQuito = {
     'Comprar sin datos claros afecta caja, márgenes y operación. Una herramienta simple puede comparar proveedores, ordenar cotizaciones y mostrar dónde se está yendo el presupuesto.',
   priceHint: 'Cotización según reportes, proveedores y flujo de aprobación.',
   primaryKeyword: 'control de compras y costos Quito',
+  ctaLabel: 'Revisar mis costos',
   ctaMessage:
     'Hola Maiatesta, vi la página de control de compras y costos y quiero ordenar compras en mi empresa.',
   proof:
@@ -42,5 +43,11 @@ export const controlComprasCostosQuito = {
         'Sí. Compras e inventario suelen estar relacionados; se puede conectar stock bajo, proveedores y reposición según necesidad.',
     },
   ],
-  relatedServiceIds: ['inventory-software', 'spreadsheet-automation', 'custom-software'],
+  relatedServiceIds: ['inventory-software', 'spreadsheet-automation', 'custom-software', 'software-development-quito'],
+  featureImage: {
+    src: '/assets/previews/service-purchases-feature.webp',
+    alt: 'Mockup abstracto de control de compras, proveedores y costos',
+    width: 960,
+    height: 540,
+  },
 };

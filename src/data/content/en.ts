@@ -7,6 +7,7 @@ export const enLocale: LocalizedContent = {
     paletteSwitcher: 'Color palette selector',
   },
   nav: [
+    { label: 'Software', href: '/desarrollo-de-software-quito/' },
     { label: 'Services', href: '#services' },
     { label: 'Packages', href: '#projects' },
     { label: 'Contact', href: '#contact' },
@@ -14,8 +15,8 @@ export const enLocale: LocalizedContent = {
   hero: {
     eyebrow: 'Accessible digital agency in Quito, Pichincha',
     title:
-      'Websites, online stores, and automation for Quito small businesses.',
-    body: 'Maiatesta helps local shops, restaurants, clinics, professionals, and growing SMEs in Quito Norte, Centro, Sur, and Pichincha get more leads online with clear, affordable web development, e-commerce, WhatsApp chatbots, inventory tools, custom software, and Excel automation.',
+      'Software development, websites, and automation for SMEs in Quito.',
+    body: 'We build inventory software, online stores, WhatsApp chatbots, websites, and automations for businesses that want to sell more and streamline operations.',
     primaryCta: 'Quote on WhatsApp',
     secondaryCta: 'Explore services',
     metrics: [
@@ -157,6 +158,11 @@ export const enLocale: LocalizedContent = {
         'Modern solutions, personalized attention, and real automation.',
       body: 'We apply technology to the business itself: more sales opportunities, fewer manual tasks, cleaner information, and better results.',
     },
+    clients: {
+      eyebrow: 'Real projects in Ecuador',
+      title: 'Companies and projects we have worked with',
+      body: 'Projects where we have applied web development, automation, software, and integrations for businesses in Ecuador.',
+    },
   },
   process: [
     { title: 'Listen', body: 'Understand what you sell, where your clients come from, and what slows your team down.' },
@@ -169,6 +175,7 @@ export const enLocale: LocalizedContent = {
     {
       name: 'Express Website in Quito (from $200)',
       type: 'One-time payment',
+      image: '/assets/previews/package-web-express.webp',
       result:
         'A professional business website ready in 3 to 5 business days. One-time payment, mobile-first, and connected to your WhatsApp.',
       features: [
@@ -184,6 +191,7 @@ export const enLocale: LocalizedContent = {
     {
       name: 'AI WhatsApp Chatbot (from US$60)',
       type: 'Most Popular',
+      image: '/assets/previews/package-web-chatbot.webp',
       result:
         'A virtual assistant for WhatsApp or your website that answers common questions and captures leads while you work.',
       badgeText: 'Most Popular',
@@ -208,8 +216,47 @@ export const enLocale: LocalizedContent = {
     {
       name: 'Operational Control for SMEs',
       type: 'Custom software, inventory, and Excel',
+      image: '/assets/previews/package-full-digital.webp',
       result:
         'Internal systems, dashboards, appointments, stock alerts, multi-user access, reports, history, and traceability for growing businesses.',
+    },
+  ],
+  clients: [
+    {
+      name: 'Largenergy',
+      sector: 'Energy · Ecuador',
+      logo: '/assets/clients/largenergy.webp',
+      alt: 'Largenergy logo — energy company in Ecuador',
+      href: 'https://largenergy.com.ec',
+      width: 360,
+      height: 135,
+    },
+    {
+      name: 'Estudio 10',
+      sector: 'Law firm · Ecuador',
+      logo: '/assets/clients/estudio-10.webp',
+      alt: 'Estudio 10 logo — law firm in Ecuador',
+      href: 'https://www.estudio10.com.ec',
+      width: 360,
+      height: 167,
+    },
+    {
+      name: 'La Pulga Picosa',
+      sector: 'Second-hand store · Ecuador',
+      logo: '/assets/clients/la-pulga-picosa.webp',
+      alt: 'La Pulga Picosa logo — second-hand store in Ecuador',
+      href: 'https://lapulgapicosa.kipuxbot.com',
+      width: 360,
+      height: 167,
+    },
+    {
+      name: 'Galapagos Center',
+      sector: 'Tour agency · Ecuador',
+      logo: '/assets/clients/galapagos-center.webp',
+      alt: 'Galapagos Center logo — tour agency in Ecuador',
+      href: 'https://galapagoscenter.com',
+      width: 360,
+      height: 155,
     },
   ],
   reviews: [

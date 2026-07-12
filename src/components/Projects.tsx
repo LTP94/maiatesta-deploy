@@ -1,4 +1,5 @@
 import type { LocalizedContent } from '../data/siteContent';
+import { trackWhatsAppClick } from '../utils/analytics';
 import { LuminousText } from './LuminousText';
 
 const projectsHighlightPhrases = [
@@ -46,6 +47,17 @@ export function Projects({ content }: ProjectsProps) {
             {project.badgeText ? (
               <div className='project-card-badge'>{project.badgeText}</div>
             ) : null}
+            {project.image ? (
+              <img
+                className='project-card-image'
+                src={project.image}
+                alt=''
+                width='640'
+                height='400'
+                loading='lazy'
+                decoding='async'
+              />
+            ) : null}
             <span>{project.type}</span>
             <h3>{project.name}</h3>
             <p>{project.result}</p>
@@ -78,6 +90,7 @@ export function Projects({ content }: ProjectsProps) {
                       target='_blank'
                       rel='noreferrer'
                       aria-label={project.ctaText}
+                      onClick={() => trackWhatsAppClick({ ctaLocation: 'package-card', pageType: 'home' })}
                     >
                       <svg
                         aria-hidden='true'

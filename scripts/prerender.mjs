@@ -44,13 +44,22 @@ const injectHead = (html, routePath) => {
       /<link\s+rel="alternate"\s+hreflang="es"\s+href="[^"]*"\s*\/>/,
       `<link rel="alternate" hreflang="es" href="${escapeAttribute(seo.canonical)}" />`,
     )
+    // x-default hreflang removed — site is Spanish-only with no international routing strategy
     .replace(
-      /<link\s+rel="alternate"\s+hreflang="x-default"\s+href="[^"]*"\s*\/>/,
-      `<link rel="alternate" hreflang="x-default" href="${escapeAttribute(seo.canonical)}" />`,
+      /<meta\s+property="og:type"\s+content="[^"]*"\s*\/>/,
+      `<meta property="og:type" content="${escapeAttribute(seo.ogType || 'website')}" />`,
     )
     .replace(
       /<meta\s+property="og:url"\s+content="[^"]*"\s*\/>/,
-      `<meta property="og:url" content="${escapeAttribute(seo.ogUrl)}" />`,
+      `<meta property="og:url" content="${escapeAttribute(seo.ogUrl)}" />${
+        seo.ogArticlePublishedTime
+          ? `\n    <meta property="article:published_time" content="${escapeAttribute(seo.ogArticlePublishedTime)}" />`
+          : ''
+      }${
+        seo.ogArticleModifiedTime
+          ? `\n    <meta property="article:modified_time" content="${escapeAttribute(seo.ogArticleModifiedTime)}" />`
+          : ''
+      }`,
     )
     .replace(
       /<meta\s+property="og:title"\s+content="[^"]*"\s*\/>/,

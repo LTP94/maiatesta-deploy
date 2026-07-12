@@ -5,20 +5,24 @@ export const softwareAMedidaPymesEcuador = {
   metaTitle: 'Software a Medida para Pymes en Ecuador | Maiatesta',
   metaDescription:
     'Desarrollo de software a medida para pymes en Ecuador: reservas, dashboards, formularios, reportes, usuarios y procesos internos.',
-  h1: 'Software a medida para pymes en Ecuador que necesitan ordenar su operación',
+  h1: 'Software a medida en Ecuador: sistemas propios para procesos que Excel ya no resuelve',
   intro:
-    'No todo negocio necesita una plataforma enorme. Muchas pymes necesitan un sistema claro para reservas, formularios, reportes, agendas, usuarios o procesos que Excel ya no resuelve bien.',
+    'Cuando las reservas se manejan por chat, las aprobaciones llegan por WhatsApp y los reportes se arman copiando celdas, el negocio ya necesita algo más que una hoja de cálculo. Un sistema propio organiza esos flujos sin obligarte a adaptarte a un SaaS genérico que no fue diseñado para tu operación.',
   priceHint: 'Cotización por alcance, módulos y complejidad del flujo.',
   primaryKeyword: 'software a medida pymes Ecuador',
+  ctaLabel: 'Diagnosticar mi proceso manual',
   ctaMessage:
     'Hola Maiatesta, vi la página de software a medida para pymes y quiero conversar sobre un sistema para mi operación.',
   proof:
-    'El enfoque es empezar pequeño: resolver el cuello de botella más caro primero y crecer el sistema con datos reales del negocio.',
+    'El enfoque es empezar pequeño: resolver el cuello de botella más caro primero y crecer el sistema con datos reales del negocio. Útil cuando tienes un proceso interno específico que ningún SaaS genérico resuelve bien: cotizadores propios, flujos de aprobación, reportes de tu industria o paneles de gestión.',
   benefits: [
     'Sistema adaptado al flujo real de la empresa.',
     'Paneles, usuarios, formularios y reportes según necesidad.',
     'Menos dependencia de hojas manuales y tareas repetidas.',
     'Arquitectura web para crecer con nuevos módulos.',
+    'Ejemplos por sector: control de citas en consultorios, gestión de pedidos en restaurantes, seguimiento de proyectos en constructoras, reportes de ventas para distribuidoras.',
+    'Cuándo NO conviene: si un SaaS existente resuelve tu problema, si tu operación es simple y Excel funciona bien, o si no hay presupuesto para mantener el sistema después del lanzamiento.',
+    'Mantenimiento post-lanzamiento: correcciones, ajustes y soporte se definen por contrato, no se asumen como costo indefinido.',
   ],
   process: [
     'Diagnóstico del proceso y definición del problema principal.',
@@ -41,6 +45,27 @@ export const softwareAMedidaPymesEcuador = {
       answer:
         'Sí, dependiendo de las APIs disponibles. Se puede evaluar conexión con formularios, pagos, CRM, reportes, inventario o facturación.',
     },
+    {
+      question: '¿Cuánto tarda un proyecto de software a medida?',
+      answer:
+        'Un MVP operativo puede estar listo en semanas, no meses. Depende de la cantidad de módulos, integraciones y datos históricos que se necesiten migrar.',
+    },
+    {
+      question: '¿Software a medida o un sistema ya existente?',
+      answer:
+        'Si hay un SaaS que resuelve tu problema por un costo razonable, es mejor usarlo. Software a medida conviene cuando tu proceso es particular, necesitas control total de los datos o los sistemas genéricos obligan a duplicar trabajo.',
+    },
+    {
+      question: '¿Qué pasa después del lanzamiento?',
+      answer:
+        'Se define un plan de soporte y mantenimiento. Incluye correcciones, ajustes menores y actualizaciones. El costo depende del alcance y se acuerda por contrato.',
+    },
   ],
-  relatedServiceIds: ['inventory-software', 'spreadsheet-automation', 'ai-automation'],
+  relatedServiceIds: ['inventory-software', 'spreadsheet-automation', 'ai-automation', 'software-development-quito'],
+  featureImage: {
+    src: '/assets/previews/service-custom-feature.webp',
+    alt: 'Mockup abstracto de un sistema modular con usuarios, formularios y reportes',
+    width: 960,
+    height: 540,
+  },
 };

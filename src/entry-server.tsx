@@ -5,6 +5,10 @@ import { PassThrough } from 'node:stream';
 import App from './App';
 import { articlePages, getArticlePageByPath } from './data/articlePages';
 import { articleRouteSlugs } from './data/articleRoutes';
+import { getLegalPageByPath } from './data/legalPages';
+import { legalRouteSlugs } from './data/legalRoutes';
+import { getPillarPageByPath } from './data/pillarPages';
+import { pillarRouteSlugs } from './data/pillarRoutes';
 import { servicePages, getServicePageByPath } from './data/servicePages';
 import { serviceRouteSlugs } from './data/serviceRoutes';
 
@@ -24,7 +28,7 @@ const localBusinessSchema = {
   image: `${siteUrl}/assets/maiatesta-persona-hero.webp`,
   logo: `${siteUrl}/assets/maiatesta-logo.webp`,
   description:
-    'Maiatesta es una agencia digital accesible en Quito para desarrollo web, tiendas online, chatbots de WhatsApp, software para pymes, inventario y automatización de Excel.',
+    'Maiatesta es una agencia digital accesible en Quito para desarrollo web, tiendas online, chatbots de WhatsApp, software para pymes, inventario y automatización de Excel. Ha trabajado con empresas en Ecuador como Largenergy, Estudio 10, La Pulga Picosa y Galapagos Center.',
   email: 'maiatesta@gmail.com',
   telephone: '+593963092859',
   priceRange: '$60-$200+',
@@ -84,6 +88,8 @@ export function getStaticRoutes() {
     '/guias/',
     ...serviceRouteSlugs.map((slug) => `/servicios/${slug}/`),
     ...articleRouteSlugs.map((slug) => `/guias/${slug}/`),
+    ...pillarRouteSlugs.map((slug) => `/${slug}/`),
+    ...legalRouteSlugs.map((slug) => `/${slug}/`),
   ];
 }
 
@@ -91,6 +97,8 @@ export function getRouteSeo(routePath = '/') {
   const normalizedPath = normalizeRoutePath(routePath);
   const articlePage = getArticlePageByPath(normalizedPath);
   const servicePage = getServicePageByPath(normalizedPath);
+  const pillarPage = getPillarPageByPath(normalizedPath);
+  const legalPage = getLegalPageByPath(normalizedPath);
   const isGuidesIndex = normalizedPath === '/guias/';
   const url = `${siteUrl}${normalizedPath === '/' ? '/' : normalizedPath}`;
 
@@ -115,9 +123,12 @@ export function getRouteSeo(routePath = '/') {
       title: articlePage.metaTitle,
       description: articlePage.metaDescription,
       canonical: url,
+      ogType: 'article',
       ogTitle: articlePage.metaTitle,
       ogDescription: articlePage.metaDescription,
       ogUrl: url,
+      ogArticlePublishedTime: `${articlePage.publishDate}T00:00:00Z`,
+      ogArticleModifiedTime: `${articlePage.updatedDate}T00:00:00Z`,
       twitterTitle: articlePage.metaTitle,
       twitterDescription: articlePage.metaDescription,
     };
@@ -136,18 +147,44 @@ export function getRouteSeo(routePath = '/') {
     };
   }
 
+  if (pillarPage) {
+    return {
+      title: pillarPage.metaTitle,
+      description: pillarPage.metaDescription,
+      canonical: url,
+      ogTitle: pillarPage.metaTitle,
+      ogDescription: pillarPage.metaDescription,
+      ogUrl: url,
+      twitterTitle: pillarPage.metaTitle,
+      twitterDescription: pillarPage.metaDescription,
+    };
+  }
+
+  if (legalPage) {
+    return {
+      title: legalPage.metaTitle,
+      description: legalPage.metaDescription,
+      canonical: url,
+      ogTitle: legalPage.metaTitle,
+      ogDescription: legalPage.metaDescription,
+      ogUrl: url,
+      twitterTitle: legalPage.metaTitle,
+      twitterDescription: legalPage.metaDescription,
+    };
+  }
+
   return {
-    title: 'Maiatesta | Desarrollo Web, Software y Chatbots en Quito',
+    title: 'Desarrollo de Software, Web y Automatización en Quito | Maiatesta',
     description:
-      'Maiatesta es una agencia digital en Quito para páginas web, software para pymes, chatbots de WhatsApp, tiendas online e inventario en Ecuador.',
+      'Maiatesta es una agencia digital en Quito especializada en desarrollo de software, páginas web, tiendas online, chatbots de WhatsApp y automatización para pymes.',
     canonical: `${siteUrl}/`,
-    ogTitle: 'Maiatesta | Desarrollo Web, Software y Chatbots en Quito',
+    ogTitle: 'Desarrollo de Software, Web y Automatización en Quito | Maiatesta',
     ogDescription:
-      'Maiatesta es una agencia digital en Quito para páginas web, software para pymes, chatbots de WhatsApp, tiendas online e inventario en Ecuador.',
+      'Maiatesta es una agencia digital en Quito especializada en desarrollo de software, páginas web, tiendas online, chatbots de WhatsApp y automatización para pymes.',
     ogUrl: `${siteUrl}/`,
-    twitterTitle: 'Maiatesta | Desarrollo Web, Software y Chatbots en Quito',
+    twitterTitle: 'Desarrollo de Software, Web y Automatización en Quito | Maiatesta',
     twitterDescription:
-      'Maiatesta es una agencia digital en Quito para páginas web, software para pymes, chatbots de WhatsApp, tiendas online e inventario en Ecuador.',
+      'Maiatesta es una agencia digital en Quito especializada en desarrollo de software, páginas web, tiendas online, chatbots de WhatsApp y automatización para pymes.',
   };
 }
 
@@ -155,13 +192,23 @@ export function getRouteStructuredData(routePath = '/') {
   const normalizedPath = normalizeRoutePath(routePath);
   const articlePage = getArticlePageByPath(normalizedPath);
   const servicePage = getServicePageByPath(normalizedPath);
+  const pillarPage = getPillarPageByPath(normalizedPath);
+  const legalPage = getLegalPageByPath(normalizedPath);
   const isGuidesIndex = normalizedPath === '/guias/';
   const graph: Array<Record<string, unknown>> = [
     localBusinessSchema,
     websiteSchema,
   ];
 
-  if (isGuidesIndex) {
+  if (legalPage) {
+    graph.push({
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+        { '@type': 'ListItem', position: 2, name: legalPage.title, item: `${siteUrl}${normalizedPath}` },
+      ],
+    });
+  } else if (isGuidesIndex) {
     graph.push({
       '@type': 'CollectionPage',
       '@id': `${siteUrl}/guias/#collection`,
@@ -197,6 +244,14 @@ export function getRouteStructuredData(routePath = '/') {
       about: articlePage.primaryKeyword,
       isPartOf: { '@id': `${siteUrl}/#website` },
     });
+    graph.push({
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+        { '@type': 'ListItem', position: 2, name: 'Guías', item: `${siteUrl}/guias/` },
+        { '@type': 'ListItem', position: 3, name: articlePage.title, item: `${siteUrl}${normalizedPath}` },
+      ],
+    });
   } else if (servicePage) {
     graph.push({
       '@type': 'Service',
@@ -218,6 +273,35 @@ export function getRouteStructuredData(routePath = '/') {
         url: `${siteUrl}${normalizedPath}`,
       },
       mainEntityOfPage: `${siteUrl}${normalizedPath}`,
+    });
+    graph.push({
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+        { '@type': 'ListItem', position: 2, name: servicePage.title, item: `${siteUrl}${normalizedPath}` },
+      ],
+    });
+  } else if (pillarPage) {
+    graph.push({
+      '@type': 'Service',
+      '@id': `${siteUrl}${normalizedPath}#service`,
+      name: pillarPage.title,
+      serviceType: pillarPage.primaryKeyword,
+      description: pillarPage.metaDescription,
+      provider: { '@id': `${siteUrl}/#localbusiness` },
+      areaServed: [
+        { '@type': 'City', name: 'Quito' },
+        { '@type': 'AdministrativeArea', name: 'Pichincha' },
+        { '@type': 'Country', name: 'Ecuador' },
+      ],
+      mainEntityOfPage: `${siteUrl}${normalizedPath}`,
+    });
+    graph.push({
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+        { '@type': 'ListItem', position: 2, name: pillarPage.title, item: `${siteUrl}${normalizedPath}` },
+      ],
     });
   } else {
     graph[0] = {

@@ -16,6 +16,50 @@ const servicesHighlightPhrases = [
 
 const cardAutoRotateMs = 4500;
 
+function ProcessIcon({ step }: { step: number }) {
+  const style = { display: 'block', width: 28, height: 28, marginBottom: 6 };
+  const stroke = 'var(--app-copper, #D6A85A)';
+
+  if (step === 0) {
+    return (
+      <svg viewBox="0 0 48 48" style={style} aria-hidden="true">
+        <path d="M18 14 C10 18 10 30 18 34" fill="none" stroke={stroke} strokeWidth="2" opacity="0.6"/>
+        <path d="M26 18 Q32 24 26 30" fill="none" stroke={stroke} strokeWidth="1.5" opacity="0.4"/>
+        <path d="M32 20 Q36 24 32 28" fill="none" stroke={stroke} strokeWidth="1.2" opacity="0.3"/>
+      </svg>
+    );
+  }
+
+  if (step === 1) {
+    return (
+      <svg viewBox="0 0 48 48" style={style} aria-hidden="true">
+        <path d="M12 14 L36 14 L28 24 L28 34 L20 34 L20 24 Z" fill="none" stroke={stroke} strokeWidth="2" opacity="0.5"/>
+        <path d="M24 36 L24 40" stroke={stroke} strokeWidth="1.5" opacity="0.35"/>
+        <circle cx="24" cy="42" r="1.5" fill={stroke} opacity="0.3"/>
+      </svg>
+    );
+  }
+
+  if (step === 2) {
+    return (
+      <svg viewBox="0 0 48 48" style={style} aria-hidden="true">
+        <rect x="10" y="26" width="12" height="12" rx="2" fill="none" stroke={stroke} strokeWidth="2" opacity="0.5"/>
+        <rect x="26" y="18" width="12" height="20" rx="2" fill="none" stroke={stroke} strokeWidth="2" opacity="0.6"/>
+        <rect x="18" y="10" width="12" height="12" rx="2" fill="none" stroke={stroke} strokeWidth="1.5" opacity="0.4"/>
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 48 48" style={style} aria-hidden="true">
+      <path d="M16 32 L30 12" stroke={stroke} strokeWidth="2" strokeLinecap="round" opacity="0.6"/>
+      <path d="M26 12 L30 12 L30 16" fill="none" stroke={stroke} strokeWidth="2" strokeLinecap="round" opacity="0.6"/>
+      <path d="M14 34 C14 34 10 30 12 26" stroke={stroke} strokeWidth="1.2" opacity="0.3" fill="none"/>
+      <path d="M16 36 C16 36 12 34 10 30" stroke={stroke} strokeWidth="1" opacity="0.2" fill="none"/>
+    </svg>
+  );
+}
+
 type ProductRouletteProps = {
   content: LocalizedContent;
   palette: PaletteName;
@@ -64,7 +108,6 @@ export function ProductRoulette({
   const services = content.products;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [isUserScrolling, setIsUserScrolling] = useState(false);
   // Initialize to 1024 (matches SSR) to avoid hydration mismatch.
   // The useEffect reads the real width after hydration.
   const [windowWidth, setWindowWidth] = useState(1024);
@@ -116,33 +159,13 @@ export function ProductRoulette({
     setActiveIndex(0);
   }, [services]);
 
-  useEffect(() => {
-    if (typeof document === 'undefined') {
-      return;
-    }
-
-    const syncScrollActivity = (event: Event) => {
-      const customEvent = event as CustomEvent<{ isScrolling?: boolean }>;
-      setIsUserScrolling(Boolean(customEvent.detail?.isScrolling));
-    };
-
-    document.addEventListener('maiatesta:scroll-activity', syncScrollActivity);
-
-    return () => {
-      document.removeEventListener(
-        'maiatesta:scroll-activity',
-        syncScrollActivity,
-      );
-    };
-  }, []);
-
   // Rotacion automatica de cartas. 4500ms deja tiempo para leer titulo, texto y frase final.
   useEffect(() => {
     if (typeof window === 'undefined') {
       return;
     }
 
-    if (isPaused || isUserScrolling || cellCount < 2) {
+    if (isPaused || cellCount < 2) {
       return;
     }
 
@@ -151,7 +174,7 @@ export function ProductRoulette({
     }, cardAutoRotateMs);
 
     return () => window.clearInterval(intervalId);
-  }, [cellCount, isPaused, isUserScrolling]);
+  }, [cellCount, isPaused]);
 
   return (
     <section className='section services-section' id='services'>
@@ -307,6 +330,7 @@ export function ProductRoulette({
               <article className='scroll-reveal' key={step.title}>
                 <span>{String(index + 1).padStart(2, '0')}</span>
                 <div>
+                  <ProcessIcon step={index} />
                   <strong>{step.title}</strong>
                   <p>{step.body}</p>
                 </div>

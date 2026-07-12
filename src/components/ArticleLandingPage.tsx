@@ -2,6 +2,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { LuminousText } from './LuminousText';
 import { siteContent } from '../data/siteContent';
+import { trackWhatsAppClick } from '../utils/analytics';
 import { articlePagesBySlug } from '../data/articlePages';
 import type { ArticleRouteSlug } from '../data/articleRoutes';
 import { servicePagesBySlug } from '../data/servicePages';
@@ -51,10 +52,24 @@ const articleEditorialImages = {
     caption:
       'La centralización de reportes comerciales provee visibilidad financiera inmediata a la gerencia.',
   },
-} satisfies Record<
+  'cuanto-cuesta-software-a-medida-ecuador': {
+    filename: 'guide-software-cost-comparison',
+    placement: 'after-first-section',
+    alt: 'Comparación visual de rangos de inversión para software a medida en Ecuador',
+    caption:
+      'La inversión suele variar según módulos, integraciones, usuarios y nivel de soporte requerido.',
+  },
+  'software-a-medida-vs-excel-pyme': {
+    filename: 'guide-software-vs-excel-dashboard',
+    placement: 'after-first-section',
+    alt: 'Comparación visual entre reportes manuales en Excel y software a medida',
+    caption:
+      'Pasar de hojas manuales a un sistema propio ayuda a centralizar datos, permisos y reportes.',
+  },
+} satisfies Partial<Record<
   ArticleRouteSlug,
   { filename: string; placement: string; alt: string; caption: string }
->;
+>>;
 
 function EditorialFigure({
   filename,
@@ -134,7 +149,7 @@ export function ArticleLandingPage({
   const whatsappHref = `https://wa.me/593963092859?text=${encodeURIComponent(
     article.ctaMessage,
   )}`;
-  const editorialImage = articleEditorialImages[slug];
+  const editorialImage = (articleEditorialImages as Partial<Record<ArticleRouteSlug, { filename: string; placement: string; alt: string; caption: string }>>)[slug];
 
   return (
     <div className='app-shell service-page-shell' data-palette='atlantic'>
@@ -172,6 +187,10 @@ export function ArticleLandingPage({
                 href={whatsappHref}
                 target='_blank'
                 rel='noreferrer'
+                data-conversion='whatsapp'
+                data-page-slug={article.slug}
+                data-page-type='article'
+                onClick={() => trackWhatsAppClick({ ctaLocation: 'hero', pageSlug: article.slug, pageType: 'article' })}
               >
                 Pedir recomendación por WhatsApp
               </a>
@@ -191,7 +210,7 @@ export function ArticleLandingPage({
 
       <main className='service-page-main article-page-main'>
         <article className='section article-body-section'>
-          {editorialImage.placement === 'intro' ? (
+          {editorialImage?.placement === 'intro' ? (
             <EditorialFigure
               filename={editorialImage.filename}
               alt={editorialImage.alt}
@@ -202,13 +221,13 @@ export function ArticleLandingPage({
             <section
               className='article-content-block scroll-reveal'
               key={section.heading}
-              style={{ animationDelay: `${index * 80}ms` }}
+              style={{ animationDelay: `${Math.min(index * 40, 120)}ms` }}
             >
               <h2>{section.heading}</h2>
               {section.body.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
-              {editorialImage.placement === 'after-first-section' &&
+              {editorialImage?.placement === 'after-first-section' &&
               index === 0 ? (
                 <EditorialFigure
                   filename={editorialImage.filename}
@@ -216,7 +235,7 @@ export function ArticleLandingPage({
                   caption={editorialImage.caption}
                 />
               ) : null}
-              {editorialImage.placement === section.heading ? (
+              {editorialImage?.placement === section.heading ? (
                 <EditorialFigure
                   filename={editorialImage.filename}
                   alt={editorialImage.alt}
@@ -237,7 +256,7 @@ export function ArticleLandingPage({
               <details
                 className='local-faq-item scroll-reveal'
                 key={faq.question}
-                style={{ animationDelay: `${index * 70}ms` }}
+                style={{ animationDelay: `${Math.min(index * 35, 120)}ms` }}
               >
                 <summary>
                   <span className='local-faq-question'>{faq.question}</span>
@@ -292,6 +311,10 @@ export function ArticleLandingPage({
             href={whatsappHref}
             target='_blank'
             rel='noreferrer'
+            data-conversion='whatsapp'
+            data-page-slug={article.slug}
+            data-page-type='article'
+            onClick={() => trackWhatsAppClick({ ctaLocation: 'cta-section', pageSlug: article.slug, pageType: 'article' })}
           >
             Pedir recomendación por WhatsApp
           </a>
