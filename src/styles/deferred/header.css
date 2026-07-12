@@ -37,7 +37,7 @@
   overflow: hidden;
   padding: 4px 8px;
   border: 1px solid rgba(246, 248, 251, 0.72);
-  background: rgba(246, 248, 251, 0.96);
+  background: rgba(255, 255, 255, 0.96);
   border-radius: 14px;
   box-shadow:
     0 10px 26px rgba(3, 8, 16, 0.18),
@@ -64,7 +64,8 @@
   height: clamp(48px, 4.4vw, 58px);
   object-fit: contain;
   object-position: left center;
-  filter: brightness(1.08) contrast(1.08) drop-shadow(0 0 16px rgba(246, 248, 251, 0.12));
+  filter: brightness(1.08) contrast(1.08)
+    drop-shadow(0 0 16px rgba(246, 248, 251, 0.12));
 }
 
 .nav-links {
@@ -166,12 +167,21 @@
   height: 2px;
   background: var(--app-silver);
   border-radius: 999px;
-  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease;
+  transition:
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 200ms ease;
 }
 
-.hamburger-btn.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.hamburger-btn.is-open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.hamburger-btn.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.hamburger-btn.is-open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.hamburger-btn.is-open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.hamburger-btn.is-open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
 
 /* ── Mobile nav dropdown ───────────────────────────────────────── */
 .mobile-nav {
@@ -183,7 +193,11 @@
   padding: 12px;
   border: 1px solid rgba(216, 189, 120, 0.2);
   background:
-    radial-gradient(circle at 92% 10%, rgba(111, 143, 175, 0.18), transparent 34%),
+    radial-gradient(
+      circle at 92% 10%,
+      rgba(111, 143, 175, 0.18),
+      transparent 34%
+    ),
     rgba(7, 17, 31, 0.74);
   border-radius: 16px;
   box-shadow: inset 0 1px 0 rgba(246, 248, 251, 0.08);
@@ -191,8 +205,14 @@
 }
 
 @keyframes mobile-nav-in {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .mobile-nav a {
@@ -258,9 +278,21 @@
   inset: 0;
   z-index: -3;
   background:
-    radial-gradient(circle at 78% 24%, rgba(111, 143, 175, 0.22), transparent 22%),
-    radial-gradient(circle at 18% 18%, rgba(246, 248, 251, 0.1), transparent 28%),
-    radial-gradient(circle at 58% 72%, rgba(216, 189, 120, 0.1), transparent 30%),
+    radial-gradient(
+      circle at 78% 24%,
+      rgba(111, 143, 175, 0.22),
+      transparent 22%
+    ),
+    radial-gradient(
+      circle at 18% 18%,
+      rgba(246, 248, 251, 0.1),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 58% 72%,
+      rgba(216, 189, 120, 0.1),
+      transparent 30%
+    ),
     linear-gradient(135deg, rgba(7, 17, 31, 0.99), rgba(27, 47, 73, 0.9));
 }
 
@@ -333,7 +365,11 @@
   padding: clamp(22px, 4vw, 34px);
   border: 1px solid rgba(216, 189, 120, 0.34);
   background:
-    radial-gradient(circle at 88% 12%, rgba(111, 143, 175, 0.16), transparent 30%),
+    radial-gradient(
+      circle at 88% 12%,
+      rgba(111, 143, 175, 0.16),
+      transparent 30%
+    ),
     rgba(14, 27, 45, 0.92);
   border-radius: 8px;
   box-shadow: 0 24px 70px rgba(3, 8, 16, 0.38);
@@ -542,7 +578,9 @@
   height: 5px;
   border-radius: 50%;
   background: var(--app-copper);
-  box-shadow: 0 0 8px var(--app-copper), 0 0 20px rgba(255, 179, 138, 0.4);
+  box-shadow:
+    0 0 8px var(--app-copper),
+    0 0 20px rgba(255, 179, 138, 0.4);
   transform: translateY(-50%);
   animation: dot-travel 2200ms cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
@@ -557,25 +595,51 @@
 }
 
 @keyframes scroll-cta-appear {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes dot-travel {
-  0%   { transform: translateY(-50%) translateX(0);                                      opacity: 0; }
-  8%   { opacity: 1; }
-  88%  { opacity: 1; }
-  100% { transform: translateY(-50%) translateX(var(--dot-travel-end, 115px)); opacity: 0; }
+  0% {
+    transform: translateY(-50%) translateX(0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50%) translateX(var(--dot-travel-end, 115px));
+    opacity: 0;
+  }
 }
 
 @keyframes arrow-bounce {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(5px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
 }
 
 /* ── Legacy scroll-hint keyframes kept for safety ─────────────────── */
 @keyframes scroll-hint-fade-in {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-
