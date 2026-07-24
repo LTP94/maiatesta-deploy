@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 import type { CSSProperties, KeyboardEvent } from 'react';
 
 type PersonaPortraitProps = {
@@ -10,13 +10,14 @@ type PersonaPortraitProps = {
 };
 
 /** Interactive circular portrait with orbital ring and coin-flip animation triggered on click or Enter/Space. */
-export function PersonaPortrait({
+export const PersonaPortrait = forwardRef<HTMLDivElement, PersonaPortraitProps>(
+function PersonaPortrait({
   image,
   alt,
   isAligned,
   isMirrored = false,
   onToggle,
-}: PersonaPortraitProps) {
+}, ref) {
   const [isFlipping, setIsFlipping] = useState(false);
 
   const handleClick = () => {
@@ -40,6 +41,7 @@ export function PersonaPortrait({
       <span className='persona-orbit-star persona-orbit-star--b' aria-hidden='true' />
       <span className='persona-orbit-star persona-orbit-star--c' aria-hidden='true' />
       <div
+        ref={ref}
         className={`persona-portrait${isFlipping ? ' is-flipping' : ''}`}
         style={
           {
@@ -71,10 +73,9 @@ export function PersonaPortrait({
             height='720'
             decoding='async'
             loading='eager'
-            fetchPriority='high'
           />
         </span>
       </div>
     </div>
   );
-}
+});

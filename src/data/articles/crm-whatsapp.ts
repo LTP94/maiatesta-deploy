@@ -3,7 +3,7 @@ export const crmWhatsappPymesEcuador = {
   title: 'CRM y WhatsApp para pymes en Ecuador',
   metaTitle: 'CRM con WhatsApp para pymes en Ecuador: organizar clientes y seguimiento sin perder ventas | Maiatesta',
   metaDescription:
-    'Guía para pymes en Ecuador que manejan ventas por WhatsApp pero pierden clientes porque no tienen sistema de seguimiento. Qué es un CRM, cuándo lo necesitas y qué opciones se adaptan a tu negocio.',
+    'Guía para pymes en Ecuador que venden por WhatsApp: aprende qué hace un CRM, cuándo lo necesitas y cómo evitar perder clientes por falta de seguimiento.',
   h1: 'CRM y WhatsApp para pymes en Ecuador: cómo no perder clientes por falta de seguimiento',
   publishDate: '2026-07-01',
   updatedDate: '2026-07-01',

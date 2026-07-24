@@ -39,6 +39,7 @@ export function useScrollActivity(
 
     let rafId = 0;
     let idleTimeoutId = 0;
+    let flickTimeoutId = 0;
     let isScrolling = false;
     let isFlicking = false;
     let lastY = window.scrollY;
@@ -73,7 +74,16 @@ export function useScrollActivity(
 
           lastY = nextY;
           lastTs = now;
-          setScrollState(true, velocity >= flickThreshold, velocity);
+          const nextFlicking = velocity >= flickThreshold;
+          setScrollState(true, nextFlicking, velocity);
+
+          if (nextFlicking) {
+            window.clearTimeout(flickTimeoutId);
+            flickTimeoutId = window.setTimeout(() => {
+              flickTimeoutId = 0;
+              setScrollState(isScrolling, false, 0);
+            }, 180);
+          }
         });
       }
 
@@ -83,6 +93,8 @@ export function useScrollActivity(
           window.cancelAnimationFrame(rafId);
           rafId = 0;
         }
+        window.clearTimeout(flickTimeoutId);
+        flickTimeoutId = 0;
         lastY = window.scrollY;
         lastTs = performance.now();
         setScrollState(false, false, 0);
@@ -100,6 +112,7 @@ export function useScrollActivity(
       window.removeEventListener('touchmove', markScrolling);
       window.removeEventListener('wheel', markScrolling);
       window.clearTimeout(idleTimeoutId);
+      window.clearTimeout(flickTimeoutId);
       if (rafId !== 0) window.cancelAnimationFrame(rafId);
       scrollingRef.current = false;
       flickingRef.current = false;

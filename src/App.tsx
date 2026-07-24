@@ -1,8 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { ClientLogos } from './components/ClientLogos';
 import { Hero } from './components/Hero';
-import { LegalPage } from './components/LegalPage';
-import { ScrollConstellation } from './components/ScrollConstellation';
+import { SiteVideoBackground } from './components/SiteVideoBackground';
 import { siteContent } from './data/siteContent';
 import type { LanguageCode } from './data/siteContent';
 import { normalizeArticlePath } from './data/articleRoutes';
@@ -29,8 +28,8 @@ import {
 export type { PaletteName };
 
 // Non-critical UI is split away from the hero bundle.
-const loadStarsBackground = () =>
-  import('./components/StarsBackground').then((m) => ({ default: m.StarsBackground }));
+const loadScrollConstellation = () =>
+  import('./components/ScrollConstellation').then((m) => ({ default: m.ScrollConstellation }));
 const loadTypebotStandardChat = () =>
   import('./components/TypebotStandardChat').then((m) => ({ default: m.TypebotStandardChat }));
 const loadProductRoulette = () =>
@@ -55,8 +54,10 @@ const loadArticleLandingPage = () =>
   import('./components/ArticleLandingPage').then((m) => ({ default: m.ArticleLandingPage }));
 const loadGuidesIndexPage = () =>
   import('./components/GuidesIndexPage').then((m) => ({ default: m.GuidesIndexPage }));
+const loadLegalPage = () =>
+  import('./components/LegalPage').then((m) => ({ default: m.LegalPage }));
 
-const StarsBackground      = lazy(loadStarsBackground);
+const ScrollConstellation  = lazy(loadScrollConstellation);
 const TypebotStandardChat  = lazy(loadTypebotStandardChat);
 const ProductRoulette      = lazy(loadProductRoulette);
 const Projects             = lazy(loadProjects);
@@ -69,6 +70,7 @@ const StickyWhatsAppButton = lazy(loadStickyWhatsAppButton);
 const ServiceLandingPage   = lazy(loadServiceLandingPage);
 const ArticleLandingPage   = lazy(loadArticleLandingPage);
 const GuidesIndexPage      = lazy(loadGuidesIndexPage);
+const LegalPage            = lazy(loadLegalPage);
 
 const gatedSectionPreloaders = [
   { selector: '#services', preload: loadProductRoulette },
@@ -186,111 +188,135 @@ export default function App({ routePath }: AppProps) {
   };
 
   const handlePersonaPortraitToggle = () => {
-    setIsPersonaPortraitAligned((current) => {
-      const next = !current;
-      setPalette(next ? 'current' : 'atlantic');
-      return next;
+    setIsPersonaPortraitAligned((isAligned) => {
+      const nextAlignment = !isAligned;
+      setPalette(nextAlignment ? 'current' : 'atlantic');
+      return nextAlignment;
     });
   };
 
   if (serviceSlug) {
     return (
-      <Suspense
-        fallback={
-          <RouteFallback
-            eyebrow='Servicio local'
-            title='Servicios digitales para pymes en Quito.'
-            body='Cargando la página de servicio de Maiatesta.'
+      <>
+        <SiteVideoBackground palette={palette} />
+        <Suspense
+          fallback={
+            <RouteFallback
+              eyebrow='Servicio local'
+              title='Servicios digitales para pymes en Quito.'
+              body='Cargando la página de servicio de Maiatesta.'
+            />
+          }
+        >
+          <ServiceLandingPage
+            slug={serviceSlug}
+            language={language}
+            onLanguageChange={handleLanguageChange}
           />
-        }
-      >
-        <ServiceLandingPage
-          slug={serviceSlug}
-          language={language}
-          onLanguageChange={handleLanguageChange}
-        />
-      </Suspense>
+        </Suspense>
+      </>
     );
   }
 
   if (articleSlug) {
     return (
-      <Suspense
-        fallback={
-          <RouteFallback
-            eyebrow='Guía local'
-            title='Guías SEO para pymes en Quito.'
-            body='Cargando la guía de Maiatesta.'
+      <>
+        <SiteVideoBackground palette={palette} />
+        <Suspense
+          fallback={
+            <RouteFallback
+              eyebrow='Guía local'
+              title='Guías SEO para pymes en Quito.'
+              body='Cargando la guía de Maiatesta.'
+            />
+          }
+        >
+          <ArticleLandingPage
+            slug={articleSlug}
+            language={language}
+            onLanguageChange={handleLanguageChange}
           />
-        }
-      >
-        <ArticleLandingPage
-          slug={articleSlug}
-          language={language}
-          onLanguageChange={handleLanguageChange}
-        />
-      </Suspense>
+        </Suspense>
+      </>
     );
   }
 
   if (legalSlug) {
     return (
-      <LegalPage
-        slug={legalSlug}
-        language={language}
-        onLanguageChange={handleLanguageChange}
-      />
+      <>
+        <SiteVideoBackground palette={palette} />
+        <Suspense
+          fallback={
+            <RouteFallback
+              eyebrow='Información legal'
+              title='Política de privacidad.'
+              body='Cargando la información legal de Maiatesta.'
+            />
+          }
+        >
+          <LegalPage
+            slug={legalSlug}
+            language={language}
+            onLanguageChange={handleLanguageChange}
+          />
+        </Suspense>
+      </>
     );
   }
 
   if (pillarSlug) {
     return (
-      <Suspense
-        fallback={
-          <RouteFallback
-            eyebrow='Servicio local'
-            title='Desarrollo de software en Quito.'
-            body='Cargando la página de Maiatesta.'
+      <>
+        <SiteVideoBackground palette={palette} />
+        <Suspense
+          fallback={
+            <RouteFallback
+              eyebrow='Servicio local'
+              title='Desarrollo de software en Quito.'
+              body='Cargando la página de Maiatesta.'
+            />
+          }
+        >
+          <ServiceLandingPage
+            slug={pillarSlug}
+            language={language}
+            onLanguageChange={handleLanguageChange}
           />
-        }
-      >
-        <ServiceLandingPage
-          slug={pillarSlug}
-          language={language}
-          onLanguageChange={handleLanguageChange}
-        />
-      </Suspense>
+        </Suspense>
+      </>
     );
   }
 
   if (isGuidesIndexRoute) {
     return (
-      <Suspense
-        fallback={
-          <RouteFallback
-            eyebrow='Guías Maiatesta'
-            title='Guías prácticas para negocios en Quito.'
-            body='Cargando recursos de Maiatesta.'
+      <>
+        <SiteVideoBackground palette={palette} />
+        <Suspense
+          fallback={
+            <RouteFallback
+              eyebrow='Guías Maiatesta'
+              title='Guías prácticas para negocios en Quito.'
+              body='Cargando recursos de Maiatesta.'
+            />
+          }
+        >
+          <GuidesIndexPage
+            language={language}
+            onLanguageChange={handleLanguageChange}
           />
-        }
-      >
-        <GuidesIndexPage
-          language={language}
-          onLanguageChange={handleLanguageChange}
-        />
-      </Suspense>
+        </Suspense>
+      </>
     );
   }
 
   return (
-    // data-palette alimenta las variables CSS que cambian la identidad visual.
-    <div
-      className={hasScrolled ? 'app-shell is-scrolled' : 'app-shell'}
-      data-palette={palette}
-    >
-      <Suspense fallback={null}>
-        <StarsBackground />
-      </Suspense>
+    <>
+      <SiteVideoBackground palette={palette} />
+      {/* data-palette alimenta las variables CSS que cambian la identidad visual. */}
+      <div
+        className={hasScrolled ? 'app-shell is-scrolled' : 'app-shell'}
+        data-palette={palette}
+      >
       {/* Shooting stars that traverse the entire viewport */}
       <div className='page-meteors' aria-hidden='true'>
         <span className='page-meteor page-meteor--a' />
@@ -299,7 +325,11 @@ export default function App({ routePath }: AppProps) {
         <span className='page-meteor page-meteor--d' />
       </div>
       {/* Space scroll constellation — right-side comet + section nodes */}
-      {shouldShowScrollConstellation ? <ScrollConstellation /> : null}
+      {shouldShowScrollConstellation ? (
+        <Suspense fallback={null}>
+          <ScrollConstellation />
+        </Suspense>
+      ) : null}
       <Hero
         content={content}
         language={language}
@@ -311,7 +341,7 @@ export default function App({ routePath }: AppProps) {
       <ClientLogos content={content} />
       <div className={hasScrolled ? 'site-main is-scrolled' : 'site-main'}>
         <Suspense fallback={<TypebotFallback content={content} />}>
-          <TypebotStandardChat content={content} />
+          <TypebotStandardChat content={content} language={language} />
         </Suspense>
         {/* Composicion principal de la pagina: servicios, proyectos y contacto. */}
         <main>
@@ -357,6 +387,7 @@ export default function App({ routePath }: AppProps) {
           <StickyWhatsAppButton content={content} />
         </Suspense>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

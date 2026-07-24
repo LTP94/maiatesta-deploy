@@ -1,11 +1,12 @@
+import { useRef } from 'react';
 import { siteContent } from '../data/siteContent';
 import type { LanguageCode, LocalizedContent } from '../data/siteContent';
+import type { PaletteName } from '../hooks/usePaletteSync';
 import { trackWhatsAppClick } from '../utils/analytics';
-import { useMediaQuery } from '../hooks/useMediaQuery';
 import { Header } from './Header';
-import { HeroVideoBackground } from './HeroVideoBackground';
 import { LuminousText } from './LuminousText';
 import { PersonaPortrait } from './PersonaPortrait';
+import { TypingText } from './TypingText';
 
 const heroHighlightPhrases = [
   'Quito small businesses',
@@ -19,49 +20,46 @@ const heroHighlightPhrases = [
 type HeroProps = {
   content: LocalizedContent;
   language: LanguageCode;
-  isPersonaPortraitAligned: boolean;
   onLanguageChange: (language: LanguageCode) => void;
+  isPersonaPortraitAligned: boolean;
   onPersonaPortraitToggle: () => void;
-  palette: string;
+  palette: PaletteName;
 };
 
-/** Full-page hero section: renders the Header, luminous headline, persona portrait and scroll CTA. */
+const typedPhrases: Record<LanguageCode, string[]> = {
+  es: [
+    'páginas web que convierten.',
+    'automatizaciones que ahorran tiempo.',
+    'software que ordena tu operación.',
+  ],
+  en: [
+    'websites that convert.',
+    'automations that save time.',
+    'software that brings clarity.',
+  ],
+};
+
+/** Full-page hero with a fixed SEO headline, lightweight typing effect and photographic space composition. */
 export function Hero({
   content,
   language,
-  isPersonaPortraitAligned,
   onLanguageChange,
+  isPersonaPortraitAligned,
   onPersonaPortraitToggle,
   palette,
 }: HeroProps) {
-  const isDesktop = useMediaQuery('(min-width: 769px)');
-  const personaImage =
-    palette === 'atlantic'
-      ? siteContent.brand.atlanticPersona
-      : siteContent.brand.persona;
+  const personaButtonRef = useRef<HTMLDivElement>(null);
   const whatsappChannel = content.contact.channels.find(
     (channel) => channel.label.toLowerCase() === 'whatsapp',
   );
 
   return (
     <section className='hero-section' id='top'>
-      {isDesktop && <HeroVideoBackground />}
-      {/* CSS background layers — hidden on mobile via media query in hero-effects.css */}
-      <div className='hero-stars hero-stars--far' aria-hidden='true' />
-      <div className='hero-stars hero-stars--near' aria-hidden='true' />
-      <div className='hero-aurora' aria-hidden='true' />
-      <div className='hero-orbs' aria-hidden='true'>
-        <div className='hero-orb hero-orb--a' />
-        <div className='hero-orb hero-orb--b' />
-        <div className='hero-orb hero-orb--c' />
-        <div className='hero-orb hero-orb--d' />
-      </div>
       <div className='hero-shooting-stars' aria-hidden='true'>
         <span className='hero-shooting-star hero-shooting-star--a' />
         <span className='hero-shooting-star hero-shooting-star--b' />
         <span className='hero-shooting-star hero-shooting-star--c' />
       </div>
-      <div className='hero-grain' aria-hidden='true' />
       <div className='hero-scrim' />
       <Header
         content={content}
@@ -77,6 +75,10 @@ export function Hero({
               phrases={heroHighlightPhrases}
             />
           </h1>
+          <p className='hero-typing-line'>
+            <span>{language === 'es' ? 'Creamos' : 'We build'}</span>
+            <TypingText phrases={typedPhrases[language]} />
+          </p>
           <p className='hero-body'>{content.hero.body}</p>
           <div className='hero-actions'>
             <a
@@ -92,18 +94,73 @@ export function Hero({
               {content.hero.secondaryCta}
             </a>
           </div>
+          <ul className='hero-proof' aria-label={language === 'es' ? 'Capacidades' : 'Capabilities'}>
+            <li>
+              <strong>01</strong>
+              <span>Web</span>
+            </li>
+            <li>
+              <strong>02</strong>
+              <span>{language === 'es' ? 'Automatización' : 'Automation'}</span>
+            </li>
+            <li>
+              <strong>03</strong>
+              <span>Software</span>
+            </li>
+          </ul>
         </div>
+
         <div
-          className='persona-panel reveal'
+          className={`hero-cosmos reveal${isPersonaPortraitAligned ? ' is-aligned' : ''}`}
           style={{ animationDelay: '120ms' }}
         >
-          <PersonaPortrait
-            image={personaImage}
-            alt={siteContent.brand.personaAlt}
-            isAligned={isPersonaPortraitAligned}
-            isMirrored={palette === 'atlantic'}
-            onToggle={onPersonaPortraitToggle}
-          />
+          <div className='hero-cosmos__coordinates' aria-hidden='true'>
+            <span>00° 13′ S</span>
+            <span>78° 31′ W</span>
+          </div>
+          <div className='hero-cosmos__orbit hero-cosmos__orbit--outer' aria-hidden='true' />
+          <div className='hero-cosmos__orbit hero-cosmos__orbit--inner' aria-hidden='true' />
+          <div className='hero-cosmos__sun' aria-hidden='true'>
+            <img
+              className='hero-cosmos__solar-media'
+              src='/assets/cosmic/solar-orb-900.avif'
+              alt=''
+              width='900'
+              height='684'
+              decoding='async'
+            />
+          </div>
+          <div className='hero-cosmos__persona'>
+            <PersonaPortrait
+              ref={personaButtonRef}
+              image={siteContent.brand.persona}
+              alt={siteContent.brand.personaAlt}
+              isAligned={isPersonaPortraitAligned}
+              isMirrored={palette === 'current'}
+              onToggle={onPersonaPortraitToggle}
+            />
+          </div>
+          <span className='hero-cosmos__satellite hero-cosmos__satellite--a' aria-hidden='true' />
+          <span className='hero-cosmos__satellite hero-cosmos__satellite--b' aria-hidden='true' />
+          <div className='hero-cosmos__label' aria-hidden='true'>
+            <span>{language === 'es' ? 'Señal activa' : 'Signal active'}</span>
+            <strong>MAIATESTA / 2026</strong>
+          </div>
+          <button
+            className='hero-persona-cta'
+            type='button'
+            aria-pressed={isPersonaPortraitAligned}
+            onClick={() => personaButtonRef.current?.click()}
+          >
+            <span aria-hidden='true'>↻</span>
+            {isPersonaPortraitAligned
+              ? language === 'es'
+                ? 'Modo cósmico activo'
+                : 'Cosmic mode active'
+              : language === 'es'
+                ? 'Haz clic: gira y cambia el color'
+                : 'Click: rotate and change color'}
+          </button>
         </div>
       </div>
       <a className='scroll-cta' href='#services' aria-label='Scroll down to services'>

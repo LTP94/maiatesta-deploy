@@ -21,7 +21,7 @@
 
 /* ── Star layers replaced with static images for performance ─────── */
 .stars-bg__layer--far {
-  background: url('/assets/stars-layer-bg.webp') center / cover no-repeat;
+  background: none;
   opacity: 0.7;
 }
 
@@ -44,7 +44,7 @@
 /* ── Mobile: use portrait-optimized star image ───────────────────── */
 @media (max-width: 920px) {
   .stars-bg__layer--far {
-    background-image: url('/assets/stars-layer-bg-mobile.webp');
+    background-image: none;
     opacity: 0.5;
   }
 }

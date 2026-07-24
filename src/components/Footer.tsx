@@ -157,6 +157,13 @@ export function Footer({ content }: FooterProps) {
         </span>
         <a href="/politica-de-privacidad/">Política de Privacidad</a>
         <a href="/sitemap.xml">Sitemap</a>
+        <a
+          href="https://www.vecteezy.com/video/10367035-awesome-night-sky-time-lapse-with-milky-way-galaxy"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Video de fondo: Vecteezy
+        </a>
       </div>
     </footer>
   );

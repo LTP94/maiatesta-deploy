@@ -480,8 +480,7 @@
       var(--section-accent-b),
       transparent 34%
     ),
-    linear-gradient(135deg, var(--section-base-a), var(--section-base-b)),
-    url('/assets/section-stars-bg.webp') center / cover no-repeat;
+    linear-gradient(135deg, var(--section-base-a), var(--section-base-b));
 }
 
 .section:nth-child(even)::before {
@@ -496,8 +495,7 @@
       var(--section-accent-b),
       transparent 34%
     ),
-    linear-gradient(135deg, var(--section-base-a), var(--section-base-b)),
-    url('/assets/section-stars-bg-alt.webp');
+    linear-gradient(135deg, var(--section-base-a), var(--section-base-b));
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -516,8 +514,7 @@
         var(--section-accent-b),
         transparent 34%
       ),
-      linear-gradient(135deg, var(--section-base-a), var(--section-base-b)),
-      url('/assets/section-stars-bg-mobile.webp');
+      linear-gradient(135deg, var(--section-base-a), var(--section-base-b));
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

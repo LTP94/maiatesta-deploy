@@ -14,12 +14,23 @@ const remoteEditorialHosts = [
   'cdn.pixabay.com',
 ];
 const expectedEditorialAssets = [
-  'homepage-services-automation-dashboard',
-  'homepage-projects-dark-workstation',
   'guide-chatbot-lead-flow',
   'guide-web-pyme-local-seo',
   'guide-inventory-logistics-dashboard',
   'guide-excel-reporting-dashboard',
+];
+const expectedHomepageAssets = [
+  'background/cosmic-site-desktop-poster.webp',
+  'background/cosmic-site-mobile-poster.webp',
+  'background/cosmic-site-desktop.webm',
+  'background/cosmic-site-desktop.mp4',
+  'background/cosmic-site-mobile.webm',
+  'background/cosmic-site-mobile.mp4',
+  'intro/why-maiatesta-poster.webp',
+  'intro/why-maiatesta.webm',
+  'intro/why-maiatesta.mp4',
+  'cosmic/night-horizon-1400.avif',
+  'cosmic/solar-orb-900.avif',
 ];
 
 const sitemap = await fs.readFile(sitemapPath, 'utf8');
@@ -181,6 +192,16 @@ for (const assetName of expectedEditorialAssets) {
   }
 }
 
+for (const assetName of expectedHomepageAssets) {
+  const assetPath = path.join(distDir, 'assets', assetName);
+
+  try {
+    await fs.access(assetPath);
+  } catch {
+    fail('homepage assets', `missing ${path.relative(root, assetPath)}`);
+  }
+}
+
 const htmlFiles = await collectHtmlFiles(distDir);
 const buildTextFiles = await collectBuildTextFiles(distDir);
 let buildText = '';
@@ -199,6 +220,12 @@ remoteEditorialHosts.forEach((host) => {
 expectedEditorialAssets.forEach((assetName) => {
   if (!buildText.includes(`/assets/editorial/${assetName}.webp`)) {
     fail('dist', `build output does not reference ${assetName}.webp`);
+  }
+});
+
+expectedHomepageAssets.forEach((assetName) => {
+  if (!buildText.includes(`/assets/${assetName}`)) {
+    fail('dist', `build output does not reference ${assetName}`);
   }
 });
 

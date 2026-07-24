@@ -31,11 +31,10 @@
     <link rel="canonical" href="https://maiatesta.com/" />
     <link rel="alternate" hreflang="es" href="https://maiatesta.com/" />
 
-    <!-- Preload critical above-the-fold brand and hero images only -->
+    <!-- Preload critical above-the-fold brand and responsive video posters only -->
     <link rel="preload" as="image" href="/assets/maiatesta-logo.webp" type="image/webp" />
-    <link rel="preload" as="image" href="/assets/maiatesta-persona-hero.webp" type="image/webp" />
-    <!-- Mobile hero background — preloaded only on small viewports -->
-    <link rel="preload" as="image" href="/assets/hero-mobile.webp" type="image/webp" media="(max-width: 768px)" />
+    <link rel="preload" as="image" href="/assets/background/cosmic-site-desktop-poster.webp" type="image/webp" media="(min-width: 721px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/background/cosmic-site-mobile-poster.webp" type="image/webp" media="(max-width: 720px)" fetchpriority="high" />
     <style data-critical-css><!--critical-css--></style>
     <link rel="preload" as="style" href="/src/deferred.css" />
     <link rel="stylesheet" href="/src/deferred.css" media="print" onload="this.media='all'" />

@@ -3,7 +3,7 @@ export const inventarioFisicoTiendaOnlineEcuador = {
   title: 'Inventario físico y tienda online en Ecuador',
   metaTitle: 'Inventario físico y tienda online en Ecuador: cómo sincronizar stock sin doble trabajo | Maiatesta',
   metaDescription:
-    'Guía para negocios en Ecuador que venden en local y online al mismo tiempo. Cómo evitar sobreventas, sincronizar stock y no llevar doble registro cuando hay pedidos de ambos canales.',
+    'Guía para negocios en Ecuador que venden en local y online: evita sobreventas, sincroniza el stock y elimina el doble registro entre ambos canales.',
   h1: 'Tienda física y tienda online en Ecuador: cómo no vender lo que ya no tienes',
   publishDate: '2026-07-01',
   updatedDate: '2026-07-01',

@@ -137,6 +137,13 @@ export default defineConfig(({ command }) => {
           ? undefined
           : {
               manualChunks(id) {
+                if (
+                  id.includes('/src/data/content/') ||
+                  id.endsWith('/src/data/siteContent.ts')
+                ) {
+                  return 'site-content';
+                }
+
                 if (!id.includes('node_modules')) {
                   return undefined;
                 }

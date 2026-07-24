@@ -1,3 +1,4 @@
+.persona-panel {
   --portrait-size: clamp(210px, 24vw, 300px);
   position: relative;
   justify-self: end;
@@ -468,4 +469,3 @@
     line-height: 1.55;
   }
 }
-

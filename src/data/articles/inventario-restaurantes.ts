@@ -3,7 +3,7 @@ export const softwareInventarioRestaurantesQuito = {
   title: 'Software de inventario para restaurantes en Quito',
   metaTitle: 'Software de inventario para restaurantes en Quito: controlar insumos sin Excel | Maiatesta',
   metaDescription:
-    'Guía para dueños de restaurantes y cafés en Quito que necesitan controlar insumos, calcular mermas y saber cuándo reponer sin depender de hojas de Excel o de la memoria del encargado.',
+    'Guía para restaurantes y cafés en Quito: controla insumos, calcula mermas y repón a tiempo sin depender de Excel ni de la memoria del encargado.',
   h1: 'Control de inventario para restaurantes en Quito: insumos, recetas y mermas sin hojas sueltas',
   publishDate: '2026-07-01',
   updatedDate: '2026-07-01',

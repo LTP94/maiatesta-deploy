@@ -1,5 +1,6 @@
 import { createElement, useEffect, useRef, useState } from 'react';
-import type { LocalizedContent } from '../data/siteContent';
+import type { LanguageCode, LocalizedContent } from '../data/siteContent';
+import { CosmicStory } from './CosmicStory';
 
 const typebotModuleUrl = 'https://cdn.jsdelivr.net/npm/@typebot.io/js@0/dist/web.js';
 
@@ -113,7 +114,13 @@ function applyTypebotSurfaceStyles() {
 }
 
 /** Lazily loads and initialises the Typebot chatbot after the user has been idle for ~1.4 s. Falls back gracefully when the SDK is unavailable. */
-export function TypebotStandardChat({ content }: { content: LocalizedContent }) {
+export function TypebotStandardChat({
+  content,
+  language,
+}: {
+  content: LocalizedContent;
+  language: LanguageCode;
+}) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [shouldLoadTypebot, setShouldLoadTypebot] = useState(false);
 
@@ -195,6 +202,7 @@ export function TypebotStandardChat({ content }: { content: LocalizedContent }) 
 
   return (
     <section ref={sectionRef} className='site-main-typebot-chat' aria-label='Kipux chat'>
+      <CosmicStory content={content} language={language} />
       <div className='bot-invite scroll-reveal'>
         <p className='bot-invite__eyebrow'>
           <span className='bot-live-dot' aria-hidden='true' />

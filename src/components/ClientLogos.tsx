@@ -28,27 +28,37 @@ export function ClientLogos({ content }: ClientLogosProps) {
             <ul className='client-ticker__list'>
               {content.clients.map((client) => (
                 <li key={client.name} className='client-ticker__item'>
-                  <img
-                    src={client.logo}
-                    alt={client.alt}
-                    width={client.width}
-                    height={client.height}
-                    decoding='async'
-                  />
+                  <a
+                    className='client-ticker__link'
+                    href={client.href}
+                    target='_blank'
+                    rel='noreferrer'
+                    aria-label={`${client.name} · ${client.sector}`}
+                  >
+                    <img
+                      src={client.logo}
+                      alt={client.alt}
+                      width={client.width}
+                      height={client.height}
+                      decoding='async'
+                    />
+                  </a>
                 </li>
               ))}
             </ul>
             <ul className='client-ticker__list' aria-hidden='true'>
               {content.clients.map((client) => (
                 <li key={`${client.name}-dup`} className='client-ticker__item'>
-                  <img
-                    src={client.logo}
-                    alt=''
-                    width={client.width}
-                    height={client.height}
-                    loading='lazy'
-                    decoding='async'
-                  />
+                  <span className='client-ticker__link'>
+                    <img
+                      src={client.logo}
+                      alt=''
+                      width={client.width}
+                      height={client.height}
+                      loading='lazy'
+                      decoding='async'
+                    />
+                  </span>
                 </li>
               ))}
             </ul>

@@ -7,7 +7,14 @@ Use this inventory whenever adding, replacing, or deleting assets.
 | Asset | Purpose | Source | Budget | Notes |
 | --- | --- | --- | --- | --- |
 | `public/assets/maiatesta-logo.webp` | Header/logo | brand source | small | Preloaded for brand visibility. |
-| `public/assets/maiatesta-persona-hero.webp` | Hero image | optimized portrait | under 100 KB | Above-the-fold image. |
+| `public/assets/cosmic/solar-orb-900.avif` | Hero focal object | user-provided Unsplash source | under 80 KB | Decorative orbit image. |
+| `public/assets/cosmic/night-horizon-1400.avif` | Integrated chatbot background | user-provided Unsplash source | under 150 KB | Animated behind the bot surface below “Why Maiatesta.” |
+| `public/assets/background/cosmic-site-desktop.webm/.mp4` | Shared desktop site background | Vecteezy video `10367035` | about 1.0–1.2 MB | Silent 1280×720, 20 FPS; WebM primary and MP4 fallback. |
+| `public/assets/background/cosmic-site-mobile.webm/.mp4` | Shared mobile site background | Vecteezy video `10367035` | under 700 KB each | Portrait crop at 540×960, 20 FPS. |
+| `public/assets/background/cosmic-site-*-poster.webp` | Site video fallback and first paint | Vecteezy video `10367035` | under 100 KB each | Responsive poster remains when motion/data settings disable video. |
+| `public/assets/intro/why-maiatesta.webm/.mp4` | “Why Maiatesta” portrait introduction | user-provided `video_intro (1).mp4` | under 1.8 MB each | Lazy 540×960, 24 FPS, with audio; WebM primary and MP4 fallback. |
+| `public/assets/intro/why-maiatesta-poster.webp` | “Why Maiatesta” reduced-motion and pre-load poster | user-provided `video_intro (1).mp4` | under 30 KB | Visible until the section approaches the viewport. |
+| `public/assets/maiatesta-persona-hero.webp` | Legacy/share portrait | optimized portrait | under 100 KB | Retained for social metadata and brand use. |
 | `public/assets/previews/*.webp` | Service posters | raw screenshots/videos | under 100 KB each | Posters must appear before video. |
 | `public/assets/previews/videos/*.webm` | Service video previews | `assets-source/videos-raw` | target under 800 KB | Primary preview format. |
 | `public/assets/previews/videos/*.mp4` | Service video fallback | `assets-source/videos-raw` | target under 1.2 MB | Fallback for compatibility. |
@@ -21,8 +28,6 @@ License reference for all rows: [Pexels License](https://www.pexels.com/license/
 
 | Local filename | Source URL | License | Reason selected |
 | --- | --- | --- | --- |
-| `homepage-services-automation-dashboard.avif/.webp` | `https://www.pexels.com/photo/17279854/` | Pexels free commercial use | Dark technical workstation mood for automation and service operations. |
-| `homepage-projects-dark-workstation.avif/.webp` | `https://www.pexels.com/photo/12969403/` | Pexels free commercial use | Dark workstation scene that supports infrastructure, projects, and performance positioning. |
 | `guide-chatbot-lead-flow.avif/.webp` | `https://www.pexels.com/photo/30547598/` | Pexels free commercial use | Abstract digital interaction visual for chatbot lead flow without trademarked UI. |
 | `guide-web-pyme-local-seo.avif/.webp` | `https://www.pexels.com/photo/6424584/` | Pexels free commercial use | Laptop and website context for small business web presence and local SEO. |
 | `guide-inventory-logistics-dashboard.avif/.webp` | `https://www.pexels.com/photo/4483941/` | Pexels free commercial use | Logistics and warehouse context for inventory control topics. |
@@ -37,6 +42,11 @@ License reference for all rows: [Pexels License](https://www.pexels.com/license/
 | `inventario.mov` | `assets-source/videos-raw/` | `inventory-preview.webm/mp4` | local raw, ignored |
 | `legalis.mov` | `assets-source/videos-raw/` | `custom-software-preview.webm/mp4` | local raw, ignored |
 | `Dashboard.mov` | `assets-source/videos-raw/` | `spreadsheet-automation-preview.webm/mp4` | local raw, ignored |
+| `photo-1572191783453-62f99a6055ce.avif` | `assets-source/videos-raw/` | retired; no deployable output | Original hero background source retained locally after the Vecteezy replacement. |
+| `photo-1645235142939-096560a17aab.avif` | `assets-source/videos-raw/` | `cosmic/solar-orb-900.avif` | user-provided Unsplash source |
+| `photo-1466853817435-05b43fe45b39.avif` | `assets-source/videos-raw/` | `cosmic/night-horizon-1400.avif` | user-provided Unsplash source |
+| `vecteezy_awesome-night-sky-time-lapse-with-milky-way-galaxy_10367035.mp4` | `assets-source/videos-raw/` | `background/cosmic-site-*` | User-provided Vecteezy master; footer attribution included for Free License compliance. |
+| `video_intro (1).mp4` | `assets-source/videos-raw/` | `intro/why-maiatesta.webm/.mp4` and poster | User-provided 59 MB portrait master; optimized deploy variants contain audio. |
 
 ## External Storage Decision
 

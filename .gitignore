@@ -7,5 +7,10 @@ public/assets/*.mov
 public/assets/*.MOV
 assets-source/videos-raw/*.mov
 assets-source/videos-raw/*.MOV
+assets-source/videos-raw/*.mp4
+assets-source/videos-raw/*.MP4
+assets-source/videos-raw/photo-*.avif
 assets-source/images-raw/
 .ssg-server/
+test-results/
+.visual-checks/

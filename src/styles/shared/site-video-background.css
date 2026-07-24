@@ -1,0 +1,472 @@
+.site-video-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #030711;
+}
+
+.site-video-bg__poster,
+.site-video-bg__poster img,
+.site-video-bg__media,
+.site-video-bg__veil {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.site-video-bg__poster {
+  display: block;
+}
+
+.site-video-bg__poster img,
+.site-video-bg__media {
+  display: block;
+  object-fit: cover;
+  object-position: 50% 50%;
+  filter: saturate(0.82) contrast(1.08) brightness(0.82);
+}
+
+.site-video-bg__media {
+  opacity: 0;
+  transition: opacity 720ms ease;
+}
+
+.site-video-bg.is-ready .site-video-bg__media {
+  opacity: 0.92;
+}
+
+.site-video-bg__veil {
+  z-index: 2;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(3, 7, 17, 0.48) 0%,
+      rgba(3, 7, 17, 0.16) 50%,
+      rgba(3, 7, 17, 0.22) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(3, 7, 17, 0.14),
+      rgba(3, 7, 17, 0.28) 58%,
+      rgba(3, 7, 17, 0.56)
+    ),
+    radial-gradient(circle at 76% 18%, transparent 0 18%, rgba(3, 7, 17, 0.16) 54%);
+}
+
+body {
+  background: #030711;
+}
+
+.app-shell {
+  position: relative;
+  z-index: 1;
+  background: transparent !important;
+}
+
+.hero-section,
+.service-page-hero {
+  /* These sections own the fixed header. Keep their stacking context above
+     .site-main so the navigation remains visible and clickable after scroll. */
+  z-index: 2;
+  background-color: transparent !important;
+}
+
+.hero-section::before {
+  background:
+    radial-gradient(
+      circle at 78% 50%,
+      transparent 0 18%,
+      rgba(4, 8, 17, 0.12) 36%,
+      transparent 54%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(4, 8, 17, 0.86) 0%,
+      rgba(4, 8, 17, 0.67) 47%,
+      rgba(4, 8, 17, 0.08) 76%,
+      rgba(4, 8, 17, 0.25) 100%
+    ) !important;
+}
+
+.app-shell[data-palette] .site-main {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(37, 79, 126, 0.12), transparent 28%),
+    radial-gradient(circle at 86% 46%, rgba(193, 103, 39, 0.07), transparent 25%),
+    rgba(4, 8, 17, 0.42) !important;
+}
+
+.app-shell[data-palette] .site-main::before {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(4, 8, 17, 0.66),
+      rgba(7, 15, 26, 0.36) 42%,
+      rgba(4, 8, 17, 0.7)
+    ),
+    radial-gradient(circle at 80% 12%, rgba(55, 101, 151, 0.14), transparent 26%),
+    radial-gradient(circle at 15% 68%, rgba(242, 187, 114, 0.055), transparent 30%);
+}
+
+.app-shell[data-palette] .section {
+  --section-base-a: rgba(4, 8, 17, 0.5);
+  --section-base-b: rgba(8, 17, 30, 0.4);
+}
+
+.app-shell[data-palette] .section::before {
+  background:
+    radial-gradient(circle at 18% 22%, var(--section-accent-a), transparent 30%),
+    radial-gradient(circle at 84% 66%, var(--section-accent-b), transparent 34%),
+    linear-gradient(135deg, var(--section-base-a), var(--section-base-b)) !important;
+}
+
+.service-page-main {
+  background:
+    linear-gradient(180deg, rgba(4, 8, 17, 0.72), rgba(4, 8, 17, 0.58)),
+    transparent !important;
+}
+
+.client-ticker {
+  background: rgba(4, 8, 17, 0.86) !important;
+  backdrop-filter: blur(14px);
+}
+
+.site-footer {
+  background: rgba(3, 7, 13, 0.88) !important;
+  backdrop-filter: blur(16px);
+}
+
+html[data-site-video='ready'] .stars-bg {
+  opacity: 0.14;
+}
+
+@media (max-width: 720px) {
+  .site-video-bg__poster img,
+  .site-video-bg__media {
+    object-position: 50% 48%;
+    filter: saturate(0.78) contrast(1.08) brightness(0.74);
+  }
+
+  .site-video-bg.is-ready .site-video-bg__media {
+    opacity: 0.88;
+  }
+
+  .site-video-bg__veil {
+    background:
+      linear-gradient(180deg, rgba(3, 7, 17, 0.18), rgba(3, 7, 17, 0.48)),
+      linear-gradient(90deg, rgba(3, 7, 17, 0.3), rgba(3, 7, 17, 0.12));
+  }
+
+  .hero-section::before {
+    background:
+      linear-gradient(90deg, rgba(4, 8, 17, 0.72), rgba(4, 8, 17, 0.42)),
+      linear-gradient(180deg, rgba(4, 8, 17, 0.08), rgba(4, 8, 17, 0.88) 74%) !important;
+  }
+
+  .app-shell[data-palette] .site-main::before {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(4, 8, 17, 0.7),
+        rgba(7, 15, 26, 0.46) 44%,
+        rgba(4, 8, 17, 0.76)
+      ),
+      radial-gradient(circle at 78% 18%, rgba(55, 101, 151, 0.12), transparent 28%);
+  }
+
+  .app-shell[data-palette] .section {
+    --section-base-a: rgba(4, 8, 17, 0.58);
+    --section-base-b: rgba(8, 17, 30, 0.5);
+  }
+}
+
+@media (prefers-contrast: more) {
+  .site-video-bg__veil {
+    background: rgba(3, 7, 17, 0.74);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-video-bg__media {
+    display: none !important;
+  }
+}
+
+/* ── Single-background composition ───────────────────────────────────────
+   The Vecteezy footage is the only page background. Palette changes tint
+   transparent glass layers; they never replace or reload the video. */
+.site-video-bg__poster img,
+.site-video-bg__media {
+  filter: saturate(0.98) contrast(1.06) brightness(0.94);
+}
+
+.site-video-bg.is-ready .site-video-bg__media {
+  opacity: 1;
+}
+
+.site-video-bg__veil {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(2, 5, 12, 0.05),
+      rgba(2, 5, 12, 0.12) 58%,
+      rgba(2, 5, 12, 0.24)
+    ),
+    linear-gradient(
+      90deg,
+      rgba(2, 5, 12, 0.18),
+      transparent 42%,
+      rgba(2, 5, 12, 0.06)
+    );
+}
+
+.site-video-bg__veil::before,
+.site-video-bg__veil::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transition: opacity 680ms ease;
+}
+
+.site-video-bg__veil::before {
+  background:
+    radial-gradient(circle at 78% 20%, rgba(65, 115, 170, 0.2), transparent 48%),
+    radial-gradient(circle at 18% 72%, rgba(30, 73, 112, 0.1), transparent 42%);
+  opacity: 0.72;
+}
+
+.site-video-bg__veil::after {
+  background:
+    radial-gradient(circle at 78% 30%, rgba(229, 122, 38, 0.2), transparent 46%),
+    radial-gradient(circle at 66% 74%, rgba(44, 181, 187, 0.1), transparent 38%);
+  opacity: 0;
+}
+
+.site-video-bg[data-palette='current'] .site-video-bg__veil::before {
+  opacity: 0.08;
+}
+
+.site-video-bg[data-palette='current'] .site-video-bg__veil::after {
+  opacity: 0.9;
+}
+
+.site-video-bg[data-palette='tropical'] .site-video-bg__veil::after {
+  background:
+    radial-gradient(circle at 74% 24%, rgba(47, 164, 215, 0.18), transparent 46%),
+    radial-gradient(circle at 24% 76%, rgba(231, 111, 46, 0.14), transparent 42%);
+  opacity: 0.82;
+}
+
+.site-video-bg[data-palette='sunset'] .site-video-bg__veil::after {
+  background: radial-gradient(
+    circle at 72% 30%,
+    rgba(255, 154, 134, 0.2),
+    transparent 52%
+  );
+  opacity: 0.86;
+}
+
+.site-video-bg[data-palette='sand'] .site-video-bg__veil::after {
+  background:
+    radial-gradient(circle at 76% 24%, rgba(86, 182, 198, 0.18), transparent 48%),
+    radial-gradient(circle at 22% 76%, rgba(74, 54, 190, 0.14), transparent 42%);
+  opacity: 0.84;
+}
+
+/* Remove the superseded static star/photo layers. The fixed Vecteezy video
+   now supplies all ambient detail and motion. */
+.stars-bg,
+.hero-stars,
+.hero-aurora,
+.hero-orbs,
+.hero-grain,
+.hero-space-photo,
+.site-main-video,
+.section-background-video {
+  display: none !important;
+}
+
+.app-shell[data-palette] .hero-section::before,
+.app-shell[data-palette] .service-page-hero::before {
+  background:
+    radial-gradient(
+      circle at 76% 46%,
+      color-mix(in srgb, var(--app-copper) 8%, transparent),
+      transparent 31%
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--app-ink) 74%, transparent) 0%,
+      color-mix(in srgb, var(--app-ink) 48%, transparent) 44%,
+      color-mix(in srgb, var(--app-ink) 8%, transparent) 73%,
+      color-mix(in srgb, var(--app-ink) 18%, transparent) 100%
+    ) !important;
+}
+
+.app-shell[data-palette] .hero-scrim {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--app-ink) 6%, transparent),
+    transparent 56%,
+    color-mix(in srgb, var(--app-ink) 34%, transparent)
+  ) !important;
+}
+
+.app-shell[data-palette] .hero-section::after {
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in srgb, var(--app-ink) 24%, transparent)
+  ) !important;
+}
+
+.app-shell[data-palette] .site-main {
+  background:
+    radial-gradient(
+      circle at 12% 18%,
+      color-mix(in srgb, var(--app-steel) 8%, transparent),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 86% 46%,
+      color-mix(in srgb, var(--app-copper) 6%, transparent),
+      transparent 28%
+    ),
+    color-mix(in srgb, var(--app-ink) 8%, transparent) !important;
+}
+
+.app-shell[data-palette] .site-main::before {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--app-ink) 20%, transparent),
+      color-mix(in srgb, var(--app-ink) 5%, transparent) 42%,
+      color-mix(in srgb, var(--app-ink) 24%, transparent)
+    ),
+    radial-gradient(
+      circle at 80% 12%,
+      color-mix(in srgb, var(--app-steel) 8%, transparent),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 15% 68%,
+      color-mix(in srgb, var(--app-copper) 5%, transparent),
+      transparent 32%
+    ) !important;
+}
+
+.app-shell[data-palette] .site-main::after {
+  background: none !important;
+  opacity: 0 !important;
+}
+
+.app-shell[data-palette] .section {
+  --section-accent-a: color-mix(in srgb, var(--app-steel) 10%, transparent);
+  --section-accent-b: color-mix(in srgb, var(--app-copper) 7%, transparent);
+  --section-base-a: color-mix(in srgb, var(--app-ink) 17%, transparent);
+  --section-base-b: color-mix(in srgb, var(--app-charcoal) 11%, transparent);
+}
+
+.app-shell[data-palette] .section::before {
+  background:
+    radial-gradient(circle at 18% 22%, var(--section-accent-a), transparent 32%),
+    radial-gradient(circle at 84% 66%, var(--section-accent-b), transparent 36%),
+    linear-gradient(135deg, var(--section-base-a), var(--section-base-b)) !important;
+}
+
+.app-shell[data-palette] .section::after {
+  display: none !important;
+}
+
+.service-page-main {
+  background: color-mix(in srgb, #040811 14%, transparent) !important;
+}
+
+.client-ticker {
+  background: rgba(4, 8, 17, 0.56) !important;
+  backdrop-filter: blur(12px) saturate(1.15);
+}
+
+.site-footer {
+  background: rgba(3, 7, 13, 0.68) !important;
+}
+
+.app-shell[data-palette='current'] .site-header,
+.app-shell[data-palette='current'].is-scrolled .site-header:not(.menu-open) {
+  border-color: rgba(74, 209, 203, 0.2);
+  background: rgba(13, 9, 8, 0.76);
+  box-shadow:
+    0 18px 54px rgba(0, 0, 0, 0.3),
+    0 0 34px rgba(74, 209, 203, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 720px) {
+  .site-video-bg__poster img,
+  .site-video-bg__media {
+    filter: saturate(0.94) contrast(1.05) brightness(0.88);
+  }
+
+  .site-video-bg.is-ready .site-video-bg__media {
+    opacity: 1;
+  }
+
+  .site-video-bg__veil {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(2, 5, 12, 0.06),
+        rgba(2, 5, 12, 0.16) 60%,
+        rgba(2, 5, 12, 0.3)
+      ),
+      linear-gradient(90deg, rgba(2, 5, 12, 0.12), transparent);
+  }
+
+  .app-shell[data-palette] .hero-section::before,
+  .app-shell[data-palette] .service-page-hero::before {
+    background:
+      linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--app-ink) 54%, transparent),
+        color-mix(in srgb, var(--app-ink) 22%, transparent)
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--app-ink) 5%, transparent),
+        color-mix(in srgb, var(--app-ink) 66%, transparent) 76%
+      ) !important;
+  }
+
+  .app-shell[data-palette] .site-main::before {
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--app-ink) 24%, transparent),
+        color-mix(in srgb, var(--app-ink) 9%, transparent) 44%,
+        color-mix(in srgb, var(--app-ink) 28%, transparent)
+      ),
+      radial-gradient(
+        circle at 78% 18%,
+        color-mix(in srgb, var(--app-steel) 7%, transparent),
+        transparent 30%
+      ) !important;
+  }
+
+  .app-shell[data-palette] .section {
+    --section-base-a: color-mix(in srgb, var(--app-ink) 24%, transparent);
+    --section-base-b: color-mix(in srgb, var(--app-charcoal) 15%, transparent);
+  }
+}
+
+@media (prefers-contrast: more) {
+  .site-video-bg__veil {
+    background: rgba(3, 7, 17, 0.7);
+  }
+
+  .app-shell[data-palette] .section {
+    --section-base-a: color-mix(in srgb, var(--app-ink) 56%, transparent);
+    --section-base-b: color-mix(in srgb, var(--app-charcoal) 42%, transparent);
+  }
+}

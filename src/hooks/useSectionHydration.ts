@@ -54,6 +54,11 @@ export function useSectionHydration(
     };
 
     const activateSection = (selector: string) => {
+      if (scrollingRef.current || flickingRef.current) {
+        pendingSelectors.add(selector);
+        return;
+      }
+
       const target = document.querySelector(selector);
 
       if (!target) {
@@ -81,8 +86,12 @@ export function useSectionHydration(
         const match = gatedPreloaders.find(
           (item) => item.selector === selector,
         );
+        const target = document.querySelector(selector);
 
-        if (match) {
+        // A fast flick can cross several expensive sections. Only hydrate the
+        // section where the visitor actually stopped; crossed sections stay as
+        // lightweight shells and will activate if the visitor scrolls back.
+        if (match && target && isNearViewport(target)) {
           activateSection(match.selector);
         }
       });

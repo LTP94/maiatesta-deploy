@@ -236,7 +236,7 @@ try {
             ? performance
                 .getEntriesByType('resource')
                 .filter((entry) =>
-                  /(?:ProductRoulette|Projects|LocalFaq)-.*\.js(?:\?|$)/.test(
+                  /(?:ProductRoulette|Projects|LocalFaq)-.*\.js(?:\?|$)|\/assets\/intro\/why-maiatesta\.(?:webm|mp4)(?:\?|$)/.test(
                     entry.name,
                   ),
                 )
@@ -280,10 +280,35 @@ try {
           .filter((entry) => /\.(mp4|webm)(\?|$)/.test(entry.name))
           .map((entry) => entry.name),
       );
+      const backgroundVideos = earlyVideos.filter((url) =>
+        /\/assets\/background\/cosmic-site-mobile\.(?:mp4|webm)(?:\?|$)/.test(
+          url,
+        ),
+      );
+      const introVideos = earlyVideos.filter((url) =>
+        /\/assets\/intro\/why-maiatesta\.(?:mp4|webm)(?:\?|$)/.test(url),
+      );
+      const unexpectedVideos = earlyVideos.filter(
+        (url) =>
+          !url.includes('/assets/background/cosmic-site-') &&
+          !url.includes('/assets/intro/why-maiatesta.'),
+      );
 
-      if (earlyVideos.length > 0) {
+      if (unexpectedVideos.length > 0) {
         throw new Error(
-          `${profile.name}: video loaded before service intent/stability: ${earlyVideos.join(', ')}`,
+          `${profile.name}: non-background video loaded before service intent/stability: ${unexpectedVideos.join(', ')}`,
+        );
+      }
+
+      if (backgroundVideos.length > 1) {
+        throw new Error(
+          `${profile.name}: more than one responsive background video loaded: ${backgroundVideos.join(', ')}`,
+        );
+      }
+
+      if (introVideos.length > 1) {
+        throw new Error(
+          `${profile.name}: more than one Why Maiatesta video format loaded: ${introVideos.join(', ')}`,
         );
       }
     }

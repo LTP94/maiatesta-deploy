@@ -68,7 +68,7 @@ type ProductRouletteProps = {
 
 // Cambia esto a true si quieres mostrar el selector de paleta en la pagina.
 // Cambialo a false si quieres ocultarlo y controlar la paleta solo desde App.tsx.
-const showPaletteSwitcher = true;
+const showPaletteSwitcher = false;
 
 const paletteOptions = [
   {
