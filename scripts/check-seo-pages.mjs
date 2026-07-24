@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -35,6 +36,10 @@ const expectedHomepageAssets = [
 
 const sitemap = await fs.readFile(sitemapPath, 'utf8');
 const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
+const sourceIndex = await fs.readFile(path.join(root, 'index.html'), 'utf8');
+const vercelConfig = JSON.parse(
+  await fs.readFile(path.join(root, 'vercel.json'), 'utf8'),
+);
 
 if (urls.length === 0) {
   throw new Error('No URLs found in dist/sitemap.xml. Run npm run build first.');
@@ -54,6 +59,29 @@ function routeToHtmlPath(url) {
 function fail(url, message) {
   hasFailure = true;
   console.error(`${url}: ${message}`);
+}
+
+const executableInlineScripts = [
+  ...sourceIndex.matchAll(/<script(?![^>]*\bsrc=)(?![^>]*type=["']application\/ld\+json["'])[^>]*>([\s\S]*?)<\/script>/g),
+].map((match) => match[1]);
+
+for (const inlineScript of executableInlineScripts) {
+  const cspHash = `sha256-${createHash('sha256')
+    .update(inlineScript)
+    .digest('base64')}`;
+
+  for (const headerRule of vercelConfig.headers ?? []) {
+    const contentSecurityPolicy = headerRule.headers?.find(
+      (header) => header.key.toLowerCase() === 'content-security-policy',
+    )?.value;
+
+    if (contentSecurityPolicy && !contentSecurityPolicy.includes(`'${cspHash}'`)) {
+      fail(
+        'vercel.json',
+        `${headerRule.source} CSP is missing the current inline script hash ${cspHash}`,
+      );
+    }
+  }
 }
 
 async function collectHtmlFiles(directory) {
