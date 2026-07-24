@@ -64,10 +64,13 @@ function fail(url, message) {
 const executableInlineScripts = [
   ...sourceIndex.matchAll(/<script(?![^>]*\bsrc=)(?![^>]*type=["']application\/ld\+json["'])[^>]*>([\s\S]*?)<\/script>/g),
 ].map((match) => match[1]);
+const inlineEventHandlers = [
+  ...sourceIndex.matchAll(/\son[a-z]+\s*=\s*(["'])(.*?)\1/gis),
+].map((match) => match[2]);
 
-for (const inlineScript of executableInlineScripts) {
+for (const inlineSource of [...executableInlineScripts, ...inlineEventHandlers]) {
   const cspHash = `sha256-${createHash('sha256')
-    .update(inlineScript)
+    .update(inlineSource)
     .digest('base64')}`;
 
   for (const headerRule of vercelConfig.headers ?? []) {
@@ -78,7 +81,7 @@ for (const inlineScript of executableInlineScripts) {
     if (contentSecurityPolicy && !contentSecurityPolicy.includes(`'${cspHash}'`)) {
       fail(
         'vercel.json',
-        `${headerRule.source} CSP is missing the current inline script hash ${cspHash}`,
+        `${headerRule.source} CSP is missing the current inline source hash ${cspHash}`,
       );
     }
   }
