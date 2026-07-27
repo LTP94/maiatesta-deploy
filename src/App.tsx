@@ -56,6 +56,8 @@ const loadGuidesIndexPage = () =>
   import('./components/GuidesIndexPage').then((m) => ({ default: m.GuidesIndexPage }));
 const loadLegalPage = () =>
   import('./components/LegalPage').then((m) => ({ default: m.LegalPage }));
+const loadCaseStudyShowcase = () =>
+  import('./components/CaseStudyShowcase').then((m) => ({ default: m.CaseStudyShowcase }));
 
 const ScrollConstellation  = lazy(loadScrollConstellation);
 const TypebotStandardChat  = lazy(loadTypebotStandardChat);
@@ -71,6 +73,7 @@ const ServiceLandingPage   = lazy(loadServiceLandingPage);
 const ArticleLandingPage   = lazy(loadArticleLandingPage);
 const GuidesIndexPage      = lazy(loadGuidesIndexPage);
 const LegalPage            = lazy(loadLegalPage);
+const CaseStudyShowcase    = lazy(loadCaseStudyShowcase);
 
 const gatedSectionPreloaders = [
   { selector: '#services', preload: loadProductRoulette },
@@ -79,6 +82,7 @@ const gatedSectionPreloaders = [
 ] satisfies Array<{ selector: string; preload: () => Promise<unknown> }>;
 
 const sectionChunkPreloaders = [
+  { selector: '.case-study-section', preload: loadCaseStudyShowcase },
   { selector: '.milky-way-divider', preload: loadMilkyWayDivider },
   { selector: '.guides-teaser-section', preload: loadGuidesTeaser },
   { selector: '#contact', preload: loadContactForm },
@@ -363,6 +367,9 @@ export default function App({ routePath }: AppProps) {
           ) : (
             <ProjectsShell content={content} />
           )}
+          <Suspense fallback={null}>
+            <CaseStudyShowcase content={content} />
+          </Suspense>
           <Suspense fallback={null}>
             <MilkyWayDivider />
           </Suspense>

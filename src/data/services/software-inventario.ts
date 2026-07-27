@@ -69,4 +69,14 @@ export const softwareInventarioQuito = {
     width: 960,
     height: 540,
   },
+  caseStudyVideo: {
+    clientName: 'La Pulga Picosa',
+    sector: 'Tienda de segunda mano · Ecuador',
+    href: 'https://lapulgapicosa.kipuxbot.com',
+    posterImage: '/assets/case-studies/la-pulga-picosa-inventario-1-poster.webp',
+    videoMp4: '/assets/case-studies/la-pulga-picosa-inventario-1.mp4',
+    videoWebm: '/assets/case-studies/la-pulga-picosa-inventario-1.webm',
+    alt: 'Grabación real: La Pulga Picosa usando el software de inventario construido por Maiatesta',
+    durationLabel: '0:14',
+  },
 };

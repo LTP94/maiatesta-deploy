@@ -162,6 +162,13 @@ export const esLocale: LocalizedContent = {
       title: 'Empresas y proyectos con los que hemos trabajado',
       body: 'Algunos proyectos donde hemos aplicado desarrollo web, automatización, software e integraciones para negocios en Ecuador.',
     },
+    caseStudies: {
+      eyebrow: 'Software real, cliente real',
+      title: 'Así usa La Pulga Picosa el sistema de inventario que construimos',
+      body: 'Grabación real de La Pulga Picosa usando el software de inventario que desarrollamos para su tienda en Ecuador.',
+      realClientBadge: 'Cliente real',
+      watchLabel: 'Ver el caso',
+    },
   },
   clients: [
     {
@@ -199,6 +206,30 @@ export const esLocale: LocalizedContent = {
       href: 'https://galapagoscenter.com',
       width: 360,
       height: 155,
+    },
+  ],
+  caseStudyVideos: [
+    {
+      id: 'la-pulga-picosa-1',
+      clientName: 'La Pulga Picosa',
+      sector: 'Tienda de segunda mano · Ecuador',
+      href: 'https://lapulgapicosa.kipuxbot.com',
+      posterImage: '/assets/case-studies/la-pulga-picosa-inventario-1-poster.webp',
+      videoMp4: '/assets/case-studies/la-pulga-picosa-inventario-1.mp4',
+      videoWebm: '/assets/case-studies/la-pulga-picosa-inventario-1.webm',
+      alt: 'Grabación real: La Pulga Picosa usando el software de inventario construido por Maiatesta',
+      durationLabel: '0:14',
+    },
+    {
+      id: 'la-pulga-picosa-2',
+      clientName: 'La Pulga Picosa',
+      sector: 'Tienda de segunda mano · Ecuador',
+      href: 'https://lapulgapicosa.kipuxbot.com',
+      posterImage: '/assets/case-studies/la-pulga-picosa-inventario-2-poster.webp',
+      videoMp4: '/assets/case-studies/la-pulga-picosa-inventario-2.mp4',
+      videoWebm: '/assets/case-studies/la-pulga-picosa-inventario-2.webm',
+      alt: 'Grabación real: La Pulga Picosa usando el software de inventario construido por Maiatesta (parte 2)',
+      durationLabel: '0:10',
     },
   ],
   process: [

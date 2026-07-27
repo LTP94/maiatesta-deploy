@@ -8,6 +8,17 @@ export type FeatureImage = {
   height: number;
 };
 
+export type CaseStudyVideo = {
+  clientName: string;
+  sector: string;
+  href: string;
+  posterImage: string;
+  videoMp4: string;
+  videoWebm: string;
+  alt: string;
+  durationLabel: string;
+};
+
 export type ServicePage = {
   slug: ServiceRouteSlug;
   productId: string;
@@ -25,6 +36,7 @@ export type ServicePage = {
   faqs: Array<{ question: string; answer: string }>;
   relatedServiceIds: string[];
   featureImage?: FeatureImage;
+  caseStudyVideo?: CaseStudyVideo;
   ctaLabel?: string;
 };
 

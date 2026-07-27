@@ -57,6 +57,13 @@ export type LocalizedContent = {
     projects: { eyebrow: string; title: string; body: string };
     reviews: { eyebrow: string; title: string; body: string };
     clients: { eyebrow: string; title: string; body: string };
+    caseStudies: {
+      eyebrow: string;
+      title: string;
+      body: string;
+      realClientBadge: string;
+      watchLabel: string;
+    };
   };
   clients: Array<{
     name: string;
@@ -66,6 +73,17 @@ export type LocalizedContent = {
     href: string;
     width: number;
     height: number;
+  }>;
+  caseStudyVideos: Array<{
+    id: string;
+    clientName: string;
+    sector: string;
+    href: string;
+    posterImage: string;
+    videoMp4: string;
+    videoWebm: string;
+    alt: string;
+    durationLabel: string;
   }>;
   process: Array<{ title: string; body: string }>;
   processTitle: string;

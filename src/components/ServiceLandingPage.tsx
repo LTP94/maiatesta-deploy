@@ -1,6 +1,7 @@
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { LuminousText } from './LuminousText';
+import { CaseStudyCard } from './CaseStudyCard';
 import { articlePages } from '../data/articlePages';
 import { trackWhatsAppClick } from '../utils/analytics';
 import { siteContent } from '../data/siteContent';
@@ -160,6 +161,29 @@ export function ServiceLandingPage({
               decoding='async'
             />
           </figure>
+        ) : null}
+
+        {page.caseStudyVideo ? (
+          <section className='section service-case-study-section' aria-labelledby='service-case-study-title'>
+            <div className='section-heading scroll-reveal'>
+              <p className='eyebrow'>Software real, cliente real</p>
+              <h2 id='service-case-study-title'>Así lo usa un cliente real</h2>
+            </div>
+            <div className='case-study-grid case-study-grid--single'>
+              <CaseStudyCard
+                clientName={page.caseStudyVideo.clientName}
+                sector={page.caseStudyVideo.sector}
+                href={page.caseStudyVideo.href}
+                posterImage={page.caseStudyVideo.posterImage}
+                videoMp4={page.caseStudyVideo.videoMp4}
+                videoWebm={page.caseStudyVideo.videoWebm}
+                alt={page.caseStudyVideo.alt}
+                durationLabel={page.caseStudyVideo.durationLabel}
+                realClientBadge={content.sections.caseStudies.realClientBadge}
+                watchLabel={content.sections.caseStudies.watchLabel}
+              />
+            </div>
+          </section>
         ) : null}
 
         <section className='section service-detail-section'>

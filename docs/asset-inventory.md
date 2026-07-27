@@ -21,6 +21,9 @@ Use this inventory whenever adding, replacing, or deleting assets.
 | `public/assets/editorial/*.avif` | Editorial content images | Pexels, optimized locally | target under 120 KB each | Primary format for homepage and guide pacing. |
 | `public/assets/editorial/*.webp` | Editorial content image fallback | Pexels, optimized locally | target under 120 KB each | Fallback format for browsers without AVIF. |
 | `public/assets/Firma_*.png` | Email signature images | signature source | small | Kept public intentionally for direct links. |
+| `public/assets/case-studies/*.mp4` | Real client video testimonials (click-to-play) | client-provided raw footage, trimmed | target under 2 MB each | Click-to-play only, no autoplay — byte cost is opt-in. See `CASE_STUDY_APPROVALS.md` in the same folder for consent records. |
+| `public/assets/case-studies/*.webm` | Real client video testimonials, WebM primary | client-provided raw footage, trimmed | target under 2 MB each | Same click-to-play behavior as the MP4 fallback. |
+| `public/assets/case-studies/*-poster.webp` | Case study video posters | extracted frame from trimmed clip | under 30 KB each | Loads immediately; video only loads after a visitor clicks play. |
 
 ## Editorial Image Source Audit
 
@@ -47,6 +50,8 @@ License reference for all rows: [Pexels License](https://www.pexels.com/license/
 | `photo-1466853817435-05b43fe45b39.avif` | `assets-source/videos-raw/` | `cosmic/night-horizon-1400.avif` | user-provided Unsplash source |
 | `vecteezy_awesome-night-sky-time-lapse-with-milky-way-galaxy_10367035.mp4` | `assets-source/videos-raw/` | `background/cosmic-site-*` | User-provided Vecteezy master; footer attribution included for Free License compliance. |
 | `video_intro (1).mp4` | `assets-source/videos-raw/` | `intro/why-maiatesta.webm/.mp4` and poster | User-provided 59 MB portrait master; optimized deploy variants contain audio. |
+| `WhatsApp Video 2026-07-26 at 11.18.02.mp4` | `assets-source/videos-raw/` | `case-studies/la-pulga-picosa-inventario-1.webm/.mp4` and poster | Client-provided (La Pulga Picosa) real testimonial; trimmed 15s–29s from a 39.6s personal reel — unrelated segments (product modeling) excluded. See `CASE_STUDY_APPROVALS.md`. |
+| `IMG_1996.MOV` | `assets-source/videos-raw/` | `case-studies/la-pulga-picosa-inventario-2.webm/.mp4` and poster | Client-provided (La Pulga Picosa) real testimonial; trimmed 29s–39s from a 50.2s personal reel — a segment showing real business data (internal spreadsheet) was deliberately excluded. See `CASE_STUDY_APPROVALS.md`. |
 
 ## External Storage Decision
 
