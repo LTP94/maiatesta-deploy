@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { siteContent } from '../data/siteContent';
 import type { LanguageCode, LocalizedContent } from '../data/siteContent';
 import type { PaletteName } from '../hooks/usePaletteSync';
+import { useMagneticHover } from '../hooks/useMagneticHover';
 import { trackWhatsAppClick } from '../utils/analytics';
 import { Header } from './Header';
 import { LuminousText } from './LuminousText';
@@ -49,6 +50,7 @@ export function Hero({
   palette,
 }: HeroProps) {
   const personaButtonRef = useRef<HTMLDivElement>(null);
+  const magneticRef = useMagneticHover<HTMLAnchorElement>();
   const whatsappChannel = content.contact.channels.find(
     (channel) => channel.label.toLowerCase() === 'whatsapp',
   );
@@ -82,7 +84,9 @@ export function Hero({
           <p className='hero-body'>{content.hero.body}</p>
           <div className='hero-actions'>
             <a
+              ref={magneticRef}
               className='button button-primary'
+              data-magnetic
               href={whatsappChannel?.href ?? '#contact'}
               target={whatsappChannel ? '_blank' : undefined}
               rel={whatsappChannel ? 'noreferrer' : undefined}

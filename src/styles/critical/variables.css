@@ -1,23 +1,17 @@
 :root {
-  --paper: #f6f8fb;
-  --muted: #d8bd78;
-  --steel: #1b2f49;
-  --ember: #d8bd78;
-  --ink: #07111f;
-  --logo-bg: #ffffff;
-  --line: rgba(246, 248, 251, 0.18);
-  --app-ink: #07111f;
-  --app-graphite: #0e1b2d;
-  --app-charcoal: #1b2f49;
-  --app-steel: #6f8faf;
-  --app-silver: #dce5ee;
-  --app-paper: #f6f8fb;
-  --app-bronze: #d8bd78;
-  --app-copper: #d8bd78;
-  --app-olive-signal: #88b4cf;
-  --app-line: rgba(216, 189, 120, 0.42);
-  color: var(--paper);
-  background: var(--ink);
+  --app-ink: #040811;
+  --app-graphite: #09111d;
+  --app-charcoal: #111f31;
+  --app-steel: #7895b5;
+  --app-silver: #dbe5f0;
+  --app-paper: #f7f9fc;
+  --app-copper: #f2bb72;
+  --app-logo-bg: #ffffff;
+  --app-line: rgba(203, 220, 239, 0.16);
+  --app-panel: rgba(8, 16, 28, 0.88);
+  --shadow: 0 28px 90px rgba(0, 0, 0, 0.38);
+  color: var(--app-paper);
+  background: var(--app-ink);
   font-family:
     Inter,
     ui-sans-serif,

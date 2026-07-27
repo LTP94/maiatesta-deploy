@@ -58,7 +58,7 @@
   justify-content: space-between;
   /* Espacio interno entre el borde de la tarjeta y los textos/imagenes. */
   padding: 40px;
-  color: var(--paper);
+  color: var(--app-paper);
   border: 2px solid rgba(248, 248, 248, 0.18);
   background:
     linear-gradient(145deg, rgba(248, 248, 248, 0.12), transparent 36%),

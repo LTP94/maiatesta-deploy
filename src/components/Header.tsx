@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { siteContent } from "../data/siteContent";
 import type { LanguageCode, LocalizedContent } from "../data/siteContent";
+import { useMagneticHover } from "../hooks/useMagneticHover";
 
 type HeaderProps = {
   content: LocalizedContent;
@@ -22,6 +23,7 @@ export function Header({
   const whatsappChannel = content.contact.channels.find(
     (channel) => channel.label.toLowerCase() === 'whatsapp',
   );
+  const magneticRef = useMagneticHover<HTMLAnchorElement>();
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -59,7 +61,9 @@ export function Header({
           ))}
         </div>
         <a
+          ref={magneticRef}
           className="header-action"
+          data-magnetic
           href={whatsappChannel?.href ?? "#contact"}
           target={whatsappChannel ? "_blank" : undefined}
           rel={whatsappChannel ? "noreferrer" : undefined}

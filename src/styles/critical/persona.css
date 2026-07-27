@@ -127,7 +127,7 @@
   overflow: hidden;
   border: 3px solid rgba(238, 238, 238, 0.82);
   border-radius: 50%;
-  background: var(--logo-bg);
+  background: var(--app-logo-bg);
   box-shadow:
     0 24px 70px rgba(0, 0, 0, 0.48),
     0 0 0 10px rgba(168, 136, 120, 0.18);

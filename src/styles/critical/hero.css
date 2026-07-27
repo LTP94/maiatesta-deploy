@@ -257,7 +257,7 @@
 .service-page-copy h1 {
   max-width: 760px;
   margin: 0;
-  color: var(--paper);
+  color: var(--app-paper);
   font-size: clamp(2.45rem, 4vw, 5.15rem);
   font-weight: 800;
   letter-spacing: -0.035em;
@@ -364,7 +364,7 @@
 }
 
 .button-secondary {
-  color: var(--paper);
+  color: var(--app-paper);
   border-color: rgba(238, 238, 238, 0.24);
   background: rgba(238, 238, 238, 0.06);
 }

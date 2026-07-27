@@ -13,7 +13,7 @@
 
 .app-shell {
   min-height: 100vh;
-  color: var(--paper);
+  color: var(--app-paper);
   background: var(--app-ink);
 }
 
