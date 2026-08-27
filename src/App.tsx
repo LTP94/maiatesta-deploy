@@ -58,6 +58,10 @@ const loadLegalPage = () =>
   import('./components/LegalPage').then((m) => ({ default: m.LegalPage }));
 const loadCaseStudyShowcase = () =>
   import('./components/CaseStudyShowcase').then((m) => ({ default: m.CaseStudyShowcase }));
+const loadWhatsappConnectPage = () =>
+  import('./components/WhatsappConnectPage').then((m) => ({ default: m.WhatsappConnectPage }));
+const loadWhatsappConnectCallbackPage = () =>
+  import('./components/WhatsappConnectCallbackPage').then((m) => ({ default: m.WhatsappConnectCallbackPage }));
 
 const ScrollConstellation  = lazy(loadScrollConstellation);
 const TypebotStandardChat  = lazy(loadTypebotStandardChat);
@@ -74,6 +78,8 @@ const ArticleLandingPage   = lazy(loadArticleLandingPage);
 const GuidesIndexPage      = lazy(loadGuidesIndexPage);
 const LegalPage            = lazy(loadLegalPage);
 const CaseStudyShowcase    = lazy(loadCaseStudyShowcase);
+const WhatsappConnectPage  = lazy(loadWhatsappConnectPage);
+const WhatsappConnectCallbackPage = lazy(loadWhatsappConnectCallbackPage);
 
 const gatedSectionPreloaders = [
   { selector: '#services', preload: loadProductRoulette },
@@ -160,6 +166,12 @@ export default function App({ routePath }: AppProps) {
   const legalSlug = normalizeLegalPath(currentRoutePath);
   const isGuidesIndexRoute =
     currentRoutePath === '/guias' || currentRoutePath === '/guias/';
+  const isWhatsappConnectCallbackRoute =
+    currentRoutePath === '/whatsapp/connect/callback' ||
+    currentRoutePath === '/whatsapp/connect/callback/';
+  const isWhatsappConnectRoute =
+    !isWhatsappConnectCallbackRoute &&
+    (currentRoutePath === '/whatsapp/connect' || currentRoutePath === '/whatsapp/connect/');
 
   useScrollReveal(language);
   useScrollActivity(scrollingRef, flickingRef);
@@ -305,6 +317,50 @@ export default function App({ routePath }: AppProps) {
           }
         >
           <GuidesIndexPage
+            language={language}
+            onLanguageChange={handleLanguageChange}
+          />
+        </Suspense>
+      </>
+    );
+  }
+
+  if (isWhatsappConnectCallbackRoute) {
+    return (
+      <>
+        <SiteVideoBackground palette={palette} />
+        <Suspense
+          fallback={
+            <RouteFallback
+              eyebrow='WhatsApp Business'
+              title='Conexión con Meta.'
+              body='Cargando la página de Maiatesta.'
+            />
+          }
+        >
+          <WhatsappConnectCallbackPage
+            language={language}
+            onLanguageChange={handleLanguageChange}
+          />
+        </Suspense>
+      </>
+    );
+  }
+
+  if (isWhatsappConnectRoute) {
+    return (
+      <>
+        <SiteVideoBackground palette={palette} />
+        <Suspense
+          fallback={
+            <RouteFallback
+              eyebrow='WhatsApp Business'
+              title='Conectar WhatsApp Business.'
+              body='Cargando la página de Maiatesta.'
+            />
+          }
+        >
+          <WhatsappConnectPage
             language={language}
             onLanguageChange={handleLanguageChange}
           />

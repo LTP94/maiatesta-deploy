@@ -45,6 +45,16 @@
         { "key": "Cross-Origin-Opener-Policy", "value": "same-origin-allow-popups" },
         { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-hashes' 'sha256-MhtPZXr7+LpJUY5qtMutB+qWfQtMaPccfe7QXtCcEYc=' 'sha256-Funag959nXy24Bd2me2l5xzjkP4WFiywkmjHugrXhwc=' https://cdn.jsdelivr.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://viewer.kipuxbot.com https://cdn.jsdelivr.net wss://viewer.kipuxbot.com https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://region1.google-analytics.com https://stats.g.doubleclick.net; font-src 'self'; frame-src https://viewer.kipuxbot.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self' mailto:;" }
       ]
+    },
+    {
+      "source": "/whatsapp/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin-allow-popups" },
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-hashes' 'sha256-MhtPZXr7+LpJUY5qtMutB+qWfQtMaPccfe7QXtCcEYc=' 'sha256-Funag959nXy24Bd2me2l5xzjkP4WFiywkmjHugrXhwc=' https://cdn.jsdelivr.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://viewer.kipuxbot.com https://cdn.jsdelivr.net wss://viewer.kipuxbot.com https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://region1.google-analytics.com https://stats.g.doubleclick.net; font-src 'self'; frame-src https://viewer.kipuxbot.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self' mailto:;" }
+      ]
     }
   ]
 }

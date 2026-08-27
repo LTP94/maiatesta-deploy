@@ -605,6 +605,21 @@
   background: rgba(242, 187, 114, 0.08);
 }
 
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+  filter: grayscale(0.3);
+  box-shadow: none;
+}
+
+.button:disabled:hover {
+  transform: none;
+}
+
+.button:disabled::after {
+  display: none;
+}
+
 /* ── Premium scroll invitation ──────────────────────────────────── */
 /* Inspired by top-tier landing pages (Apple, Linear, Stripe).       */
 /* A horizontal layout: label | animated track | bouncing arrow.     */

@@ -12,6 +12,7 @@ const {
   getRouteSeo,
   getRouteStructuredData,
   getStaticRoutes,
+  noindexRoutes,
   render,
 } = await import(`file://${serverEntryPath}`);
 
@@ -35,6 +36,10 @@ const injectHead = (html, routePath) => {
     .replace(
       /<meta\s+name="description"\s+content="[^"]*"\s*\/>/,
       `<meta name="description" content="${escapeAttribute(seo.description)}" />`,
+    )
+    .replace(
+      /<meta\s+name="robots"\s+content="[^"]*"\s*\/>/,
+      `<meta name="robots" content="${escapeAttribute(seo.robots ?? 'index, follow')}" />`,
     )
     .replace(
       /<link\s+rel="canonical"\s+href="[^"]*"\s*\/>/,
@@ -107,6 +112,7 @@ const today = new Date().toISOString().slice(0, 10);
 const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${getStaticRoutes()
+  .filter((routePath) => !noindexRoutes.includes(routePath))
   .map((routePath) => {
     const loc = `https://maiatesta.com${routePath}`;
     return `  <url>

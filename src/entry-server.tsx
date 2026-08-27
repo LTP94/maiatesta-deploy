@@ -82,6 +82,10 @@ function normalizeRoutePath(routePath = '/') {
   return routePath.endsWith('/') ? routePath : `${routePath}/`;
 }
 
+// Routes that exist publicly but must never be indexed or listed in the
+// sitemap (Meta Embedded Signup entry + OAuth technical return URI).
+export const noindexRoutes = ['/whatsapp/connect/', '/whatsapp/connect/callback/'];
+
 export function getStaticRoutes() {
   return [
     '/',
@@ -90,6 +94,7 @@ export function getStaticRoutes() {
     ...articleRouteSlugs.map((slug) => `/guias/${slug}/`),
     ...pillarRouteSlugs.map((slug) => `/${slug}/`),
     ...legalRouteSlugs.map((slug) => `/${slug}/`),
+    ...noindexRoutes,
   ];
 }
 
@@ -100,7 +105,40 @@ export function getRouteSeo(routePath = '/') {
   const pillarPage = getPillarPageByPath(normalizedPath);
   const legalPage = getLegalPageByPath(normalizedPath);
   const isGuidesIndex = normalizedPath === '/guias/';
+  const isWhatsappConnect = normalizedPath === '/whatsapp/connect/';
+  const isWhatsappConnectCallback = normalizedPath === '/whatsapp/connect/callback/';
   const url = `${siteUrl}${normalizedPath === '/' ? '/' : normalizedPath}`;
+
+  if (isWhatsappConnect) {
+    return {
+      title: 'Conectar WhatsApp Business | Maiatesta',
+      description:
+        'Página segura para conectar una cuenta de WhatsApp Business con la plataforma de Maiatesta mediante los servicios oficiales de Meta.',
+      canonical: url,
+      robots: 'noindex, nofollow',
+      ogTitle: 'Conectar WhatsApp Business | Maiatesta',
+      ogDescription:
+        'Página segura para conectar una cuenta de WhatsApp Business con la plataforma de Maiatesta mediante los servicios oficiales de Meta.',
+      ogUrl: url,
+      twitterTitle: 'Conectar WhatsApp Business | Maiatesta',
+      twitterDescription:
+        'Página segura para conectar una cuenta de WhatsApp Business con la plataforma de Maiatesta mediante los servicios oficiales de Meta.',
+    };
+  }
+
+  if (isWhatsappConnectCallback) {
+    return {
+      title: 'Conexión con Meta | Maiatesta',
+      description: 'Página técnica de retorno para la conexión de WhatsApp Business con Maiatesta mediante Meta.',
+      canonical: url,
+      robots: 'noindex, nofollow',
+      ogTitle: 'Conexión con Meta | Maiatesta',
+      ogDescription: 'Página técnica de retorno para la conexión de WhatsApp Business con Maiatesta mediante Meta.',
+      ogUrl: url,
+      twitterTitle: 'Conexión con Meta | Maiatesta',
+      twitterDescription: 'Página técnica de retorno para la conexión de WhatsApp Business con Maiatesta mediante Meta.',
+    };
+  }
 
   if (isGuidesIndex) {
     return {
@@ -195,10 +233,20 @@ export function getRouteStructuredData(routePath = '/') {
   const pillarPage = getPillarPageByPath(normalizedPath);
   const legalPage = getLegalPageByPath(normalizedPath);
   const isGuidesIndex = normalizedPath === '/guias/';
+  const isNoindexUtilityRoute = noindexRoutes.includes(normalizedPath);
   const graph: Array<Record<string, unknown>> = [
     localBusinessSchema,
     websiteSchema,
   ];
+
+  if (isNoindexUtilityRoute) {
+    // Utility/onboarding pages are noindex — keep only minimal business
+    // identity data, skip the commercial offer catalog used on indexed pages.
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [localBusinessSchema, websiteSchema],
+    };
+  }
 
   if (legalPage) {
     graph.push({
