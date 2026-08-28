@@ -12,7 +12,6 @@ import { useScrollReveal } from './hooks/useScrollReveal';
 import { useScrollActivity } from './hooks/useScrollActivity';
 import { useSectionHydration } from './hooks/useSectionHydration';
 import { useScrollConstellation } from './hooks/useScrollConstellation';
-import { usePaletteSync } from './hooks/usePaletteSync';
 import type { PaletteName } from './hooks/usePaletteSync';
 import { useHashNavigation } from './hooks/useHashNavigation';
 import { useScrolled } from './hooks/useScrolled';
@@ -96,12 +95,8 @@ const sectionChunkPreloaders = [
   { selector: '.sticky-whatsapp-button', preload: loadStickyWhatsAppButton },
 ] satisfies Array<{ selector: string; preload: () => Promise<unknown> }>;
 
-// Elige aqui la paleta principal de la web cuando quieres controlarla desde codigo.
-const defaultPalette: PaletteName = 'atlantic';
-
-// Cambia esto a true si quieres que el navegador recuerde la ultima paleta elegida.
-// En false, la web siempre usa defaultPalette al cargar.
-const savePaletteChoice = false;
+// Single brand identity — no more runtime palette switching.
+const palette: PaletteName = 'atlantic';
 
 // Detecta el idioma inicial del navegador y limita la app a los idiomas disponibles.
 function getInitialLanguage(): LanguageCode {
@@ -121,22 +116,6 @@ function getInitialLanguage(): LanguageCode {
   return detectedLanguage?.toLowerCase().startsWith('en') ? 'en' : 'es';
 }
 
-// Recupera la paleta guardada para conservar la preferencia visual del usuario.
-function getInitialPalette(): PaletteName {
-  if (typeof window === 'undefined' || !savePaletteChoice) {
-    return defaultPalette;
-  }
-
-  const storedPalette = window.localStorage.getItem('maiatesta-palette');
-
-  return storedPalette === 'atlantic' ||
-    storedPalette === 'tropical' ||
-    storedPalette === 'sunset' ||
-    storedPalette === 'sand'
-    ? storedPalette
-    : defaultPalette;
-}
-
 function getInitialRoutePath() {
   if (typeof window === 'undefined') {
     return '/';
@@ -153,7 +132,6 @@ export default function App({ routePath }: AppProps) {
   // Always start with 'es' to match SSR output; detect browser language in useEffect.
   const [language, setLanguage] = useState<LanguageCode>('es');
   const isInteractiveLangChange = useRef(false);
-  const [palette, setPalette] = useState<PaletteName>(getInitialPalette);
   const [isPersonaPortraitAligned, setIsPersonaPortraitAligned] = useState(false);
   const scrollingRef = useRef(false);
   const flickingRef = useRef(false);
@@ -182,7 +160,6 @@ export default function App({ routePath }: AppProps) {
     sectionChunkPreloaders,
   );
   const shouldShowScrollConstellation = useScrollConstellation();
-  usePaletteSync(palette, savePaletteChoice);
   useHashNavigation(language, isInteractiveLangChange);
   const hasScrolled = useScrolled();
 
@@ -204,11 +181,7 @@ export default function App({ routePath }: AppProps) {
   };
 
   const handlePersonaPortraitToggle = () => {
-    setIsPersonaPortraitAligned((isAligned) => {
-      const nextAlignment = !isAligned;
-      setPalette(nextAlignment ? 'current' : 'atlantic');
-      return nextAlignment;
-    });
+    setIsPersonaPortraitAligned((isAligned) => !isAligned);
   };
 
   if (serviceSlug) {
@@ -396,7 +369,6 @@ export default function App({ routePath }: AppProps) {
         onLanguageChange={handleLanguageChange}
         isPersonaPortraitAligned={isPersonaPortraitAligned}
         onPersonaPortraitToggle={handlePersonaPortraitToggle}
-        palette={palette}
       />
       <ClientLogos content={content} />
       <div className={hasScrolled ? 'site-main is-scrolled' : 'site-main'}>
@@ -407,11 +379,7 @@ export default function App({ routePath }: AppProps) {
         <main>
           {hydratedSections.has('#services') ? (
             <Suspense fallback={<ServicesShell content={content} />}>
-              <ProductRoulette
-                content={content}
-                palette={palette}
-                onPaletteChange={setPalette}
-              />
+              <ProductRoulette content={content} />
             </Suspense>
           ) : (
             <ServicesShell content={content} />

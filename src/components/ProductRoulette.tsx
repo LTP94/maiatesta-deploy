@@ -3,7 +3,6 @@ import type { CSSProperties } from 'react';
 import { siteContent } from '../data/siteContent';
 import type { LocalizedContent } from '../data/siteContent';
 import { getServiceSlugForProductId } from '../data/serviceRoutes';
-import type { PaletteName } from '../App';
 import { LuminousText } from './LuminousText';
 import { ServicePreview } from './ServicePreview';
 
@@ -18,7 +17,7 @@ const cardAutoRotateMs = 4500;
 
 function ProcessIcon({ step }: { step: number }) {
   const style = { display: 'block', width: 28, height: 28, marginBottom: 6 };
-  const stroke = 'var(--app-copper, #D6A85A)';
+  const stroke = 'var(--app-accent, #C6D91B)';
 
   if (step === 0) {
     return (
@@ -62,49 +61,13 @@ function ProcessIcon({ step }: { step: number }) {
 
 type ProductRouletteProps = {
   content: LocalizedContent;
-  palette: PaletteName;
-  onPaletteChange: (palette: PaletteName) => void;
 };
-
-// Cambia esto a true si quieres mostrar el selector de paleta en la pagina.
-// Cambialo a false si quieres ocultarlo y controlar la paleta solo desde App.tsx.
-const showPaletteSwitcher = false;
-
-const paletteOptions = [
-  {
-    id: 'current',
-    colors: ['#070707', '#ffb38a', '#c9ef55', '#e2ded8'],
-  },
-  {
-    id: 'atlantic',
-    colors: ['#F6F8FB', '#07111F', '#6F8FAF', '#D8BD78'],
-  },
-  {
-    id: 'tropical',
-    colors: ['#2FA4D7', '#E76F2E', '#F5E9D8', '#3E2C23'],
-  },
-  {
-    id: 'sunset',
-    colors: ['#FF9A86', '#FFF0BE', '#FFD6A6', '#FFB399'],
-  },
-  {
-    id: 'sand',
-    colors: ['#170C79', '#EFE3CA', '#56B6C6', '#8ACBD0'],
-  },
-] satisfies Array<{
-  id: PaletteName;
-  colors: string[];
-}>;
 
 // Para editar el tamano visual de la ruleta, revisa tambien estas clases en deferred.css:
 // .service-carousel controla el espacio total; .service-scene el escenario 3D;
 // .service-card el ancho/alto de cada tarjeta; .service-card-preview la imagen web.
-/** 3-D service carousel and palette switcher. Cards rotate on a CSS 3D axis; clicking a card changes the active palette. */
-export function ProductRoulette({
-  content,
-  palette,
-  onPaletteChange,
-}: ProductRouletteProps) {
+/** 3-D service carousel. Cards rotate on a CSS 3D axis. */
+export function ProductRoulette({ content }: ProductRouletteProps) {
   const services = content.products;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);

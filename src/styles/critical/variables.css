@@ -1,15 +1,21 @@
 :root {
-  --app-ink: #040811;
-  --app-graphite: #09111d;
-  --app-charcoal: #111f31;
-  --app-steel: #7895b5;
-  --app-silver: #dbe5f0;
-  --app-paper: #f7f9fc;
-  --app-copper: #f2bb72;
-  --app-logo-bg: #ffffff;
-  --app-line: rgba(203, 220, 239, 0.16);
-  --app-panel: rgba(8, 16, 28, 0.88);
+  --app-ink: #000000;
+  --app-graphite: #0a0a0a;
+  --app-charcoal: #161616;
+  --app-steel: #8a8a8a;
+  --app-silver: #e6e6e6;
+  --app-paper: #ffffff;
+  /* background behind the persona portrait disc — was white to match the old
+     logo-on-white convention, now a dark surface to match the black identity */
+  --app-logo-bg: #161616;
+  --app-accent: #c6d91b;
+  --app-accent-soft: #dcec6b;
+  --app-accent-deep: #8fa30e;
+  --app-line: rgba(255, 255, 255, 0.12);
+  --app-panel: rgba(10, 10, 10, 0.88);
   --shadow: 0 28px 90px rgba(0, 0, 0, 0.38);
+  /* temporary alias — remove once no file references --app-copper directly */
+  --app-copper: var(--app-accent);
   color: var(--app-paper);
   background: var(--app-ink);
   font-family:
@@ -41,6 +47,14 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* Sitewide fallback focus ring — components with their own :focus-visible
+   rule (buttons, nav links, cards, etc.) take precedence via specificity;
+   this guarantees every interactive element still gets a visible lime ring. */
+:focus-visible {
+  outline: 2px solid var(--app-accent);
+  outline-offset: 3px;
 }
 
 button,

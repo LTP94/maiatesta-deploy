@@ -1,16 +1,20 @@
 /* Variables base de color, sombras y tipografia usadas por toda la interfaz. */
 :root {
-  --app-ink: #040811;
-  --app-graphite: #09111d;
-  --app-charcoal: #111f31;
-  --app-steel: #7895b5;
-  --app-silver: #dbe5f0;
-  --app-paper: #f7f9fc;
-  --app-copper: #f2bb72;
-  --app-logo-bg: #ffffff;
-  --app-line: rgba(203, 220, 239, 0.16);
-  --app-panel: rgba(8, 16, 28, 0.88);
+  --app-ink: #000000;
+  --app-graphite: #0a0a0a;
+  --app-charcoal: #161616;
+  --app-steel: #8a8a8a;
+  --app-silver: #e6e6e6;
+  --app-paper: #ffffff;
+  --app-logo-bg: #161616;
+  --app-accent: #c6d91b;
+  --app-accent-soft: #dcec6b;
+  --app-accent-deep: #8fa30e;
+  --app-line: rgba(255, 255, 255, 0.12);
+  --app-panel: rgba(10, 10, 10, 0.88);
   --shadow: 0 28px 90px rgba(0, 0, 0, 0.38);
+  /* temporary alias — remove once no file references --app-copper directly */
+  --app-copper: var(--app-accent);
   color: var(--app-paper);
   background: var(--app-ink);
   font-family:
@@ -45,61 +49,25 @@ body {
   background: var(--app-ink);
 }
 
-/* Paleta alternativa: al cambiar data-palette en App.tsx se sustituyen estas variables. */
+/* Single brand identity — data-palette='atlantic' is kept as the attribute
+   value everywhere (App.tsx, every page component) to avoid touching every
+   call site; only what it resolves to has changed. The tropical/sunset/sand
+   variants and their switcher UI have been retired. */
 .app-shell[data-palette='atlantic'] {
-  --app-ink: #040811;
-  --app-graphite: #09111d;
-  --app-charcoal: #111f31;
-  --app-steel: #7895b5;
-  --app-silver: #dbe5f0;
-  --app-paper: #f7f9fc;
-  --app-copper: #f2bb72;
-  --app-logo-bg: #ffffff;
-  --app-line: rgba(203, 220, 239, 0.16);
-  --app-panel: rgba(8, 16, 28, 0.88);
+  --app-ink: #000000;
+  --app-graphite: #0a0a0a;
+  --app-charcoal: #161616;
+  --app-steel: #8a8a8a;
+  --app-silver: #e6e6e6;
+  --app-paper: #ffffff;
+  --app-logo-bg: #161616;
+  --app-accent: #c6d91b;
+  --app-accent-soft: #dcec6b;
+  --app-accent-deep: #8fa30e;
+  --app-line: rgba(255, 255, 255, 0.12);
+  --app-panel: rgba(10, 10, 10, 0.88);
   --shadow: 0 28px 90px rgba(0, 0, 0, 0.38);
-}
-
-.app-shell[data-palette='tropical'] {
-  --app-ink: #173f51;
-  --app-graphite: #1f6888;
-  --app-charcoal: #2fa4d7;
-  --app-steel: #2fa4d7;
-  --app-silver: #f5e9d8;
-  --app-paper: #fff8ef;
-  --app-copper: #e76f2e;
-  --app-logo-bg: #f5e9d8;
-  --app-line: rgba(231, 111, 46, 0.3);
-  --app-panel: rgba(23, 63, 81, 0.84);
-  --shadow: 0 24px 80px rgba(12, 48, 66, 0.42);
-}
-
-.app-shell[data-palette='sunset'] {
-  --app-ink: #54251f;
-  --app-graphite: #7f3b32;
-  --app-charcoal: #ff9a86;
-  --app-steel: #ffb399;
-  --app-silver: #fff0be;
-  --app-paper: #fff8df;
-  --app-copper: #ffd6a6;
-  --app-logo-bg: #fff0be;
-  --app-line: rgba(255, 214, 166, 0.34);
-  --app-panel: rgba(84, 37, 31, 0.84);
-  --shadow: 0 24px 80px rgba(84, 37, 31, 0.42);
-}
-
-.app-shell[data-palette='sand'] {
-  --app-ink: #12095f;
-  --app-graphite: #170c79;
-  --app-charcoal: #24149a;
-  --app-steel: #56b6c6;
-  --app-silver: #8acbd0;
-  --app-paper: #efe3ca;
-  --app-copper: #56b6c6;
-  --app-logo-bg: #efe3ca;
-  --app-line: rgba(86, 182, 198, 0.34);
-  --app-panel: rgba(23, 12, 121, 0.84);
-  --shadow: 0 24px 80px rgba(18, 9, 95, 0.42);
+  --app-copper: var(--app-accent);
 }
 
 a {
