@@ -107,7 +107,7 @@ body {
       rgba(4, 8, 17, 0.7)
     ),
     radial-gradient(circle at 80% 12%, rgba(55, 101, 151, 0.14), transparent 26%),
-    radial-gradient(circle at 15% 68%, rgba(198, 217, 27, 0.055), transparent 30%);
+    radial-gradient(circle at 15% 68%, rgba(209, 221, 37, 0.055), transparent 30%);
 }
 
 .app-shell[data-palette] .section {

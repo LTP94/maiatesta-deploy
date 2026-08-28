@@ -101,7 +101,7 @@
     ),
     radial-gradient(
       circle at 14% 86%,
-      rgba(198, 217, 27, 0.14),
+      rgba(209, 221, 37, 0.14),
       transparent 32%
     ),
     linear-gradient(
@@ -201,7 +201,7 @@
   box-shadow:
     0 32px 92px rgba(3, 8, 16, 0.52),
     0 0 52px rgba(111, 143, 175, 0.36),
-    0 0 24px rgba(198, 217, 27, 0.2),
+    0 0 24px rgba(209, 221, 37, 0.2),
     0 0 1px rgba(246, 248, 251, 0.72);
 }
 
@@ -239,7 +239,7 @@
 .service-side-hotspot:focus-visible {
   outline: 2px solid var(--app-copper);
   outline-offset: 4px;
-  background: rgba(198, 217, 27, 0.08);
+  background: rgba(209, 221, 37, 0.08);
 }
 
 .service-card-index,
@@ -482,7 +482,7 @@
 
 .app-shell[data-palette='atlantic'] .service-indicator.active {
   box-shadow:
-    0 0 18px rgba(143, 163, 14, 0.44),
+    0 0 18px rgba(130, 137, 23, 0.44),
     0 0 8px rgba(84, 122, 149, 0.28);
 }
 

@@ -30,7 +30,10 @@ export function Header({
   return (
     <header className={`site-header${isMenuOpen ? ' menu-open' : ''}`}>
       <a className="brand-mark" href={homeHref} aria-label={siteContent.brand.name} onClick={closeMenu}>
-        <img src={siteContent.brand.logo} alt={siteContent.brand.logoAlt} width="420" height="100" decoding="async" loading="eager" />
+        <picture>
+          <source srcSet="/assets/maiatesta-logo.webp" type="image/webp" />
+          <img src={siteContent.brand.logo} alt={siteContent.brand.logoAlt} width="900" height="165" decoding="async" loading="eager" />
+        </picture>
       </a>
       <nav className="nav-links" aria-label={content.ariaLabels.primaryNavigation}>
         {content.nav.map((item) => (

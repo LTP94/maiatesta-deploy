@@ -17,7 +17,7 @@ const cardAutoRotateMs = 4500;
 
 function ProcessIcon({ step }: { step: number }) {
   const style = { display: 'block', width: 28, height: 28, marginBottom: 6 };
-  const stroke = 'var(--app-accent, #C6D91B)';
+  const stroke = 'var(--app-accent, #d1dd25)';
 
   if (step === 0) {
     return (

@@ -26,7 +26,7 @@ const localBusinessSchema = {
   ],
   url: `${siteUrl}/`,
   image: `${siteUrl}/assets/maiatesta-persona-hero.webp`,
-  logo: `${siteUrl}/assets/maiatesta-logo.svg`,
+  logo: `${siteUrl}/assets/maiatesta-logo.png`,
   description:
     'Maiatesta es una agencia digital accesible en Quito para desarrollo web, tiendas online, chatbots de WhatsApp, software para pymes, inventario y automatización de Excel. Ha trabajado con empresas en Ecuador como Largenergy, Estudio 10, La Pulga Picosa y Galapagos Center.',
   email: 'maiatesta@gmail.com',

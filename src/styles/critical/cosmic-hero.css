@@ -65,7 +65,7 @@
 }
 
 .hero-copy .luminous-accent {
-  color: #c6d91b;
+  color: #d1dd25;
   text-shadow: 0 0 34px rgba(239, 137, 53, 0.26);
 }
 
@@ -81,7 +81,7 @@
 }
 
 .hero-typing-line > span:first-child {
-  color: #c6d91b;
+  color: #d1dd25;
 }
 
 .typing-text {
@@ -94,8 +94,8 @@
   width: 2px;
   height: 1.12em;
   margin-left: 4px;
-  background: #c6d91b;
-  box-shadow: 0 0 12px rgba(198, 217, 27, 0.72);
+  background: #d1dd25;
+  box-shadow: 0 0 12px rgba(209, 221, 37, 0.72);
   animation: typing-caret 850ms steps(1, end) infinite;
 }
 
@@ -137,7 +137,7 @@
 }
 
 .hero-proof strong {
-  color: #c6d91b;
+  color: #d1dd25;
   font-size: 0.66rem;
 }
 
@@ -191,7 +191,7 @@
   box-shadow:
     0 0 0 8px rgba(4, 8, 17, 0.42),
     0 20px 62px rgba(0, 0, 0, 0.48),
-    0 0 48px rgba(198, 217, 27, 0.28);
+    0 0 48px rgba(209, 221, 37, 0.28);
 }
 
 .hero-cosmos__persona .persona-orbit-anchor {
@@ -214,7 +214,7 @@
   z-index: 2;
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(198, 217, 27, 0.32), transparent 68%);
+  background: radial-gradient(circle, rgba(209, 221, 37, 0.32), transparent 68%);
   animation: hero-persona-breathe 4.5s ease-in-out infinite;
 }
 
@@ -224,7 +224,7 @@
   position: absolute;
   inset: 20%;
   border-radius: 50%;
-  border: 1px solid rgba(198, 217, 27, 0.45);
+  border: 1px solid rgba(209, 221, 37, 0.45);
   animation: hero-persona-pulse 3.6s ease-out infinite;
 }
 
@@ -289,12 +289,12 @@
 }
 
 .hero-persona-cta span {
-  color: #c6d91b;
+  color: #d1dd25;
   font-size: 1rem;
 }
 
 .hero-persona-cta:focus-visible {
-  outline: 2px solid #c6d91b;
+  outline: 2px solid #d1dd25;
   outline-offset: 4px;
 }
 
@@ -316,7 +316,7 @@
 
 .hero-cosmos__orbit--inner {
   inset: 9%;
-  border-color: rgba(198, 217, 27, 0.32);
+  border-color: rgba(209, 221, 37, 0.32);
 }
 
 .hero-cosmos__coordinates,
@@ -346,7 +346,7 @@
 }
 
 .hero-cosmos__label strong {
-  color: #c6d91b;
+  color: #d1dd25;
 }
 
 .hero-cosmos__satellite {
@@ -356,8 +356,8 @@
   height: 8px;
   border: 2px solid #fff;
   border-radius: 50%;
-  background: #c6d91b;
-  box-shadow: 0 0 18px rgba(198, 217, 27, 0.92);
+  background: #d1dd25;
+  box-shadow: 0 0 18px rgba(209, 221, 37, 0.92);
 }
 
 .hero-cosmos__satellite--a {

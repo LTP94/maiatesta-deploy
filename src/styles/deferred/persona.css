@@ -67,7 +67,7 @@
   position: absolute;
   inset: -9%;
   z-index: 3;
-  border: 1px solid rgba(198, 217, 27, 0.42);
+  border: 1px solid rgba(209, 221, 37, 0.42);
   border-top-color: rgba(246, 248, 251, 0.78);
   border-right-color: rgba(111, 143, 175, 0.58);
   border-radius: 50%;
@@ -92,7 +92,7 @@
   background: #fff;
   box-shadow:
     0 0 10px rgba(246, 248, 251, 0.88),
-    0 0 28px rgba(198, 217, 27, 0.48);
+    0 0 28px rgba(209, 221, 37, 0.48);
 }
 
 .persona-orbit-ring::after {
@@ -113,7 +113,7 @@
   background: #fff;
   box-shadow:
     0 0 10px rgba(246, 248, 251, 0.9),
-    0 0 22px rgba(198, 217, 27, 0.48);
+    0 0 22px rgba(209, 221, 37, 0.48);
   pointer-events: none;
   animation: none;
 }
@@ -164,12 +164,12 @@
   z-index: 6;
   background:
     radial-gradient(circle at 28% 24%, rgba(246, 248, 251, 0.16) 0 2px, transparent 3px),
-    radial-gradient(circle at 70% 30%, rgba(198, 217, 27, 0.14) 0 1px, transparent 2px),
+    radial-gradient(circle at 70% 30%, rgba(209, 221, 37, 0.14) 0 1px, transparent 2px),
     radial-gradient(circle at 62% 72%, rgba(111, 143, 175, 0.12) 0 2px, transparent 3px),
     radial-gradient(
       circle at 52% 49%,
       transparent 0 30%,
-      rgba(198, 217, 27, 0.1) 31%,
+      rgba(209, 221, 37, 0.1) 31%,
       transparent 36%
     );
   mix-blend-mode: screen;

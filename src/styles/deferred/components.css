@@ -141,7 +141,7 @@
   height: 0; /* overridden by React inline style */
   background: var(--app-accent);
   border-radius: 2px;
-  box-shadow: 0 0 8px rgba(198, 217, 27, 0.4);
+  box-shadow: 0 0 8px rgba(209, 221, 37, 0.4);
 }
 
 /* "Comet" element kept (matches DOM structure) but rendered as a plain
@@ -384,7 +384,7 @@
   background: linear-gradient(
     90deg,
     rgba(246, 248, 251, 0.1),
-    rgba(198, 217, 27, 0.18),
+    rgba(209, 221, 37, 0.18),
     rgba(246, 248, 251, 0.1)
   );
 }
