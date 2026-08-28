@@ -1,3 +1,43 @@
+/* Self-hosted to match font-src 'self' in vercel.json's CSP — no CSP change
+   needed. Weight matches the logo's wordmark (bold/black) and tagline
+   (medium/semibold); font-display: swap avoids invisible text while loading.
+   Files + OFL license: public/fonts/. */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/poppins-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/poppins-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/poppins-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/poppins-800.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/poppins-900.woff2') format('woff2');
+}
+
 :root {
   --app-ink: #000000;
   --app-graphite: #0a0a0a;
@@ -19,7 +59,7 @@
   color: var(--app-paper);
   background: var(--app-ink);
   font-family:
-    Inter,
+    'Poppins',
     ui-sans-serif,
     system-ui,
     -apple-system,
