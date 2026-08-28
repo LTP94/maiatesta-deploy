@@ -92,7 +92,7 @@ Webhook Maiatesta  →  Evolution  →  Chatwoot  →  Typebot  →  n8n  →  I
 
 El sitio usa Vite (no Next.js) con salida estática en `dist/`. Vercel soporta un directorio `/api` en la raíz del repositorio como Serverless Functions de forma **independiente del framework de frontend** (convención de plataforma, no de Next.js) — esto no requiere cambiar el `buildCommand` ni el `outputDirectory` actuales, y `vercel.json` de este repo no define `functions`/`builds` que lo restrinjan.
 
-**Veredicto: pendiente de confirmación en producción tras este deploy.** Se implementó `api/meta/health.ts` (Web Handler estándar — `export function GET()` devolviendo `Response.json(...)`, sin `@vercel/node` ni dependencias nuevas) como smoke test. Esta sección se actualizará con el resultado empírico real (VERIFIED/NOT VERIFIED) inmediatamente después del deployment y la verificación por `curl`.
+**Veredicto: VERIFIED empíricamente en producción (2026-08-28).** Se desplegó `api/meta/health.ts` (Web Handler estándar — `export function GET()` devolviendo `Response.json(...)`, sin `@vercel/node` ni dependencias nuevas) y se confirmó en `https://www.maiatesta.com/api/meta/health` que Vercel lo ejecuta como una Function real, coexistiendo con el sitio estático sin alterar build, prerender, sitemap, páginas legales ni `/whatsapp/connect/`. Evidencia: `x-vercel-cache: MISS` en cada request, `cache-control: no-store` respetado, `timestamp` distinto entre dos llamadas consecutivas, y `POST` devuelto automáticamente como `405` por el runtime de Vercel sin código adicional (solo se exportó `GET`). `dist/api/` nunca se generó localmente — confirma que la Function no vive en el build estático.
 
 Health endpoint: `https://www.maiatesta.com/api/meta/health`
 
