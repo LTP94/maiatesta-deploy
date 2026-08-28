@@ -31,7 +31,9 @@ const expectedHomepageAssets = [
   'intro/why-maiatesta.webm',
   'intro/why-maiatesta.mp4',
   'cosmic/night-horizon-1400.avif',
-  'cosmic/solar-orb-900.avif',
+  // solar-orb-900.avif removed from expectations: the orbiting-sun hero
+  // widget it fed was retired in the black+lime brand redesign in favor of
+  // a plain lime glow effect behind the persona portrait (no image asset).
 ];
 
 const sitemap = await fs.readFile(sitemapPath, 'utf8');

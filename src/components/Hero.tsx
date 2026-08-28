@@ -1,7 +1,6 @@
 import { useRef } from 'react';
 import { siteContent } from '../data/siteContent';
 import type { LanguageCode, LocalizedContent } from '../data/siteContent';
-import type { PaletteName } from '../hooks/usePaletteSync';
 import { useMagneticHover } from '../hooks/useMagneticHover';
 import { trackWhatsAppClick } from '../utils/analytics';
 import { Header } from './Header';
@@ -24,7 +23,6 @@ type HeroProps = {
   onLanguageChange: (language: LanguageCode) => void;
   isPersonaPortraitAligned: boolean;
   onPersonaPortraitToggle: () => void;
-  palette: PaletteName;
 };
 
 const typedPhrases: Record<LanguageCode, string[]> = {
@@ -47,7 +45,6 @@ export function Hero({
   onLanguageChange,
   isPersonaPortraitAligned,
   onPersonaPortraitToggle,
-  palette,
 }: HeroProps) {
   const personaButtonRef = useRef<HTMLDivElement>(null);
   const magneticRef = useMagneticHover<HTMLAnchorElement>();
@@ -122,30 +119,19 @@ export function Hero({
             <span>00° 13′ S</span>
             <span>78° 31′ W</span>
           </div>
-          <div className='hero-cosmos__orbit hero-cosmos__orbit--outer' aria-hidden='true' />
-          <div className='hero-cosmos__orbit hero-cosmos__orbit--inner' aria-hidden='true' />
-          <div className='hero-cosmos__sun' aria-hidden='true'>
-            <img
-              className='hero-cosmos__solar-media'
-              src='/assets/cosmic/solar-orb-900.avif'
-              alt=''
-              width='900'
-              height='684'
-              decoding='async'
-            />
-          </div>
           <div className='hero-cosmos__persona'>
+            {/* Required brand effect: the persona portrait always keeps a
+                visible, animated lime glow — it must never render bare. */}
+            <span className='hero-cosmos__glow' aria-hidden='true' />
             <PersonaPortrait
               ref={personaButtonRef}
               image={siteContent.brand.persona}
               alt={siteContent.brand.personaAlt}
               isAligned={isPersonaPortraitAligned}
-              isMirrored={palette === 'current'}
+              isMirrored={isPersonaPortraitAligned}
               onToggle={onPersonaPortraitToggle}
             />
           </div>
-          <span className='hero-cosmos__satellite hero-cosmos__satellite--a' aria-hidden='true' />
-          <span className='hero-cosmos__satellite hero-cosmos__satellite--b' aria-hidden='true' />
           <div className='hero-cosmos__label' aria-hidden='true'>
             <span>{language === 'es' ? 'Señal activa' : 'Signal active'}</span>
             <strong>MAIATESTA / 2026</strong>
@@ -159,11 +145,11 @@ export function Hero({
             <span aria-hidden='true'>↻</span>
             {isPersonaPortraitAligned
               ? language === 'es'
-                ? 'Modo cósmico activo'
-                : 'Cosmic mode active'
+                ? 'Retrato girado'
+                : 'Portrait rotated'
               : language === 'es'
-                ? 'Haz clic: gira y cambia el color'
-                : 'Click: rotate and change color'}
+                ? 'Haz clic: gira el retrato'
+                : 'Click: rotate the portrait'}
           </button>
         </div>
       </div>

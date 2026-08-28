@@ -388,7 +388,7 @@
 }
 
 .app-shell[data-palette='atlantic'] .hero-orb--b {
-  background: radial-gradient(circle, rgba(216, 189, 120, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(198, 217, 27, 0.2) 0%, transparent 70%);
 }
 
 .app-shell[data-palette='atlantic'] .hero-orb--c {
@@ -406,7 +406,7 @@
     rgba(111, 143, 175, 0.34) 58deg,
     rgba(76, 52, 172, 0.22) 118deg,
     transparent 178deg,
-    rgba(216, 189, 120, 0.18) 248deg,
+    rgba(198, 217, 27, 0.18) 248deg,
     rgba(46, 128, 138, 0.28) 308deg,
     transparent 360deg
   );
@@ -426,7 +426,7 @@
     ),
     radial-gradient(
       circle at 58% 72%,
-      rgba(216, 189, 120, 0.1),
+      rgba(198, 217, 27, 0.1),
       transparent 30%
     ),
     linear-gradient(135deg, rgba(7, 17, 31, 0.99), rgba(27, 47, 73, 0.9));
@@ -467,7 +467,7 @@
     ),
     radial-gradient(
       circle at 52% 72%,
-      rgba(216, 189, 120, 0.12),
+      rgba(198, 217, 27, 0.12),
       transparent 34%
     ),
     linear-gradient(

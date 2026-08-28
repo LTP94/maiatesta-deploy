@@ -101,7 +101,7 @@ function applyTypebotSurfaceStyles() {
   container.style.setProperty('--typebot-button-border-opacity', '0.16');
   container.style.setProperty(
     '--typebot-button-box-shadow',
-    '0 12px 32px rgba(194, 165, 109, 0.2)',
+    '0 12px 32px rgba(143, 163, 14, 0.2)',
   );
 
   chatView.style.background = 'transparent';

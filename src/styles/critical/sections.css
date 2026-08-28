@@ -197,7 +197,7 @@
 .service-side-hotspot:focus-visible {
   outline: 2px solid var(--app-copper);
   outline-offset: 4px;
-  background: rgba(216, 189, 120, 0.08);
+  background: rgba(198, 217, 27, 0.08);
 }
 
 .project-card,
@@ -281,8 +281,8 @@
 
 .guide-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(216, 189, 120, 0.38);
-  box-shadow: 0 8px 32px rgba(216, 189, 120, 0.12);
+  border-color: rgba(198, 217, 27, 0.38);
+  box-shadow: 0 8px 32px rgba(198, 217, 27, 0.12);
 }
 
 .guide-card:hover::before {
@@ -467,7 +467,7 @@
 }
 
 .local-faq-item summary:hover {
-  background: rgba(216, 189, 120, 0.07);
+  background: rgba(198, 217, 27, 0.07);
 }
 
 .local-faq-question {
@@ -482,7 +482,7 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 1.5px solid rgba(216, 189, 120, 0.5);
+  border: 1.5px solid rgba(198, 217, 27, 0.5);
   display: grid;
   place-items: center;
   transition: transform 0.28s ease, border-color 0.18s;
@@ -529,18 +529,18 @@ details[open] .local-faq-toggle {
   isolation: isolate;
 }
 
+/* Simplified: matches the deferred.css rule, defined here too to avoid a
+   flash of the old starburst band before deferred.css loads. */
 .milky-way-divider__band {
   position: absolute;
-  inset: 20% -12%;
-  border-radius: 999px;
-  background:
-    radial-gradient(ellipse at 50% 50%, rgba(246, 248, 251, 0.68), transparent 8%),
-    radial-gradient(ellipse at 48% 52%, rgba(216, 189, 120, 0.3), transparent 21%),
-    radial-gradient(ellipse at 54% 46%, rgba(111, 143, 175, 0.24), transparent 36%),
-    linear-gradient(108deg, transparent 4%, rgba(111, 143, 175, 0.12), rgba(246, 248, 251, 0.24), rgba(216, 189, 120, 0.14), transparent 94%);
-  filter: blur(0.45px);
-  opacity: 0.88;
-  transform: rotate(-8deg);
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--app-accent);
+  transform: translate(-50%, -50%) rotate(45deg);
+  box-shadow: 0 0 12px rgba(198, 217, 27, 0.5);
 }
 
 .local-faq-item--extra {
@@ -557,7 +557,7 @@ details[open] .local-faq-toggle {
   min-height: 46px;
   padding: 0 18px;
   color: var(--app-ink);
-  border: 1px solid rgba(216, 189, 120, 0.72);
+  border: 1px solid rgba(198, 217, 27, 0.72);
   border-radius: 999px;
   background: var(--app-copper);
   font-weight: 900;
@@ -583,7 +583,7 @@ details[open] .local-faq-toggle {
   grid-template-columns: minmax(260px, 1.35fr) repeat(3, minmax(150px, 0.75fr));
   gap: clamp(22px, 4vw, 42px);
   padding: clamp(22px, 4vw, 34px);
-  border: 1px solid rgba(216, 189, 120, 0.24);
+  border: 1px solid rgba(198, 217, 27, 0.24);
   border-radius: 8px;
   background: rgba(14, 27, 45, 0.78);
 }
@@ -623,7 +623,7 @@ details[open] .local-faq-toggle {
 .site-footer__cta,
 .site-footer__socials a {
   min-height: 44px;
-  border: 1px solid rgba(216, 189, 120, 0.36);
+  border: 1px solid rgba(198, 217, 27, 0.36);
   border-radius: 999px;
 }
 
@@ -789,7 +789,7 @@ a.site-footer__cta:hover {
   background: linear-gradient(
     90deg,
     rgba(246, 248, 251, 0.1),
-    rgba(216, 189, 120, 0.18),
+    rgba(198, 217, 27, 0.18),
     rgba(246, 248, 251, 0.1)
   );
 }
@@ -922,8 +922,8 @@ html.is-scrolling .scroll-reveal {
 .client-ticker {
   overflow: hidden;
   width: 100%;
-  border-top: 1px solid rgba(216, 189, 120, 0.12);
-  border-bottom: 1px solid rgba(216, 189, 120, 0.12);
+  border-top: 1px solid rgba(198, 217, 27, 0.12);
+  border-bottom: 1px solid rgba(198, 217, 27, 0.12);
   background: rgba(7, 17, 31, 0.65);
 }
 
@@ -941,8 +941,8 @@ html.is-scrolling .scroll-reveal {
   width: clamp(170px, 16vw, 220px);
   padding: 0 clamp(14px, 2.5vw, 28px);
   height: 100%;
-  border-right: 1px solid rgba(216, 189, 120, 0.22);
-  color: rgba(216, 189, 120, 1);
+  border-right: 1px solid rgba(198, 217, 27, 0.22);
+  color: rgba(198, 217, 27, 1);
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -1022,7 +1022,7 @@ html.is-scrolling .scroll-reveal {
     width: auto;
     padding: 9px 16px 6px;
     border-right: 0;
-    border-bottom: 1px solid rgba(216, 189, 120, 0.15);
+    border-bottom: 1px solid rgba(198, 217, 27, 0.15);
     font-size: 0.7rem;
     text-align: center;
   }

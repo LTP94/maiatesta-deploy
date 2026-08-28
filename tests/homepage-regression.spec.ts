@@ -88,34 +88,30 @@ test('desktop portrait, brands, bot and services remain functional', async ({ pa
     fullPage: false,
   });
 
+  // Single brand identity: clicking the persona portrait rotates/mirrors it
+  // as a small delight interaction, but no longer switches data-palette —
+  // the multi-palette system was retired in the black+lime brand redesign.
   const personaCta = page.locator('.hero-persona-cta');
   await expect(personaCta).toBeVisible();
   await page.locator('.persona-portrait').click();
-  await expect(page.locator('.app-shell')).toHaveAttribute('data-palette', 'current');
-  await expect(background).toHaveAttribute('data-palette', 'current');
+  await expect(page.locator('.app-shell')).toHaveAttribute('data-palette', 'atlantic');
+  await expect(background).toHaveAttribute('data-palette', 'atlantic');
   await expect(personaCta).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('.persona-portrait')).not.toHaveClass(/is-flipping/);
   const activeBackgroundState = await background.evaluate((element) => {
-    const veil = element.querySelector('.site-video-bg__veil');
     const video = element.querySelector('video');
 
     return {
       currentSrc: video instanceof HTMLVideoElement ? video.currentSrc : '',
-      warmTintOpacity:
-        veil instanceof HTMLElement
-          ? Number(getComputedStyle(veil, '::after').opacity)
-          : -1,
     };
   });
   expect(activeBackgroundState.currentSrc).toBe(initialBackgroundState.currentSrc);
-  expect(activeBackgroundState.warmTintOpacity).toBeGreaterThan(
-    initialBackgroundState.warmTintOpacity,
-  );
   await page.screenshot({
     path: path.join(proofDirectory, 'desktop-hero-persona-active.png'),
     fullPage: false,
   });
   await personaCta.click();
+  await expect(personaCta).toHaveAttribute('aria-pressed', 'false');
   await expect(page.locator('.app-shell')).toHaveAttribute('data-palette', 'atlantic');
   await expect(background).toHaveAttribute('data-palette', 'atlantic');
   await expect(page.locator('.persona-portrait')).not.toHaveClass(/is-flipping/);
