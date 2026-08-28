@@ -39,10 +39,10 @@
   min-height: 56px;
   padding: 6px 10px 6px 12px;
   background: rgba(4, 8, 17, 0.92);
-  border-color: rgba(216, 189, 120, 0.34);
+  border-color: rgba(198, 217, 27, 0.34);
   box-shadow:
     0 14px 40px rgba(0, 0, 0, 0.4),
-    0 0 20px rgba(216, 189, 120, 0.1),
+    0 0 20px rgba(198, 217, 27, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
@@ -51,14 +51,14 @@
 }
 
 .brand-mark {
+  /* No more white pill — the logo's own black backdrop matches the header
+     glass now, so it sits directly on it. */
   position: relative;
   display: block;
-  width: min(100%, 215px);
+  width: min(100%, 190px);
   overflow: hidden;
-  padding: 3px 8px;
   border: 0;
-  background: rgba(255, 255, 255, 0.96);
-  border-radius: 999px;
+  background: none;
   isolation: isolate;
   transform-origin: left center;
   transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -67,10 +67,9 @@
 .brand-mark img {
   display: block;
   width: 100%;
-  height: 40px;
+  height: 42px;
   object-fit: contain;
   object-position: left center;
-  filter: contrast(1.08);
 }
 
 .nav-links {
@@ -97,7 +96,7 @@
   height: 2px;
   border-radius: 999px;
   background: linear-gradient(90deg, transparent, var(--app-copper), transparent);
-  box-shadow: 0 0 8px rgba(216, 189, 120, 0.6);
+  box-shadow: 0 0 8px rgba(198, 217, 27, 0.6);
   transform: scaleX(0);
   transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -149,14 +148,14 @@
 
 .language-option.active {
   color: var(--app-ink);
-  background: #f2bb72;
+  background: #c6d91b;
 }
 
 .header-action {
   position: relative;
   overflow: hidden;
   color: var(--app-ink);
-  background: #f2bb72;
+  background: #c6d91b;
   border: 1px solid transparent;
   padding: 12px 18px;
   border-radius: 999px;
@@ -164,9 +163,9 @@
   font-size: 0.88rem;
   letter-spacing: 0.01em;
   box-shadow:
-    0 10px 28px rgba(215, 129, 51, 0.22),
-    0 0 0 1px rgba(216, 189, 120, 0.16) inset,
-    0 0 22px rgba(242, 187, 114, 0.14);
+    0 10px 28px rgba(143, 163, 14, 0.22),
+    0 0 0 1px rgba(198, 217, 27, 0.16) inset,
+    0 0 22px rgba(198, 217, 27, 0.14);
 }
 
 .header-action::after {
@@ -188,9 +187,9 @@
 .header-action:hover {
   color: var(--app-ink);
   box-shadow:
-    0 14px 34px rgba(215, 129, 51, 0.3),
-    0 0 0 1px rgba(216, 189, 120, 0.24) inset,
-    0 0 32px rgba(242, 187, 114, 0.22);
+    0 14px 34px rgba(143, 163, 14, 0.3),
+    0 0 0 1px rgba(198, 217, 27, 0.24) inset,
+    0 0 32px rgba(198, 217, 27, 0.22);
 }
 
 /* ── Hamburger button (visible only on mobile) ─────────────────── */
@@ -204,7 +203,7 @@
   height: 44px;
   padding: 0;
   background: rgba(246, 248, 251, 0.08);
-  border: 1px solid rgba(216, 189, 120, 0.28);
+  border: 1px solid rgba(198, 217, 27, 0.28);
   border-radius: 999px;
   cursor: pointer;
   flex-shrink: 0;
@@ -240,7 +239,7 @@
   gap: 6px;
   margin-top: 8px;
   padding: 12px;
-  border: 1px solid rgba(216, 189, 120, 0.2);
+  border: 1px solid rgba(198, 217, 27, 0.2);
   background:
     radial-gradient(
       circle at 92% 10%,
@@ -287,7 +286,7 @@
   color: var(--app-ink) !important;
   background: linear-gradient(135deg, #f7efd2, var(--app-copper));
   padding: 14px 22px !important;
-  border: 1px solid rgba(216, 189, 120, 0.5);
+  border: 1px solid rgba(198, 217, 27, 0.5);
 }
 
 .mobile-nav-cta:hover {
@@ -339,7 +338,7 @@
     ),
     radial-gradient(
       circle at 58% 72%,
-      rgba(216, 189, 120, 0.1),
+      rgba(198, 217, 27, 0.1),
       transparent 30%
     ),
     linear-gradient(135deg, rgba(7, 17, 31, 0.99), rgba(27, 47, 73, 0.9));
@@ -412,7 +411,7 @@
   display: grid;
   gap: 12px;
   padding: clamp(22px, 4vw, 34px);
-  border: 1px solid rgba(216, 189, 120, 0.34);
+  border: 1px solid rgba(198, 217, 27, 0.34);
   background:
     radial-gradient(
       circle at 88% 12%,
@@ -561,35 +560,12 @@
 }
 
 .button-primary {
-  color: var(--app-paper);
-  background: linear-gradient(135deg, #b96d42, var(--app-copper) 56%, #f7d8bd);
-  box-shadow:
-    0 16px 38px rgba(255, 179, 138, 0.34),
-    0 0 24px rgba(201, 239, 85, 0.12);
-}
-
-.app-shell[data-palette='atlantic'] .button-primary {
   color: #07111f;
-  background: linear-gradient(135deg, #6f8faf, #d8bd78 58%, #f6f8fb);
+  background: linear-gradient(135deg, var(--app-accent-deep), var(--app-accent) 58%, var(--app-accent-soft));
   box-shadow:
-    0 16px 38px rgba(111, 143, 175, 0.3),
-    0 0 0 1px rgba(216, 189, 120, 0.2) inset,
-    0 0 30px rgba(216, 189, 120, 0.22);
-}
-
-.app-shell[data-palette='tropical'] .button-primary,
-.app-shell[data-palette='sunset'] .button-primary,
-.app-shell[data-palette='sand'] .button-primary {
-  color: var(--app-ink);
-  background: linear-gradient(
-    135deg,
-    var(--app-steel),
-    var(--app-copper) 58%,
-    var(--app-paper)
-  );
-  box-shadow:
-    0 16px 38px color-mix(in srgb, var(--app-copper) 34%, transparent),
-    0 0 24px color-mix(in srgb, var(--app-steel) 18%, transparent);
+    0 16px 38px rgba(198, 217, 27, 0.3),
+    0 0 0 1px rgba(198, 217, 27, 0.2) inset,
+    0 0 30px rgba(198, 217, 27, 0.22);
 }
 
 .button-secondary {
@@ -601,8 +577,8 @@
 }
 
 .button-secondary:hover {
-  border-color: rgba(242, 187, 114, 0.44);
-  background: rgba(242, 187, 114, 0.08);
+  border-color: rgba(198, 217, 27, 0.44);
+  background: rgba(198, 217, 27, 0.08);
 }
 
 .button:disabled {

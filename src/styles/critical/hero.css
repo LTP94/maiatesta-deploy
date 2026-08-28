@@ -17,7 +17,7 @@
   background:
     radial-gradient(circle at 78% 24%, rgba(111, 143, 175, 0.22), transparent 22%),
     radial-gradient(circle at 18% 18%, rgba(246, 248, 251, 0.1), transparent 28%),
-    radial-gradient(circle at 58% 72%, rgba(216, 189, 120, 0.1), transparent 30%),
+    radial-gradient(circle at 58% 72%, rgba(198, 217, 27, 0.1), transparent 30%),
     linear-gradient(135deg, rgba(7, 17, 31, 0.99), rgba(27, 47, 73, 0.9));
 }
 
@@ -74,7 +74,7 @@
   pointer-events: none;
   background:
     radial-gradient(circle at 78% 28%, rgba(111, 143, 175, 0.22), transparent 26%),
-    radial-gradient(circle at 52% 72%, rgba(216, 189, 120, 0.12), transparent 34%),
+    radial-gradient(circle at 52% 72%, rgba(198, 217, 27, 0.12), transparent 34%),
     linear-gradient(90deg, rgba(7, 17, 31, 0.97), rgba(14, 27, 45, 0.82) 54%, rgba(27, 47, 73, 0.58));
 }
 
@@ -91,7 +91,7 @@
   align-items: center;
   gap: clamp(14px, 2.4vw, 30px);
   padding: 10px 16px 10px 18px;
-  border: 1px solid rgba(216, 189, 120, 0.3);
+  border: 1px solid rgba(198, 217, 27, 0.3);
   background:
     linear-gradient(135deg, rgba(7, 17, 31, 0.96), rgba(14, 27, 45, 0.92)),
     rgba(7, 17, 31, 0.88);
@@ -104,26 +104,22 @@
 }
 
 .brand-mark {
+  /* No pill — matches the deferred.css rule, defined here too to avoid a
+     flash of the old white-pill treatment before deferred.css loads. */
   position: relative;
   display: block;
-  width: min(100%, 290px);
+  width: min(100%, 190px);
   overflow: hidden;
-  padding: 4px 8px;
-  border: 1px solid rgba(246, 248, 251, 0.72);
-  background: rgba(246, 248, 251, 0.96);
-  border-radius: 14px;
-  box-shadow:
-    0 10px 26px rgba(3, 8, 16, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  border: 0;
+  background: none;
 }
 
 .brand-mark img {
   display: block;
   width: 100%;
-  height: clamp(48px, 4.4vw, 58px);
+  height: clamp(38px, 4.4vw, 42px);
   object-fit: contain;
   object-position: left center;
-  filter: brightness(1.08) contrast(1.08) drop-shadow(0 0 16px rgba(246, 248, 251, 0.12));
 }
 
 .nav-links {
@@ -150,7 +146,7 @@
 .language-switcher {
   display: inline-flex;
   padding: 3px;
-  border: 1px solid rgba(216, 189, 120, 0.22);
+  border: 1px solid rgba(198, 217, 27, 0.22);
   background: rgba(246, 248, 251, 0.06);
   border-radius: 999px;
 }
@@ -176,12 +172,12 @@
 .mobile-nav-cta {
   color: var(--app-ink);
   background: linear-gradient(135deg, #f7efd2, var(--app-copper));
-  border: 1px solid rgba(216, 189, 120, 0.5);
+  border: 1px solid rgba(198, 217, 27, 0.5);
   padding: 12px 18px;
   border-radius: 999px;
   font-weight: 800;
   font-size: 0.88rem;
-  box-shadow: 0 10px 26px rgba(216, 189, 120, 0.16);
+  box-shadow: 0 10px 26px rgba(198, 217, 27, 0.16);
 }
 
 .hamburger-btn,
@@ -203,7 +199,7 @@
   gap: 6px;
   margin-top: 8px;
   padding: 12px;
-  border: 1px solid rgba(216, 189, 120, 0.2);
+  border: 1px solid rgba(198, 217, 27, 0.2);
   background:
     radial-gradient(circle at 92% 10%, rgba(111, 143, 175, 0.18), transparent 34%),
     rgba(7, 17, 31, 0.74);
@@ -291,7 +287,7 @@
   display: grid;
   gap: 12px;
   padding: clamp(22px, 4vw, 34px);
-  border: 1px solid rgba(216, 189, 120, 0.34);
+  border: 1px solid rgba(198, 217, 27, 0.34);
   background: rgba(14, 27, 45, 0.78);
   border-radius: 8px;
 }
@@ -360,7 +356,7 @@
 
 .button-primary {
   color: #07111f;
-  background: linear-gradient(135deg, #6f8faf, #d8bd78 58%, #f6f8fb);
+  background: linear-gradient(135deg, #8fa30e, #c6d91b 58%, #dcec6b);
 }
 
 .button-secondary {

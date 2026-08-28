@@ -1,0 +1,18 @@
+<!--
+  PLACEHOLDER — interim reconstruction, not the real source file.
+  Icon-only mark (no wordmark), used for the favicon and any compact
+  contexts. Same caveat as maiatesta-logo.svg — replace in place when the
+  real asset is available.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Maiatesta">
+  <defs>
+    <clipPath id="maiaMarkOnlyClip">
+      <rect x="0" y="0" width="100" height="100" rx="26" />
+    </clipPath>
+  </defs>
+  <rect x="0" y="0" width="100" height="100" rx="26" fill="#c6d91b" />
+  <g clip-path="url(#maiaMarkOnlyClip)">
+    <path d="M64 0 L100 0 L100 22 L48 68 L26 68 L26 44 Z" fill="#0a0900" />
+    <rect x="24" y="56" width="24" height="34" rx="9" fill="#0a0900" />
+  </g>
+</svg>
