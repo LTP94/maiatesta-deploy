@@ -72,6 +72,11 @@ export function WhatsappConnectPage({
           <p className='hero-body'>
             La conexión con Meta será habilitada una vez terminada la configuración técnica.
           </p>
+          <p className='hero-body'>
+            Antes de habilitar la conexión puedes consultar nuestra{' '}
+            <a href='/politica-de-privacidad/'>Política de Privacidad</a> y nuestros{' '}
+            <a href='/terminos/'>Términos de Servicio</a>.
+          </p>
         </section>
       </main>
 

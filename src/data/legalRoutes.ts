@@ -1,5 +1,7 @@
 export const legalRouteSlugs = [
   'politica-de-privacidad',
+  'terminos',
+  'eliminacion-de-datos',
 ] as const;
 
 export type LegalRouteSlug = (typeof legalRouteSlugs)[number];

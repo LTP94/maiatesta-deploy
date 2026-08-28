@@ -364,6 +364,7 @@ export const politicaDePrivacidad = {
         { type: 'paragraph' as const, text: 'Para ejercer estos derechos, el titular podrá contactar a MaiAtesta a través de:' },
         { type: 'paragraph' as const, text: 'Correo de contacto para privacidad: emilio@maiatesta.com / luis@maiatesta.com' },
         { type: 'paragraph' as const, text: 'WhatsApp o teléfono: +593 96309-2859' },
+        { type: 'paragraph' as const, text: 'Para solicitudes específicas de eliminación de datos, consulta también nuestras instrucciones en /eliminacion-de-datos/.' },
         { type: 'paragraph' as const, text: 'MaiAtesta podrá solicitar información razonable para verificar la identidad del solicitante y gestionar la solicitud conforme a la normativa aplicable.' },
       ],
     },
