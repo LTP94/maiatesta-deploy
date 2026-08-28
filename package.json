@@ -13,6 +13,7 @@
     "check:scroll-performance": "node scripts/check-scroll-performance.mjs",
     "check:visual": "playwright test tests/homepage-regression.spec.ts tests/homepage-background-video.spec.ts tests/header-buttons.spec.ts tests/whatsapp-connect.spec.ts tests/legal-pages.spec.ts --workers=1",
     "check:seo": "node scripts/check-seo-pages.mjs",
+    "check:meta-health": "node scripts/check-meta-health.mjs",
     "create:article": "node scripts/create-seo-article.mjs",
     "perf:test": "npm run build && npm run check:bundle && npm run check:cls && npm run check:scroll-load && npm run check:scroll-performance",
     "seo:test": "npm run build && npm run check:seo",

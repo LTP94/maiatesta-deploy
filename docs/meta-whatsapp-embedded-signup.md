@@ -88,11 +88,15 @@ Webhook Maiatesta  →  Evolution  →  Chatwoot  →  Typebot  →  n8n  →  I
 
 **Importante — Coexistence y `/register`:** el endpoint `/{PHONE_NUMBER_ID}/register` de Graph API **no debe llamarse automáticamente**. El número del cliente usa actualmente WhatsApp Business App; cualquier llamada que registre el número para Cloud API podría romper esa app. Debe existir un GO/NO-GO manual antes de esa llamada específica.
 
-### Vercel Functions — compatibilidad (auditoría, no implementación)
+### Vercel Functions — compatibilidad (auditoría + smoke test real)
 
 El sitio usa Vite (no Next.js) con salida estática en `dist/`. Vercel soporta un directorio `/api` en la raíz del repositorio como Serverless Functions de forma **independiente del framework de frontend** (convención de plataforma, no de Next.js) — esto no requiere cambiar el `buildCommand` ni el `outputDirectory` actuales, y `vercel.json` de este repo no define `functions`/`builds` que lo restrinjan.
 
-**Veredicto: READY (no verificado empíricamente)** — este entorno no tiene Vercel CLI ni acceso al dashboard del proyecto, así que esto se basa en el comportamiento estándar documentado de Vercel, no en una prueba real. Antes de construir los endpoints reales de la Fase 2, se recomienda un smoke test con una función trivial (`api/ping.ts` devolviendo `200`) para confirmar que se despliega junto al resto del sitio sin romper el build estático.
+**Veredicto: pendiente de confirmación en producción tras este deploy.** Se implementó `api/meta/health.ts` (Web Handler estándar — `export function GET()` devolviendo `Response.json(...)`, sin `@vercel/node` ni dependencias nuevas) como smoke test. Esta sección se actualizará con el resultado empírico real (VERIFIED/NOT VERIFIED) inmediatamente después del deployment y la verificación por `curl`.
+
+Health endpoint: `https://www.maiatesta.com/api/meta/health`
+
+**Todavía NO existe ninguna lógica de Meta** en este endpoint ni en el repositorio: sin `FB.init`, sin `FB.login`, sin App ID, sin Configuration ID, sin OAuth, sin intercambio de tokens, sin webhook, sin llamadas a Meta Graph API. Es únicamente la prueba de que el runtime server-side funciona en este dominio, previo a implementar cualquier endpoint real de la Fase 2. Verificación reproducible: `npm run check:meta-health -- https://www.maiatesta.com`.
 
 ## Variables de entorno futuras (solo nombres — nunca valores)
 
