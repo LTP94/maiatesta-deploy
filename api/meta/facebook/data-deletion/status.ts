@@ -1,5 +1,5 @@
-import { verifyStatusToken } from '../../../../server/meta/facebook/data-deletion-status-token';
-import { getDataDeletionStatusKey, MetaConfigError } from '../../../../server/meta/config';
+import { verifyStatusToken } from '../../../../server/meta/facebook/data-deletion-status-token.js';
+import { getDataDeletionStatusKey, MetaConfigError } from '../../../../server/meta/config.js';
 
 const SECURITY_HEADERS: Record<string, string> = {
   'Cache-Control': 'no-store',

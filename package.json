@@ -15,6 +15,7 @@
     "check:seo": "node scripts/check-seo-pages.mjs",
     "check:meta-health": "node scripts/check-meta-health.mjs",
     "check:meta-facebook-callbacks": "node scripts/check-meta-facebook-callbacks.mjs",
+    "check:server-imports": "node scripts/check-server-imports.mjs",
     "test:meta-signed-request": "rm -rf .tmp-test-build && tsc server/meta/facebook/signed-request.ts server/meta/facebook/data-deletion-status-token.ts server/meta/config.ts --outDir .tmp-test-build --module esnext --target es2022 --moduleResolution bundler && node scripts/test-meta-signed-request.mjs; status=$?; rm -rf .tmp-test-build; exit $status",
     "create:article": "node scripts/create-seo-article.mjs",
     "perf:test": "npm run build && npm run check:bundle && npm run check:cls && npm run check:scroll-load && npm run check:scroll-performance",

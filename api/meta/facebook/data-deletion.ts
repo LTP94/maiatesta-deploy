@@ -5,15 +5,15 @@ import {
   SignedRequestError,
   errorResponseForSignedRequestError,
   genericServerErrorResponse,
-} from '../../../server/meta/facebook/signed-request';
-import { issueStatusToken } from '../../../server/meta/facebook/data-deletion-status-token';
+} from '../../../server/meta/facebook/signed-request.js';
+import { issueStatusToken } from '../../../server/meta/facebook/data-deletion-status-token.js';
 import {
   getMetaAppSecret,
   getDataDeletionStatusKey,
   getMetaPublicBaseUrl,
   MetaConfigError,
-} from '../../../server/meta/config';
-import { processDataDeletion } from '../../../server/meta/facebook/data-deletion-service';
+} from '../../../server/meta/config.js';
+import { processDataDeletion } from '../../../server/meta/facebook/data-deletion-service.js';
 
 // Only POST is exported — Vercel auto-405s everything else.
 export async function POST(request: Request) {
