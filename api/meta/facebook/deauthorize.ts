@@ -4,9 +4,9 @@ import {
   SignedRequestError,
   errorResponseForSignedRequestError,
   genericServerErrorResponse,
-} from '../../../server/meta/facebook/signed-request';
-import { getMetaAppSecret, MetaConfigError } from '../../../server/meta/config';
-import { processDeauthorization } from '../../../server/meta/facebook/deauthorization-service';
+} from '../../../server/meta/facebook/signed-request.js';
+import { getMetaAppSecret, MetaConfigError } from '../../../server/meta/config.js';
+import { processDeauthorization } from '../../../server/meta/facebook/deauthorization-service.js';
 
 // Only POST is exported — Vercel's Web Handler runtime auto-returns 405 for
 // any other method, already proven empirically by /api/meta/health.
