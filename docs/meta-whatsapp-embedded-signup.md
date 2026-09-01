@@ -84,9 +84,48 @@ Webhook Maiatesta  →  Evolution  →  Chatwoot  →  Typebot  →  n8n  →  I
 | `/api/meta/whatsapp/onboarding/session` | `POST` | Recibe el Session Info (`business_id`, `waba_id`, `phone_number_id`) que llega vía `window.postMessage`, separado del `authorization code` de `FB.login`. |
 | `/api/meta/whatsapp/onboarding/complete` | `POST` | Server-side: intercambia el `authorization code` por un token en Graph API, valida WABA/teléfono/permisos, almacena secretos cifrados. |
 | `/api/meta/whatsapp/webhook` | `GET`/`POST` | `GET` para la verificación de Meta; `POST` para eventos de WhatsApp. Debe existir un router propio de Maiatesta antes de reenviar a Evolution — **no apuntar Evolution directamente como receptor del webhook en el primer piloto**. |
-| `/api/meta/data-deletion` | `POST` | Solo si App Review exige un callback automático de eliminación; el enfoque inicial es la página pública de instrucciones. |
 
 **Importante — Coexistence y `/register`:** el endpoint `/{PHONE_NUMBER_ID}/register` de Graph API **no debe llamarse automáticamente**. El número del cliente usa actualmente WhatsApp Business App; cualquier llamada que registre el número para Cloud API podría romper esa app. Debe existir un GO/NO-GO manual antes de esa llamada específica.
+
+### Meta/Facebook lifecycle callbacks — IMPLEMENTADO
+
+A diferencia de los endpoints de la tabla anterior (que siguen siendo solo nombres reservados), estos dos **sí están implementados y desplegados**:
+
+| Endpoint | Método | Estado |
+| --- | --- | --- |
+| `https://www.maiatesta.com/api/meta/facebook/deauthorize` | `POST` | Implementado. Verifica el `signed_request` de Meta (HMAC-SHA256, comparación en tiempo constante) antes de procesar nada. |
+| `https://www.maiatesta.com/api/meta/facebook/data-deletion` | `POST` | Implementado. Misma verificación. Devuelve `url` + `confirmation_code` deterministas. |
+| `https://www.maiatesta.com/api/meta/facebook/data-deletion/status` | `GET` | Implementado. Página HTML mínima, sin JS ni login, que muestra el estado de una solicitud a partir de un token firmado y opaco. |
+
+**Distinción obligatoria — no son la misma URL:**
+- `https://www.maiatesta.com/eliminacion-de-datos/` es la página pública de instrucciones para personas (existe desde una fase anterior, sin cambios).
+- `https://www.maiatesta.com/api/meta/facebook/data-deletion` es el callback máquina-a-máquina que Meta invoca automáticamente. Ninguna reemplaza a la otra; ambas se mantienen.
+
+Actualmente Maiatesta no almacena tokens, perfiles de Meta, conexiones WABA, Phone Number IDs ni sesiones OAuth — por eso ambos callbacks responden con un resultado honesto de "nada que revocar/eliminar" (`NO_STORED_AUTHORIZATION_DATA`, `records_deleted: 0`) en lugar de simular una acción sobre datos que no existen.
+
+#### P0 — antes de persistir cualquier dato de Meta
+
+```text
+BEFORE PERSISTING ANY META AUTHORIZATION DATA:
+
+1. Connect the deauthorize callback to the real authorization storage.
+2. Connect the data-deletion callback to the real Meta-user data storage.
+3. Implement tenant-safe mapping:
+   Meta authorizer -> authorization -> tenant -> WABA -> phone numbers
+4. Test multi-tenant isolation end-to-end.
+5. NEVER implement deleteTenant(metaUserId) as a reaction to Deauthorize
+   or Data Deletion — an app-scoped Meta user is not the same thing as a
+   tenant, a WABA, a phone number, or a business.
+```
+
+Este P0 debe revisarse cuando se construya el almacenamiento real de Embedded Signup — antes de que el primer onboarding de cliente persista un usuario de Meta, un token, o una conexión WABA/número.
+
+#### Dos estados de release (no uno solo)
+
+1. **`READY FOR META CALLBACK REGISTRATION`** — los endpoints existen en producción, rechazan correctamente cualquier request inválida o mal firmada, y una prueba positiva con el secreto real (ejecutada por el propietario, nunca compartida con el agente) confirma que una firma válida es aceptada. En este punto es seguro registrar las URLs en Meta.
+2. **`META CALLBACKS LIVE VERIFIED`** — ocurre después, y es responsabilidad exclusiva del propietario: registrar las URLs en el Meta App Dashboard, y luego disparar eventos reales de lifecycle (deauthorize/data-deletion) mediante una cuenta de prueba de Meta, confirmando que las solicitudes reales de Meta llegan y se procesan correctamente en producción.
+
+No se puede exigir una solicitud real de Meta como condición para la primera fase — Meta no puede llamar a una URL que todavía no conoce.
 
 ### Vercel Functions — compatibilidad (auditoría + smoke test real)
 
@@ -104,7 +143,9 @@ Health endpoint: `https://www.maiatesta.com/api/meta/health`
 | --- | --- | --- |
 | `META_APP_ID` | Frontend permitido | Público por diseño (Meta lo expone en `FB.init`). |
 | `META_EMBEDDED_SIGNUP_CONFIG_ID` | Frontend permitido | Público por diseño. |
-| `META_APP_SECRET` | **Backend-only** | Nunca debe llegar al bundle del frontend. |
+| `META_APP_SECRET` | **Backend-only** | Nunca debe llegar al bundle del frontend. Ahora consumido realmente por los callbacks de deauthorize/data-deletion. En Preview: valor de prueba desechable. En Production: el secreto real de Meta, nunca compartido con el agente. |
+| `META_DATA_DELETION_STATUS_SECRET` | **Backend-only** | Nuevo. Independiente de `META_APP_SECRET` (nunca derivado de él, para poder rotarlos por separado). Debe ser exactamente 64 caracteres hexadecimales (32 bytes / 256 bits), p. ej. `openssl rand -hex 32`. |
+| `META_PUBLIC_BASE_URL` | Backend-only, no es secreto | Origen exacto usado para construir la URL de estado devuelta a Meta — nunca se deriva del `Host` de la request entrante. Preview: el origen `https://<preview>.vercel.app` real de ese deployment. Production: `https://www.maiatesta.com`. |
 | `META_WHATSAPP_WEBHOOK_VERIFY_TOKEN` | **Backend-only** | Secreto generado por Maiatesta, no una URL — nunca en git, frontend, logs o documentación con valor real. |
 | `GRAPH_VERSION` | Backend-only | Configurable, no debe quedar hardcodeada en componentes frontend. |
 
@@ -133,6 +174,8 @@ Aplicar principio de mínimo privilegio: **no usar** `*.facebook.com`, `*`, ni `
 | Terms of Service URL | pendiente de creación — `https://www.maiatesta.com/terminos/` |
 | User Data Deletion Instructions URL | pendiente de creación — `https://www.maiatesta.com/eliminacion-de-datos/` |
 | WhatsApp Webhook Callback URL | fase posterior — `https://www.maiatesta.com/api/meta/whatsapp/webhook` |
+| Deauthorize Callback URL | implementado, **aún no registrado en Meta** — `https://www.maiatesta.com/api/meta/facebook/deauthorize` |
+| Data Deletion Request URL | implementado, **aún no registrado en Meta** — `https://www.maiatesta.com/api/meta/facebook/data-deletion` |
 
 ## No usar en producción
 
