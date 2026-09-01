@@ -14,3 +14,4 @@ assets-source/images-raw/
 .ssg-server/
 test-results/
 .visual-checks/
+.tmp-test-build/

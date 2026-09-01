@@ -1,8 +1,5 @@
-// @ts-expect-error Node types are intentionally not installed for this small Vite config.
 import fs from "node:fs";
-// @ts-expect-error Node types are intentionally not installed for this small Vite config.
 import path from "node:path";
-// @ts-expect-error Node types are intentionally not installed for this small Vite config.
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import type { Plugin } from "vite";
