@@ -30,8 +30,11 @@ export function GET() {
     });
   } catch (error) {
     if (error instanceof MetaWhatsappConfigError) {
+      // error.message names only which of the three public, non-secret env
+      // vars is missing/malformed (never a raw value) — safe to surface,
+      // and the only way to diagnose this without server log access.
       return Response.json(
-        { error: 'CONFIGURATION_ERROR' },
+        { error: 'CONFIGURATION_ERROR', detail: error.message },
         { status: 500, headers: { 'Cache-Control': 'no-store' } },
       );
     }
