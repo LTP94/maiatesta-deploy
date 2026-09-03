@@ -1,6 +1,5 @@
 import { StrictMode } from 'react';
 import { renderToPipeableStream } from 'react-dom/server';
-// @ts-expect-error Node types are intentionally not installed for this tiny SSG entry.
 import { PassThrough } from 'node:stream';
 import App from './App';
 import { articlePages, getArticlePageByPath } from './data/articlePages';
