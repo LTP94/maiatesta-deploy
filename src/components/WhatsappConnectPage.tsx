@@ -1,24 +1,36 @@
-import { useState } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { siteContent } from '../data/siteContent';
 import type { LanguageCode } from '../data/siteContent';
+import { useWhatsappEmbeddedSignup } from '../hooks/useWhatsappEmbeddedSignup';
+import type { SignupState } from '../utils/metaEmbeddedSignup';
 
 type WhatsappConnectPageProps = {
   language: LanguageCode;
   onLanguageChange: (language: LanguageCode) => void;
 };
 
-type ConnectStatus = 'idle' | 'connecting' | 'success' | 'cancelled' | 'error';
+const buttonLabel: Record<SignupState, string> = {
+  SDK_LOADING: 'Cargando Meta...',
+  SDK_READY: 'Conectar con Meta',
+  WAITING_FOR_META: 'Esperando confirmación de Meta...',
+  READY_FOR_BACKEND: 'Meta autorizó la conexión',
+  WRONG_FLOW_VARIANT: 'Conectar con Meta',
+  CANCELLED: 'Conectar con Meta',
+  SDK_FAILED: 'Servicio de Meta no disponible',
+  TIMED_OUT: 'Conectar con Meta',
+  FAILED: 'Conectar con Meta',
+};
 
-// Only 'idle' is reachable in this phase. The other states are wired up so a
-// future FB.login() integration can drive this same button without a redesign.
-const connectStatusLabel: Record<ConnectStatus, string> = {
-  idle: 'Conectar con Meta',
-  connecting: 'Abriendo Meta...',
-  success: 'WhatsApp autorizado correctamente',
-  cancelled: 'La configuración fue cancelada',
-  error: 'No fue posible completar la configuración',
+const statusMessage: Partial<Record<SignupState, string>> = {
+  WAITING_FOR_META: 'Completa el proceso en la ventana de Meta. Esta página se actualizará automáticamente.',
+  READY_FOR_BACKEND:
+    'Meta completó correctamente el proceso de autorización. La conexión con el servidor de Maiatesta se habilitará en la siguiente fase.',
+  WRONG_FLOW_VARIANT: 'Meta no ofreció la opción esperada para tu cuenta. Puedes intentarlo nuevamente.',
+  CANCELLED: 'La configuración fue cancelada. Puedes intentarlo nuevamente.',
+  SDK_FAILED: 'No fue posible cargar los servicios de Meta. Recarga la página e inténtalo de nuevo.',
+  TIMED_OUT: 'No recibimos confirmación de Meta a tiempo. Puedes intentarlo nuevamente.',
+  FAILED: 'No fue posible completar la configuración. Puedes intentarlo nuevamente.',
 };
 
 export function WhatsappConnectPage({
@@ -26,7 +38,8 @@ export function WhatsappConnectPage({
   onLanguageChange,
 }: WhatsappConnectPageProps) {
   const content = siteContent.locales.es;
-  const [status] = useState<ConnectStatus>('idle');
+  const { state, canConnect, connect } = useWhatsappEmbeddedSignup();
+  const message = statusMessage[state];
 
   return (
     <div className='app-shell service-page-shell' data-palette='atlantic'>
@@ -62,18 +75,24 @@ export function WhatsappConnectPage({
           </aside>
 
           <div className='hero-actions'>
-            {/* NOTE for the next phase: replace `disabled` with an onClick that
-                calls FB.login(...) and drives `status` through connecting/success/
-                cancelled/error. No Meta SDK, App ID, or network calls belong here yet. */}
-            <button type='button' className='button button-primary' disabled aria-disabled='true'>
-              {connectStatusLabel[status]}
+            <button
+              type='button'
+              className='button button-primary'
+              data-testid='whatsapp-connect-button'
+              disabled={!canConnect}
+              aria-disabled={!canConnect}
+              onClick={connect}
+            >
+              {buttonLabel[state]}
             </button>
           </div>
+          {message ? (
+            <p className='form-status' role='status' aria-live='polite'>
+              {message}
+            </p>
+          ) : null}
           <p className='hero-body'>
-            La conexión con Meta será habilitada una vez terminada la configuración técnica.
-          </p>
-          <p className='hero-body'>
-            Antes de habilitar la conexión puedes consultar nuestra{' '}
+            Antes de conectar puedes consultar nuestra{' '}
             <a href='/politica-de-privacidad/'>Política de Privacidad</a> y nuestros{' '}
             <a href='/terminos/'>Términos de Servicio</a>.
           </p>

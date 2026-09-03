@@ -2,9 +2,48 @@
 
 ## Estado actual
 
-**FASE 1 — ENTRY PAGE ONLY.**
+**FASE B — Facebook JavaScript SDK + Coexistence en el frontend, sin backend.**
 
-Meta Embedded Signup todavía **NO** está conectado. No existe Facebook JavaScript SDK, `FB.init`, `FB.login`, App ID, Configuration ID, OAuth, intercambio de tokens, webhook, ni ninguna llamada a Meta Graph API en este repositorio. Esta fase preparó únicamente las rutas web públicas y la documentación de la arquitectura futura.
+El Facebook JavaScript SDK, `FB.init`, `FB.login` (contrato de Coexistence) y el listener de `window.postMessage` **sí están implementados** en `/whatsapp/connect/`. Sigue sin existir intercambio de código por token, sin llamadas a Meta Graph API desde el servidor, sin persistencia de ningún dato de Meta, y sin webhook. El único endpoint backend nuevo de esta fase (`GET /api/meta/whatsapp/config`) sirve exclusivamente los tres valores públicos (`appId`, `configurationId`, `graphApiVersion`) que el SDK necesita — no contiene secretos ni lógica de negocio.
+
+**Punto de parada obligatorio de esta fase:** el código de autorización (`authorization code`) que devuelve `FB.login` se observa en memoria únicamente para confirmar que llegó (booleano `codeReceived`), nunca se registra en logs, nunca se persiste, nunca se envía a ningún backend. No existe todavía `POST /api/meta/whatsapp/onboarding/complete` ni ningún otro endpoint que lo reciba — eso es Fase D, explícitamente diferida hasta que (a) la prueba manual del popup real de Meta (Fase C, ver más abajo) confirme que Coexistence aparece como opción, y (b) se apruebe por separado una arquitectura de persistencia (hoy no existe base de datos, ORM ni librería de autenticación en este repositorio).
+
+### Investigación de versión (v2 vs v4)
+
+La documentación de Meta indica que **Embedded Signup v2 se retira el 15 de octubre de 2026**; **v4 es la versión vigente desde octubre de 2025**. Este repositorio usa el contrato v4. Fuente consultada directamente en la documentación oficial de Meta for Developers (WhatsApp Embedded Signup / Coexistence), acceso 2026-09-02.
+
+No se pudo confirmar con certeza absoluta, a partir de la página genérica de v4 consultada, si `featureType`/`sessionInfoVersion` dentro de `extras` siguen siendo necesarios en v4 para el flujo específico de Coexistence (la página genérica de v4 solo muestra `extras: { setup: {} }`, sin `featureType`; la documentación específica de Coexistence no confirma inequívocamente que se haya eliminado). Por eso se mantienen ambos campos de forma **defensiva** — un parámetro extra e innecesario es de menor riesgo que omitir uno que Meta todavía requiera. La prueba manual de Fase C es la que confirma empíricamente si son necesarios.
+
+```js
+FB.login(fbLoginCallback, {
+  config_id: '<META_EMBEDDED_SIGNUP_CONFIG_ID>',
+  response_type: 'code',
+  override_default_response_type: true,
+  extras: {
+    setup: {},
+    featureType: 'whatsapp_business_app_onboarding',
+    sessionInfoVersion: '3',
+  },
+});
+```
+
+`FB.init({ appId, autoLogAppEvents: true, xfbml: true, version })` y la forma del evento `postMessage` de finalización de sesión (`type: 'WA_EMBEDDED_SIGNUP'`, `event: 'FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING'`, `version: 3`, `data.waba_id`) sí están confirmados sin ambigüedad por la documentación oficial.
+
+### Modelo de estado del frontend (canales en carrera, no lineal)
+
+El callback de `FB.login` (entrega el código de autorización) y el evento `postMessage` de Coexistence (confirma la sesión) son dos canales asíncronos independientes que pueden llegar **en cualquier orden**. `src/utils/metaEmbeddedSignup.ts` implementa un acumulador (`SignupAttempt`, con banderas `sessionFinished`/`codeReceived`/etc.) en lugar de una máquina de estados lineal, para que ambos órdenes de llegada converjan correctamente en `READY_FOR_BACKEND`. `READY_FOR_BACKEND` significa **"Meta confirmó Coexistence y entregó un código de autorización"** — no significa que WhatsApp esté conectado; la UI nunca dice "WhatsApp conectado" en esta fase, únicamente que la autorización con Meta se completó correctamente.
+
+El listener de `message` valida `event.origin` contra una lista exacta (`https://www.facebook.com`, `https://web.facebook.com`, sin sufijos ni comodines) antes de procesar cualquier payload.
+
+### Fase C — verificación manual (no automatizable, pendiente)
+
+Antes de tocar cualquier código de backend nuevo, el propietario debe abrir `https://www.maiatesta.com/whatsapp/connect/` en producción, hacer clic en "Conectar con Meta" y confirmar en el popup real de Meta que:
+- Se ofrece explícitamente conectar la cuenta de **WhatsApp Business App existente** (Coexistence), no una migración ni un número nuevo.
+- No se solicita migración del número.
+- El evento de finalización observado es el de Coexistence (`FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING`).
+- El código de autorización se observa, pero DevTools confirma cero requests a cualquier endpoint de `/onboarding/` y el código nunca aparece en el HTML/consola visible.
+
+Verdict de esta fase tras el deploy: `READY FOR META EMBEDDED SIGNUP MANUAL TEST`. Tras una Fase C exitosa: `PHASE C COEXISTENCE POPUP VERIFIED` — que **tampoco** autoriza Fase D por sí sola; la arquitectura de persistencia se decide y aprueba por separado.
 
 ## Objetivo
 
@@ -14,10 +53,11 @@ Preparar, dentro de la arquitectura existente (Vite 5 + React 18 SSR/SSG, sin fr
 
 | Ruta | Propósito | Estado |
 | --- | --- | --- |
-| `https://www.maiatesta.com/whatsapp/connect/` | Página pública que iniciará Embedded Signup. Botón "Conectar con Meta" **deshabilitado**. | Implementada, sin Meta SDK |
+| `https://www.maiatesta.com/whatsapp/connect/` | Página pública que inicia Embedded Signup. Botón "Conectar con Meta" habilitado una vez que el SDK carga; abre `FB.login` con el contrato de Coexistence. | Implementada, con Meta SDK (Fase B) |
 | `https://www.maiatesta.com/whatsapp/connect/callback/` | URI técnica de retorno reservada para "Valid OAuth Redirect URIs" de Facebook Login for Business. No lee query params, no procesa códigos, no llama a Meta ni a Evolution. | Implementada, contenido estático |
+| `https://www.maiatesta.com/api/meta/whatsapp/config` | `GET` — sirve `{ appId, configurationId, graphApiVersion, requestedFlow }`. Sin secretos, `Cache-Control: no-store`. | Implementada |
 
-Ambas rutas:
+Las dos rutas de página (no el endpoint de config):
 - Devuelven HTTP 200 vía el mismo pipeline de prerender (`scripts/prerender.mjs`) que el resto del sitio — no requieren cambios de Vercel ni de DNS.
 - Tienen `<meta name="robots" content="noindex, nofollow">` (ver mecanismo abajo).
 - Están **excluidas** de `dist/sitemap.xml`.
@@ -53,20 +93,23 @@ La URL exacta que responda `200` (o a la que redirijan las demás) es la que se 
 
 Por instrucción explícita de esta tarea, **no se creó contenido legal nuevo** (Terms, Data Deletion) — crear esas páginas requiere texto legal autorizado, fuera del alcance de esta fase. La Privacy Policy existente ya cubre WhatsApp Business y tratamiento de datos de forma genérica; se reutilizará su URL actual en la configuración de Meta, sin duplicados.
 
-## Arquitectura futura (NO implementada)
+## Arquitectura
 
 ```text
 Usuario administrador del cliente
         ↓
-/whatsapp/connect/
+/whatsapp/connect/                                    ← implementado (Fase B)
         ↓
-Facebook JavaScript SDK (connect.facebook.net/en_US/sdk.js)
+Facebook JavaScript SDK (connect.facebook.net/en_US/sdk.js)   ← implementado
         ↓
 FB.login()  →  Meta Embedded Signup (featureType: whatsapp_business_app_onboarding)
         ↓
-response_type: "code", override_default_response_type: true
+response_type: "code", override_default_response_type: true   ← implementado
         ↓
-/whatsapp/connect/callback/  (Valid OAuth Redirect URI)
+Código de autorización observado en memoria del navegador,
+nunca registrado/persistido/enviado                    ← implementado, y es el
+                                                           punto de parada de esta fase
+        ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄  (todo lo siguiente es Fase D+, NO implementado)
         ↓
 Backend Maiatesta (server-side, nunca frontend)
         ↓
@@ -137,31 +180,32 @@ Health endpoint: `https://www.maiatesta.com/api/meta/health`
 
 **Todavía NO existe ninguna lógica de Meta** en este endpoint ni en el repositorio: sin `FB.init`, sin `FB.login`, sin App ID, sin Configuration ID, sin OAuth, sin intercambio de tokens, sin webhook, sin llamadas a Meta Graph API. Es únicamente la prueba de que el runtime server-side funciona en este dominio, previo a implementar cualquier endpoint real de la Fase 2. Verificación reproducible: `npm run check:meta-health -- https://www.maiatesta.com`.
 
-## Variables de entorno futuras (solo nombres — nunca valores)
+## Variables de entorno (solo nombres — nunca valores)
 
 | Variable | Alcance | Nota |
 | --- | --- | --- |
-| `META_APP_ID` | Frontend permitido | Público por diseño (Meta lo expone en `FB.init`). |
-| `META_EMBEDDED_SIGNUP_CONFIG_ID` | Frontend permitido | Público por diseño. |
-| `META_APP_SECRET` | **Backend-only** | Nunca debe llegar al bundle del frontend. Ahora consumido realmente por los callbacks de deauthorize/data-deletion. En Preview: valor de prueba desechable. En Production: el secreto real de Meta, nunca compartido con el agente. |
-| `META_DATA_DELETION_STATUS_SECRET` | **Backend-only** | Nuevo. Independiente de `META_APP_SECRET` (nunca derivado de él, para poder rotarlos por separado). Debe ser exactamente 64 caracteres hexadecimales (32 bytes / 256 bits), p. ej. `openssl rand -hex 32`. |
+| `META_APP_ID` | Frontend permitido | **Implementada.** Público por diseño (Meta lo expone en `FB.init`). Servida vía `GET /api/meta/whatsapp/config`, leída por `server/meta/whatsapp/config.ts`. |
+| `META_EMBEDDED_SIGNUP_CONFIG_ID` | Frontend permitido | **Implementada.** Público por diseño. Mismo endpoint/loader que `META_APP_ID`. |
+| `META_GRAPH_API_VERSION` | Frontend permitido, no es secreto | **Implementada.** Formato validado (`^v\d{2,3}\.0$`, p. ej. `v25.0`). Mismo endpoint/loader. Configurable para no quedar hardcodeada en componentes frontend. |
+| `META_APP_SECRET` | **Backend-only** | Nunca debe llegar al bundle del frontend. Consumido por los callbacks de deauthorize/data-deletion (fase anterior). En Preview: valor de prueba desechable. En Production: el secreto real de Meta, nunca compartido con el agente. |
+| `META_DATA_DELETION_STATUS_SECRET` | **Backend-only** | Independiente de `META_APP_SECRET` (nunca derivado de él, para poder rotarlos por separado). Debe ser exactamente 64 caracteres hexadecimales (32 bytes / 256 bits), p. ej. `openssl rand -hex 32`. |
 | `META_PUBLIC_BASE_URL` | Backend-only, no es secreto | Origen exacto usado para construir la URL de estado devuelta a Meta — nunca se deriva del `Host` de la request entrante. Preview: el origen `https://<preview>.vercel.app` real de ese deployment. Production: `https://www.maiatesta.com`. |
-| `META_WHATSAPP_WEBHOOK_VERIFY_TOKEN` | **Backend-only** | Secreto generado por Maiatesta, no una URL — nunca en git, frontend, logs o documentación con valor real. |
-| `GRAPH_VERSION` | Backend-only | Configurable, no debe quedar hardcodeada en componentes frontend. |
+| `META_WHATSAPP_WEBHOOK_VERIFY_TOKEN` | **Backend-only, futura** | Secreto generado por Maiatesta, no una URL — nunca en git, frontend, logs o documentación con valor real. No usada todavía (Fase D+, webhook). |
+| `META_TOKEN_ENCRYPTION_KEY` | **Backend-only, futura** | No usada todavía (Fase D+, persistencia de tokens). |
+| `META_ONBOARDING_SESSION_SECRET` | **Backend-only, futura** | No usada todavía (Fase D+, sesiones de onboarding). |
 
 No se crearon valores de ejemplo ni placeholders que parezcan credenciales reales.
 
-## CSP futuro
+## CSP
 
-`vercel.json` ya incluye un bloque de headers para `/whatsapp/(.*)` (idéntico al de `/servicios/(.*)` y `/guias/(.*)`, mismas políticas, sin dominios nuevos). Cuando se integre el Facebook JavaScript SDK en la siguiente fase, el CSP deberá ampliarse — como mínimo se investigará (con DevTools/E2E real, no a priori) qué directivas exactas necesitan:
+El bloque de headers `/whatsapp/(.*)` en `vercel.json` — antes idéntico al de `/servicios/(.*)` y `/guias/(.*)` — ahora tiene dos adiciones, **scoped únicamente a este bloque**, sin cambios en ningún otro `source` de `vercel.json`:
 
 ```text
-connect.facebook.net   (script-src)
-graph.facebook.com     (connect-src)
-www.facebook.com       (frame-src, si aplica)
+script-src  += https://connect.facebook.net   (carga del Facebook JavaScript SDK)
+frame-src   += https://www.facebook.com       (popup de Embedded Signup)
 ```
 
-Aplicar principio de mínimo privilegio: **no usar** `*.facebook.com`, `*`, ni `unsafe-eval` como solución genérica.
+`connect-src` no se amplió — `GET /api/meta/whatsapp/config` es same-origin (`'self'`, ya presente) y esta fase no hace ninguna llamada de red del cliente a `graph.facebook.com`. Si la Fase C revela una violación real de CSP capturada en DevTools, se ampliará entonces con evidencia, nunca a priori. Principio de mínimo privilegio aplicado: **no se usó** `*.facebook.com`, `*`, ni `unsafe-eval`.
 
 ## URLs que se configurarán en Meta Developers (fase posterior, no ahora)
 
