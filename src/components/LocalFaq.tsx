@@ -59,8 +59,8 @@ export function LocalFaq({ content }: LocalFaqProps) {
             onClick={() => setShowAllFaqs((currentValue) => !currentValue)}
           >
             {showAllFaqs
-              ? 'Mostrar menos preguntas'
-              : `Ver ${hiddenFaqCount} preguntas más`}
+              ? content.faqs.showLessLabel
+              : content.faqs.showMoreLabel.replace('{count}', String(hiddenFaqCount))}
           </button>
         </div>
       ) : null}

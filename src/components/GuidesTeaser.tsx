@@ -1,5 +1,7 @@
 import { articlePages } from '../data/articlePages';
+import { getArticleCardText } from '../data/articleTranslations';
 import type { ArticleRouteSlug } from '../data/articleRoutes';
+import type { LanguageCode, LocalizedContent } from '../data/siteContent';
 
 const featuredGuides = articlePages.slice(0, 3);
 
@@ -12,47 +14,57 @@ const guideThumbnails: Partial<Record<ArticleRouteSlug, string>> = {
   'software-a-medida-vs-excel-pyme': '/assets/previews/guide-software-vs-excel-thumb.webp',
 };
 
-/** Teaser grid of the latest SEO guides. Statically renders links to article pages. */
-export function GuidesTeaser() {
+type GuidesTeaserProps = {
+  content: LocalizedContent;
+  language: LanguageCode;
+};
+
+/** Teaser grid of the latest SEO guides. Statically renders links to article pages.
+ * Card title/excerpt/keyword have English translations (articleTranslations.ts);
+ * the full article body stays Spanish-only. */
+export function GuidesTeaser({ content, language }: GuidesTeaserProps) {
+  const { guidesTeaser } = content.sections;
+  const { readMoreLabel, imageAltPrefix } = content.guidesIndex;
+
   return (
     <section className='section guides-teaser-section' aria-labelledby='guides-teaser-title'>
       <div className='section-heading scroll-reveal'>
-        <p className='eyebrow'>Guías prácticas</p>
-        <h2 id='guides-teaser-title'>Respuestas útiles antes de cotizar.</h2>
-        <p>
-          Contenido corto para negocios en Quito y Ecuador que quieren decidir
-          mejor antes de invertir en software, web o automatización.
-        </p>
+        <p className='eyebrow'>{guidesTeaser.eyebrow}</p>
+        <h2 id='guides-teaser-title'>{guidesTeaser.title}</h2>
+        <p>{guidesTeaser.body}</p>
       </div>
 
       <div className='guides-card-grid'>
-        {featuredGuides.map((guide, index) => (
-          <article
-            className='guide-card scroll-reveal'
-            key={guide.slug}
-            style={{ animationDelay: `${index * 70}ms` }}
-          >
-            {guideThumbnails[guide.slug] ? (
-              <img
-                className='guide-card-thumb'
-                src={guideThumbnails[guide.slug]}
-                alt={`Imagen ilustrativa para la guía: ${guide.title}`}
-                width='320'
-                height='200'
-                loading='lazy'
-                decoding='async'
-              />
-            ) : null}
-            <span>{guide.primaryKeyword}</span>
-            <h3>{guide.title}</h3>
-            <p>{guide.excerpt}</p>
-            <a href={`/guias/${guide.slug}/`}>Leer guía</a>
-          </article>
-        ))}
+        {featuredGuides.map((guide, index) => {
+          const cardText = getArticleCardText(guide, language);
+          return (
+            <article
+              className='guide-card scroll-reveal'
+              key={guide.slug}
+              style={{ animationDelay: `${index * 70}ms` }}
+            >
+              {guideThumbnails[guide.slug] ? (
+                <img
+                  className='guide-card-thumb'
+                  src={guideThumbnails[guide.slug]}
+                  alt={`${imageAltPrefix}${cardText.title}`}
+                  width='320'
+                  height='200'
+                  loading='lazy'
+                  decoding='async'
+                />
+              ) : null}
+              <span>{cardText.primaryKeyword}</span>
+              <h3>{cardText.title}</h3>
+              <p>{cardText.excerpt}</p>
+              <a href={`/guias/${guide.slug}/`}>{readMoreLabel}</a>
+            </article>
+          );
+        })}
       </div>
 
       <a className='guides-index-link scroll-reveal' href='/guias/'>
-        Ver todas las guías
+        {guidesTeaser.linkLabel}
       </a>
     </section>
   );

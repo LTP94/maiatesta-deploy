@@ -34,7 +34,7 @@ export function ServiceLandingPage({
 }: ServiceLandingPageProps) {
   const page = servicePagesBySlug[slug as ServiceRouteSlug] ?? pillarPagesBySlug[slug as PillarRouteSlug];
   const pageType = slug in pillarPagesBySlug ? 'pillar' : 'service';
-  const content = siteContent.locales.es;
+  const content = siteContent.locales[language];
 
   if (!page) {
     return (
@@ -313,7 +313,7 @@ export function ServiceLandingPage({
           </a>
         </section>
       </main>
-      <Footer content={content} />
+      <Footer content={content} language={language} />
     </div>
   );
 }

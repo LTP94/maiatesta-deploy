@@ -34,7 +34,7 @@
   color: var(--app-paper);
   border: 1px solid rgba(248, 248, 248, 0.18);
   background: rgba(12, 12, 12, 0.58);
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   padding: 14px;
   outline: none;
   /* Focus ring snaps — instant feedback is preferred for a11y */
@@ -48,7 +48,7 @@
 .contact-form input:focus,
 .contact-form select:focus,
 .contact-form textarea:focus {
-  border-color: var(--app-copper);
+  border-color: var(--app-accent);
   box-shadow:
     0 0 0 4px rgba(255, 179, 138, 0.2),
     0 0 24px rgba(255, 179, 138, 0.12);
@@ -74,7 +74,7 @@
   overflow: hidden;
   padding: clamp(22px, 4vw, 34px);
   border: 1px solid color-mix(in srgb, var(--app-line) 54%, transparent);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background:
     radial-gradient(circle at 12% 14%, rgba(209, 221, 37, 0.12), transparent 30%),
     linear-gradient(145deg, rgba(246, 248, 251, 0.055), transparent 38%),
@@ -107,7 +107,7 @@
 
 .site-footer__eyebrow {
   margin: 0;
-  color: var(--app-copper);
+  color: var(--app-accent);
   font-size: 0.76rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -157,9 +157,9 @@ a.site-footer__cta {
   padding: 0 16px;
   color: #07111f;
   border: 1px solid rgba(209, 221, 37, 0.72);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background:
-    linear-gradient(135deg, #f6f8fb, var(--app-copper));
+    linear-gradient(135deg, #f6f8fb, var(--app-accent));
   font-weight: 900;
   box-shadow: 0 12px 26px rgba(209, 221, 37, 0.16);
 }
@@ -182,7 +182,7 @@ a.site-footer__cta:focus-visible {
   min-height: 44px;
   color: var(--app-paper);
   border: 1px solid rgba(209, 221, 37, 0.28);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(246, 248, 251, 0.08);
 }
 
@@ -217,7 +217,7 @@ a.site-footer__cta:focus-visible {
   padding: 7px 16px 7px 8px;
   color: var(--app-silver);
   border: 1px solid rgba(209, 221, 37, 0.34);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background:
     radial-gradient(circle at 18% 50%, rgba(37, 211, 102, 0.18), transparent 30%),
     linear-gradient(135deg, rgba(7, 17, 31, 0.96), rgba(14, 27, 45, 0.92));

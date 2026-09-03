@@ -422,17 +422,11 @@
     grid-template-columns: 1fr auto;
     gap: 8px;
     padding: 8px 10px 8px 12px;
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
   }
 
-  .brand-mark {
-    width: min(100%, 190px);
-  }
-
-  .brand-mark img {
-    height: 38px;
-    object-position: left center;
-  }
+  /* .brand-mark sizing for this breakpoint now lives solely in
+     deferred/header.css. */
 
   .header-controls {
     justify-content: flex-end;

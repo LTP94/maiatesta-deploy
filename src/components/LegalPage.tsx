@@ -40,7 +40,7 @@ export function LegalPage({
   onLanguageChange,
 }: LegalPageProps) {
   const page = legalPagesBySlug[slug];
-  const content = siteContent.locales.es;
+  const content = siteContent.locales[language];
 
   if (!page) {
     return (
@@ -122,7 +122,7 @@ export function LegalPage({
         </article>
       </main>
 
-      <Footer content={content} />
+      <Footer content={content} language={language} />
     </div>
   );
 }

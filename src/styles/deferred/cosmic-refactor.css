@@ -423,7 +423,7 @@ body {
   gap: 9px;
   padding: 10px 16px;
   border: 1px solid rgba(229, 236, 245, 0.2);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(4, 8, 17, 0.76);
   color: rgba(241, 245, 250, 0.82);
   font: inherit;
@@ -574,7 +574,7 @@ body {
   min-height: 48px;
   overflow: hidden;
   border: 1px solid rgba(219, 229, 240, 0.12);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(255, 255, 255, 0.94);
 }
 
@@ -778,7 +778,7 @@ body {
   gap: 8px;
   padding: 9px 14px;
   border: 1px solid rgba(229, 236, 245, 0.18);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(4, 8, 17, 0.68);
   color: rgba(242, 247, 252, 0.84);
   font: inherit;
@@ -813,7 +813,7 @@ body {
   gap: 8px;
   padding: 8px 13px;
   border: 1px solid rgba(229, 236, 245, 0.18);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(4, 8, 17, 0.72);
   color: rgba(242, 247, 252, 0.88);
   font: inherit;
@@ -1113,7 +1113,7 @@ html.is-scrolling .guides-card-grid .guide-card::before {
 
 .service-indicator.active {
   width: 34px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 }
 
 .project-grid {
@@ -1274,7 +1274,7 @@ html.is-scrolling .guides-card-grid .guide-card::before {
 .contact-form input,
 .contact-form textarea,
 .contact-form select {
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.045);
 }
 
@@ -1365,13 +1365,10 @@ html.is-scrolling .guides-card-grid .guide-card::before {
     border-radius: 18px;
   }
 
-  .brand-mark {
-    width: min(100%, 170px);
-  }
-
-  .brand-mark img {
-    height: 34px;
-  }
+  /* .brand-mark sizing for this breakpoint now lives solely in
+     deferred/header.css — this rule used to redeclare it independently
+     (and disagreed with the other two copies: 170px here vs 190px
+     elsewhere, same selector, same breakpoint). */
 
   .hero-section {
     min-height: 840px;
@@ -1702,7 +1699,7 @@ html.is-scrolling .guides-card-grid .guide-card::before {
   align-items: center;
   gap: 5px;
   padding: 5px 11px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   font-size: 0.62rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -1797,7 +1794,7 @@ html.is-scrolling .guides-card-grid .guide-card::before {
   display: flex;
   gap: 6px;
   padding: 12px 16px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(7, 12, 20, 0.6);
 }
 

@@ -169,6 +169,28 @@ export const esLocale: LocalizedContent = {
       realClientBadge: 'Cliente real',
       watchLabel: 'Ver el caso',
     },
+    guidesTeaser: {
+      eyebrow: 'Guías prácticas',
+      title: 'Respuestas útiles antes de cotizar.',
+      body: 'Contenido corto para negocios en Quito y Ecuador que quieren decidir mejor antes de invertir en software, web o automatización.',
+      linkLabel: 'Ver todas las guías',
+    },
+  },
+  guidesIndex: {
+    eyebrow: 'Guías Maiatesta',
+    heroTitle: 'Guías prácticas para negocios en Quito y Ecuador',
+    heroTitlePhrases: ['Quito', 'Ecuador', 'negocios'],
+    heroBody:
+      'Recursos claros para pymes que necesitan decidir sobre páginas web, chatbots de WhatsApp, inventario, Excel y software sin perder tiempo en explicaciones genéricas.',
+    proofEyebrow: 'Contenido local',
+    proofTitle: 'Quito · Pichincha · Ecuador',
+    proofBody: 'Guías escritas para responder preguntas reales antes de cotizar una solución digital.',
+    sectionEyebrow: 'Recursos para decidir',
+    sectionTitle: 'Elige una guía según el problema que quieres resolver.',
+    sectionBody:
+      'Cada guía conecta con un servicio específico para que puedas pasar de la duda a una cotización concreta.',
+    readMoreLabel: 'Leer guía',
+    imageAltPrefix: 'Imagen ilustrativa para la guía: ',
   },
   clients: [
     {
@@ -364,11 +386,17 @@ export const esLocale: LocalizedContent = {
         placeholder: 'Ejemplo: chatbot para ventas en Quito',
       },
     ],
+    whatsappMessageIntro:
+      'Hola Maiatesta, vi su web y me interesa automatizar {service} en mi empresa en Quito.',
+    whatsappMessageDefaultService: 'chatbot de WhatsApp',
+    whatsappMessageNeedLabel: 'Necesidad',
   },
   faqs: {
     eyebrow: 'Preguntas locales',
     title: 'Preguntas comunes de negocios en Quito.',
     body: 'Respuestas cortas para dueños que comparan chatbot de WhatsApp, página web, tienda online, inventario y automatización antes de pedir una cotización.',
+    showMoreLabel: 'Ver {count} preguntas más',
+    showLessLabel: 'Mostrar menos preguntas',
     items: [
       {
         question: '¿Qué es Maiatesta?',
@@ -411,6 +439,22 @@ export const esLocale: LocalizedContent = {
     headline: 'Maiatesta',
     body: 'Maiatesta es una agencia digital en Quito, Ecuador, especializada en desarrollo web, software para pymes y automatización con IA.',
     rights: 'Todos los derechos reservados.',
+    servicesHeading: 'Servicios',
+    resourcesHeading: 'Recursos',
+    contactHeading: 'Contacto',
+    allGuidesLabel: 'Ver guías',
+    softwareLinkLabel: 'Desarrollo de software en Quito',
+    privacyLinkLabel: 'Política de Privacidad',
+    termsLinkLabel: 'Términos',
+    dataDeletionLinkLabel: 'Eliminación de datos',
+    sitemapLinkLabel: 'Sitemap',
+    videoCreditLabel: 'Video de fondo: Vecteezy',
+    whatsappPrefillMessage:
+      'Hola Maiatesta, vi su web y quiero cotizar una solución digital para mi negocio en Quito.',
+    socialsAriaLabel: 'Redes y canales',
+    whatsappIconAriaLabel: 'Contactar a Maiatesta por WhatsApp',
+    emailIconAriaLabel: 'Enviar email a Maiatesta',
+    instagramIconAriaLabel: 'Ver Instagram de Maiatesta',
   },
   bot: {
     eyebrow: 'Kipux · IA en vivo',
@@ -420,5 +464,79 @@ export const esLocale: LocalizedContent = {
     trust: 'Una forma rápida de ordenar tu idea antes de pedir cotización.',
     chatLabel: 'Abrir chat en vivo',
     chatHint: 'Carga el asistente solo cuando lo necesites.',
+  },
+  whatsappConnect: {
+    eyebrow: 'WhatsApp Business',
+    title: 'Conectar WhatsApp Business',
+    heroBody:
+      'Esta herramienta permitirá conectar de forma segura una cuenta de WhatsApp Business con la plataforma de Maiatesta mediante los servicios oficiales de Meta.',
+    securityNoticeLabel: 'Aviso de seguridad',
+    securityNoticeBody:
+      'Las autorizaciones se realizarán directamente mediante Meta. Maiatesta no solicitará la contraseña de Facebook o Meta del usuario.',
+    beforeConnectPrefix: 'Antes de conectar puedes consultar nuestra',
+    privacyPolicyLabel: 'Política de Privacidad',
+    beforeConnectMiddle: 'y nuestros',
+    termsLabel: 'Términos de Servicio',
+    buttonLabel: {
+      SDK_LOADING: 'Cargando Meta...',
+      SDK_READY: 'Conectar con Meta',
+      WAITING_FOR_META: 'Esperando confirmación de Meta...',
+      READY_FOR_BACKEND: 'Meta autorizó la conexión',
+      WRONG_FLOW_VARIANT: 'Conectar con Meta',
+      CANCELLED: 'Conectar con Meta',
+      SDK_FAILED: 'Servicio de Meta no disponible',
+      TIMED_OUT: 'Conectar con Meta',
+      FAILED: 'Conectar con Meta',
+    },
+    statusMessage: {
+      WAITING_FOR_META: 'Completa el proceso en la ventana de Meta. Esta página se actualizará automáticamente.',
+      READY_FOR_BACKEND:
+        'Meta completó correctamente el proceso de autorización. La conexión con el servidor de Maiatesta se habilitará en la siguiente fase.',
+      WRONG_FLOW_VARIANT: 'Meta no ofreció la opción esperada para tu cuenta. Puedes intentarlo nuevamente.',
+      CANCELLED: 'La configuración fue cancelada. Puedes intentarlo nuevamente.',
+      SDK_FAILED: 'No fue posible cargar los servicios de Meta. Recarga la página e inténtalo de nuevo.',
+      TIMED_OUT: 'No recibimos confirmación de Meta a tiempo. Puedes intentarlo nuevamente.',
+      FAILED: 'No fue posible completar la configuración. Puedes intentarlo nuevamente.',
+    },
+    callbackTitle: 'Conexión con Meta',
+    callbackBody1: 'Esta página será utilizada para completar la conexión de WhatsApp Business.',
+    callbackBody2: 'La integración todavía no está habilitada.',
+  },
+  routeFallback: {
+    service: {
+      eyebrow: 'Servicio local',
+      title: 'Servicios digitales para pymes en Quito.',
+      body: 'Cargando la página de servicio de Maiatesta.',
+    },
+    article: {
+      eyebrow: 'Guía local',
+      title: 'Guías SEO para pymes en Quito.',
+      body: 'Cargando la guía de Maiatesta.',
+    },
+    legal: {
+      eyebrow: 'Información legal',
+      title: 'Política de privacidad.',
+      body: 'Cargando la información legal de Maiatesta.',
+    },
+    software: {
+      eyebrow: 'Servicio local',
+      title: 'Desarrollo de software en Quito.',
+      body: 'Cargando la página de Maiatesta.',
+    },
+    guidesIndex: {
+      eyebrow: 'Guías Maiatesta',
+      title: 'Guías prácticas para negocios en Quito.',
+      body: 'Cargando recursos de Maiatesta.',
+    },
+    whatsappCallback: {
+      eyebrow: 'WhatsApp Business',
+      title: 'Conexión con Meta.',
+      body: 'Cargando la página de Maiatesta.',
+    },
+    whatsappConnect: {
+      eyebrow: 'WhatsApp Business',
+      title: 'Conectar WhatsApp Business.',
+      body: 'Cargando la página de Maiatesta.',
+    },
   },
 };

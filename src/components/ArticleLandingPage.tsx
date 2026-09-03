@@ -109,7 +109,7 @@ export function ArticleLandingPage({
   onLanguageChange,
 }: ArticleLandingPageProps) {
   const article = articlePagesBySlug[slug];
-  const content = siteContent.locales.es;
+  const content = siteContent.locales[language];
 
   if (!article) {
     return (
@@ -320,7 +320,7 @@ export function ArticleLandingPage({
           </a>
         </section>
       </main>
-      <Footer content={content} />
+      <Footer content={content} language={language} />
     </div>
   );
 }

@@ -16,7 +16,7 @@ export function WhatsappConnectCallbackPage({
   language,
   onLanguageChange,
 }: WhatsappConnectCallbackPageProps) {
-  const content = siteContent.locales.es;
+  const content = siteContent.locales[language];
 
   return (
     <div className='app-shell service-page-shell' data-palette='atlantic'>
@@ -31,17 +31,15 @@ export function WhatsappConnectCallbackPage({
         />
         <div className='service-page-hero__inner'>
           <div className='service-page-copy reveal'>
-            <p className='eyebrow'>WhatsApp Business</p>
-            <h1>Conexión con Meta</h1>
-            <p className='hero-body'>
-              Esta página será utilizada para completar la conexión de WhatsApp Business.
-            </p>
-            <p className='hero-body'>La integración todavía no está habilitada.</p>
+            <p className='eyebrow'>{content.whatsappConnect.eyebrow}</p>
+            <h1>{content.whatsappConnect.callbackTitle}</h1>
+            <p className='hero-body'>{content.whatsappConnect.callbackBody1}</p>
+            <p className='hero-body'>{content.whatsappConnect.callbackBody2}</p>
           </div>
         </div>
       </section>
 
-      <Footer content={content} />
+      <Footer content={content} language={language} />
     </div>
   );
 }

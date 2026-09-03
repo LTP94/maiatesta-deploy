@@ -191,9 +191,9 @@ export default function App({ routePath }: AppProps) {
         <Suspense
           fallback={
             <RouteFallback
-              eyebrow='Servicio local'
-              title='Servicios digitales para pymes en Quito.'
-              body='Cargando la página de servicio de Maiatesta.'
+              eyebrow={content.routeFallback.service.eyebrow}
+              title={content.routeFallback.service.title}
+              body={content.routeFallback.service.body}
             />
           }
         >
@@ -214,9 +214,9 @@ export default function App({ routePath }: AppProps) {
         <Suspense
           fallback={
             <RouteFallback
-              eyebrow='Guía local'
-              title='Guías SEO para pymes en Quito.'
-              body='Cargando la guía de Maiatesta.'
+              eyebrow={content.routeFallback.article.eyebrow}
+              title={content.routeFallback.article.title}
+              body={content.routeFallback.article.body}
             />
           }
         >
@@ -237,9 +237,9 @@ export default function App({ routePath }: AppProps) {
         <Suspense
           fallback={
             <RouteFallback
-              eyebrow='Información legal'
-              title='Política de privacidad.'
-              body='Cargando la información legal de Maiatesta.'
+              eyebrow={content.routeFallback.legal.eyebrow}
+              title={content.routeFallback.legal.title}
+              body={content.routeFallback.legal.body}
             />
           }
         >
@@ -260,9 +260,9 @@ export default function App({ routePath }: AppProps) {
         <Suspense
           fallback={
             <RouteFallback
-              eyebrow='Servicio local'
-              title='Desarrollo de software en Quito.'
-              body='Cargando la página de Maiatesta.'
+              eyebrow={content.routeFallback.software.eyebrow}
+              title={content.routeFallback.software.title}
+              body={content.routeFallback.software.body}
             />
           }
         >
@@ -283,9 +283,9 @@ export default function App({ routePath }: AppProps) {
         <Suspense
           fallback={
             <RouteFallback
-              eyebrow='Guías Maiatesta'
-              title='Guías prácticas para negocios en Quito.'
-              body='Cargando recursos de Maiatesta.'
+              eyebrow={content.routeFallback.guidesIndex.eyebrow}
+              title={content.routeFallback.guidesIndex.title}
+              body={content.routeFallback.guidesIndex.body}
             />
           }
         >
@@ -305,9 +305,9 @@ export default function App({ routePath }: AppProps) {
         <Suspense
           fallback={
             <RouteFallback
-              eyebrow='WhatsApp Business'
-              title='Conexión con Meta.'
-              body='Cargando la página de Maiatesta.'
+              eyebrow={content.routeFallback.whatsappCallback.eyebrow}
+              title={content.routeFallback.whatsappCallback.title}
+              body={content.routeFallback.whatsappCallback.body}
             />
           }
         >
@@ -327,9 +327,9 @@ export default function App({ routePath }: AppProps) {
         <Suspense
           fallback={
             <RouteFallback
-              eyebrow='WhatsApp Business'
-              title='Conectar WhatsApp Business.'
-              body='Cargando la página de Maiatesta.'
+              eyebrow={content.routeFallback.whatsappConnect.eyebrow}
+              title={content.routeFallback.whatsappConnect.title}
+              body={content.routeFallback.whatsappConnect.body}
             />
           }
         >
@@ -405,14 +405,14 @@ export default function App({ routePath }: AppProps) {
             <FaqShell content={content} />
           )}
           <Suspense fallback={null}>
-            <GuidesTeaser />
+            <GuidesTeaser content={content} language={language} />
           </Suspense>
           <Suspense fallback={<ContactFallback content={content} />}>
             <ContactForm content={content} />
           </Suspense>
         </main>
         <Suspense fallback={null}>
-          <Footer content={content} />
+          <Footer content={content} language={language} />
         </Suspense>
         <Suspense fallback={null}>
           <StickyWhatsAppButton content={content} />

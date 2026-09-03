@@ -6,6 +6,7 @@ export const brand = {
   personaAlt: 'Maiatesta asistente digital para pymes en Quito',
   logo: '/assets/maiatesta-logo.png',
   mark: '/assets/maiatesta-mark.png',
+  headerLockup: '/assets/maiatesta-header-lockup-light.png',
   persona: '/assets/maiatesta-persona-hero.webp',
   atlanticPersona: '/assets/maiatesta-persona-hero.webp',
   email: 'ventas@maiatesta.com',

@@ -2,6 +2,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { LuminousText } from './LuminousText';
 import { articlePages } from '../data/articlePages';
+import { getArticleCardText } from '../data/articleTranslations';
 import type { ArticleRouteSlug } from '../data/articleRoutes';
 import { siteContent } from '../data/siteContent';
 import type { LanguageCode } from '../data/siteContent';
@@ -25,7 +26,7 @@ export function GuidesIndexPage({
   language,
   onLanguageChange,
 }: GuidesIndexPageProps) {
-  const content = siteContent.locales.es;
+  const content = siteContent.locales[language];
 
   return (
     <div className='app-shell service-page-shell' data-palette='atlantic'>
@@ -48,34 +49,27 @@ export function GuidesIndexPage({
         />
         <div className='service-page-hero__inner'>
           <div className='service-page-copy reveal'>
-            <p className='eyebrow'>Guías Maiatesta</p>
+            <p className='eyebrow'>{content.guidesIndex.eyebrow}</p>
             <h1>
               <LuminousText
-                text='Guías prácticas para negocios en Quito y Ecuador'
-                phrases={['Quito', 'Ecuador', 'negocios']}
+                text={content.guidesIndex.heroTitle}
+                phrases={content.guidesIndex.heroTitlePhrases}
               />
             </h1>
-            <p className='hero-body'>
-              Recursos claros para pymes que necesitan decidir sobre páginas
-              web, chatbots de WhatsApp, inventario, Excel y software sin
-              perder tiempo en explicaciones genéricas.
-            </p>
+            <p className='hero-body'>{content.guidesIndex.heroBody}</p>
             <div className='hero-actions'>
               <a className='button button-primary' href='/#contact'>
-                Cotizar por WhatsApp
+                {content.hero.primaryCta}
               </a>
               <a className='button button-secondary' href='/#services'>
-                Ver servicios
+                {content.hero.secondaryCta}
               </a>
             </div>
           </div>
           <aside className='service-proof-card reveal' style={{ animationDelay: '120ms' }}>
-            <span>Contenido local</span>
-            <strong>Quito · Pichincha · Ecuador</strong>
-            <p>
-              Guías escritas para responder preguntas reales antes de cotizar
-              una solución digital.
-            </p>
+            <span>{content.guidesIndex.proofEyebrow}</span>
+            <strong>{content.guidesIndex.proofTitle}</strong>
+            <p>{content.guidesIndex.proofBody}</p>
           </aside>
         </div>
       </section>
@@ -83,42 +77,42 @@ export function GuidesIndexPage({
       <main className='service-page-main'>
         <section className='section guides-index-section'>
           <div className='section-heading scroll-reveal'>
-            <p className='eyebrow'>Recursos para decidir</p>
-            <h2>Elige una guía según el problema que quieres resolver.</h2>
-            <p>
-              Cada guía conecta con un servicio específico para que puedas
-              pasar de la duda a una cotización concreta.
-            </p>
+            <p className='eyebrow'>{content.guidesIndex.sectionEyebrow}</p>
+            <h2>{content.guidesIndex.sectionTitle}</h2>
+            <p>{content.guidesIndex.sectionBody}</p>
           </div>
 
           <div className='guides-card-grid guides-card-grid--index'>
-            {articlePages.map((guide, index) => (
-              <article
-                className='guide-card scroll-reveal'
-                key={guide.slug}
-                style={{ animationDelay: `${index * 70}ms` }}
-              >
-                {guideThumbnails[guide.slug] ? (
-                  <img
-                    className='guide-card-thumb'
-                    src={guideThumbnails[guide.slug]}
-                    alt={`Imagen ilustrativa para la guía: ${guide.title}`}
-                    width='320'
-                    height='200'
-                    loading='lazy'
-                    decoding='async'
-                  />
-                ) : null}
-                <span>{guide.primaryKeyword}</span>
-                <h2>{guide.title}</h2>
-                <p>{guide.excerpt}</p>
-                <a href={`/guias/${guide.slug}/`}>Leer guía</a>
-              </article>
-            ))}
+            {articlePages.map((guide, index) => {
+              const cardText = getArticleCardText(guide, language);
+              return (
+                <article
+                  className='guide-card scroll-reveal'
+                  key={guide.slug}
+                  style={{ animationDelay: `${index * 70}ms` }}
+                >
+                  {guideThumbnails[guide.slug] ? (
+                    <img
+                      className='guide-card-thumb'
+                      src={guideThumbnails[guide.slug]}
+                      alt={`${content.guidesIndex.imageAltPrefix}${cardText.title}`}
+                      width='320'
+                      height='200'
+                      loading='lazy'
+                      decoding='async'
+                    />
+                  ) : null}
+                  <span>{cardText.primaryKeyword}</span>
+                  <h2>{cardText.title}</h2>
+                  <p>{cardText.excerpt}</p>
+                  <a href={`/guias/${guide.slug}/`}>{content.guidesIndex.readMoreLabel}</a>
+                </article>
+              );
+            })}
           </div>
         </section>
       </main>
-      <Footer content={content} />
+      <Footer content={content} language={language} />
     </div>
   );
 }

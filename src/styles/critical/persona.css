@@ -325,9 +325,9 @@
     width: 44px;
     height: 44px;
     padding: 0;
-    background: rgba(246, 248, 251, 0.08);
-    border: 1px solid rgba(209, 221, 37, 0.28);
-    border-radius: 999px;
+    background: rgba(10, 10, 10, 0.045);
+    border: 1px solid rgba(130, 137, 23, 0.3);
+    border-radius: var(--radius-pill);
     cursor: pointer;
   }
 
@@ -335,7 +335,7 @@
     display: block;
     width: 18px;
     height: 2px;
-    background: var(--app-silver);
+    background: rgba(10, 10, 10, 0.82);
   }
 
   .mobile-nav {
@@ -396,16 +396,18 @@
     grid-template-columns: 1fr auto;
     gap: 8px;
     padding: 8px 10px 8px 12px;
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
   }
 
+  /* Matches critical/hero.css's <620px tier — kept in sync manually since
+     this is the critical-path (first-paint) copy; see deferred/header.css
+     for the deferred-path copy of the same values. */
   .brand-mark {
-    width: min(100%, 190px);
+    width: min(100%, 210px);
   }
 
-  .brand-mark img {
-    height: 38px;
-    object-position: left center;
+  .brand-mark__lockup {
+    height: 26px;
   }
 
   .header-controls {

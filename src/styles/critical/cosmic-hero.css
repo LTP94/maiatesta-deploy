@@ -274,7 +274,7 @@
   gap: 9px;
   padding: 10px 16px;
   border: 1px solid rgba(229, 236, 245, 0.2);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(4, 8, 17, 0.76);
   color: rgba(241, 245, 250, 0.82);
   font: inherit;

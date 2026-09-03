@@ -348,7 +348,7 @@
     ),
     radial-gradient(
       circle at 50% 100%,
-      color-mix(in srgb, var(--app-copper) 22%, transparent),
+      color-mix(in srgb, var(--app-accent) 22%, transparent),
       transparent 45%
     );
 }
@@ -448,7 +448,7 @@
     ),
     radial-gradient(
       circle at 58% 72%,
-      color-mix(in srgb, var(--app-copper) 12%, transparent),
+      color-mix(in srgb, var(--app-accent) 12%, transparent),
       transparent 30%
     ),
     linear-gradient(
@@ -489,7 +489,7 @@
     ),
     radial-gradient(
       circle at 52% 72%,
-      color-mix(in srgb, var(--app-copper) 14%, transparent),
+      color-mix(in srgb, var(--app-accent) 14%, transparent),
       transparent 34%
     ),
     linear-gradient(

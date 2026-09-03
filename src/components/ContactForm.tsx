@@ -81,12 +81,12 @@ export function ContactForm({ content }: ContactFormProps) {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const service = formState.service || "chatbot de WhatsApp";
+    const service = formState.service || content.contact.whatsappMessageDefaultService;
     const message = encodeURIComponent(
       [
-        `Hola Maiatesta, vi su web y me interesa automatizar ${service} en mi empresa en Quito.`,
+        content.contact.whatsappMessageIntro.replace("{service}", service),
         `WhatsApp: ${formState.whatsapp || "-"}`,
-        `Necesidad: ${formState.message || "-"}`,
+        `${content.contact.whatsappMessageNeedLabel}: ${formState.message || "-"}`,
       ].join("\n"),
     );
 

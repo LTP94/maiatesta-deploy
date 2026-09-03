@@ -1,3 +1,5 @@
+import type { SignupState } from '../../utils/metaEmbeddedSignup';
+
 export type LanguageCode = 'en' | 'es';
 
 export type Product = {
@@ -64,6 +66,26 @@ export type LocalizedContent = {
       realClientBadge: string;
       watchLabel: string;
     };
+    guidesTeaser: {
+      eyebrow: string;
+      title: string;
+      body: string;
+      linkLabel: string;
+    };
+  };
+  guidesIndex: {
+    eyebrow: string;
+    heroTitle: string;
+    heroTitlePhrases: string[];
+    heroBody: string;
+    proofEyebrow: string;
+    proofTitle: string;
+    proofBody: string;
+    sectionEyebrow: string;
+    sectionTitle: string;
+    sectionBody: string;
+    readMoreLabel: string;
+    imageAltPrefix: string;
   };
   clients: Array<{
     name: string;
@@ -107,17 +129,39 @@ export type LocalizedContent = {
     successMessage: string;
     channels: ContactChannel[];
     fields: FieldContent[];
+    /** {service} is replaced with whatsappMessageDefaultService or the form's service field. */
+    whatsappMessageIntro: string;
+    whatsappMessageDefaultService: string;
+    whatsappMessageNeedLabel: string;
   };
   faqs: {
     eyebrow: string;
     title: string;
     body: string;
     items: Array<{ question: string; answer: string }>;
+    /** {count} is replaced with the number of hidden questions. */
+    showMoreLabel: string;
+    showLessLabel: string;
   };
   footer: {
     headline: string;
     body: string;
     rights: string;
+    servicesHeading: string;
+    resourcesHeading: string;
+    contactHeading: string;
+    allGuidesLabel: string;
+    softwareLinkLabel: string;
+    privacyLinkLabel: string;
+    termsLinkLabel: string;
+    dataDeletionLinkLabel: string;
+    sitemapLinkLabel: string;
+    videoCreditLabel: string;
+    whatsappPrefillMessage: string;
+    socialsAriaLabel: string;
+    whatsappIconAriaLabel: string;
+    emailIconAriaLabel: string;
+    instagramIconAriaLabel: string;
   };
   bot: {
     eyebrow: string;
@@ -128,4 +172,24 @@ export type LocalizedContent = {
     chatLabel: string;
     chatHint: string;
   };
+  whatsappConnect: {
+    eyebrow: string;
+    title: string;
+    heroBody: string;
+    securityNoticeLabel: string;
+    securityNoticeBody: string;
+    beforeConnectPrefix: string;
+    privacyPolicyLabel: string;
+    beforeConnectMiddle: string;
+    termsLabel: string;
+    buttonLabel: Record<SignupState, string>;
+    statusMessage: Partial<Record<SignupState, string>>;
+    callbackTitle: string;
+    callbackBody1: string;
+    callbackBody2: string;
+  };
+  routeFallback: Record<
+    'service' | 'article' | 'legal' | 'software' | 'guidesIndex' | 'whatsappCallback' | 'whatsappConnect',
+    { eyebrow: string; title: string; body: string }
+  >;
 };

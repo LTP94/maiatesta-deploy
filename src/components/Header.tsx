@@ -27,17 +27,34 @@ export function Header({
 
   const closeMenu = () => setIsMenuOpen(false);
 
+  // Nav items are either same-page anchors ('#services') that need the
+  // homepage prefix on subpages, or already-absolute page routes
+  // ('/desarrollo-de-software-quito/') that must never be prefixed —
+  // prepending navHrefPrefix to an absolute path produced a broken
+  // protocol-relative URL ('//desarrollo-de-software-quito/') on every
+  // page except the homepage.
+  const resolveNavHref = (href: string) =>
+    href.startsWith('#') ? `${navHrefPrefix}${href}` : href;
+
   return (
     <header className={`site-header${isMenuOpen ? ' menu-open' : ''}`}>
       <a className="brand-mark" href={homeHref} aria-label={siteContent.brand.name} onClick={closeMenu}>
         <picture>
-          <source srcSet="/assets/maiatesta-logo.webp" type="image/webp" />
-          <img src={siteContent.brand.logo} alt={siteContent.brand.logoAlt} width="900" height="165" decoding="async" loading="eager" />
+          <source srcSet="/assets/maiatesta-header-lockup-light.webp" type="image/webp" />
+          <img
+            className="brand-mark__lockup"
+            src={siteContent.brand.headerLockup}
+            alt=""
+            width="1800"
+            height="349"
+            decoding="async"
+            loading="eager"
+          />
         </picture>
       </a>
       <nav className="nav-links" aria-label={content.ariaLabels.primaryNavigation}>
         {content.nav.map((item) => (
-          <a key={item.href} href={`${navHrefPrefix}${item.href}`}>
+          <a key={item.href} href={resolveNavHref(item.href)}>
             {item.label}
           </a>
         ))}
@@ -82,7 +99,7 @@ export function Header({
       {isMenuOpen && (
         <nav className="mobile-nav" aria-label={content.ariaLabels.primaryNavigation}>
           {content.nav.map((item) => (
-            <a key={item.href} href={`${navHrefPrefix}${item.href}`} onClick={closeMenu}>
+            <a key={item.href} href={resolveNavHref(item.href)} onClick={closeMenu}>
               {item.label}
             </a>
           ))}

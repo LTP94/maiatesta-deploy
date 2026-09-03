@@ -293,7 +293,7 @@ html[data-site-video='ready'] .stars-bg {
   background:
     radial-gradient(
       circle at 76% 46%,
-      color-mix(in srgb, var(--app-copper) 8%, transparent),
+      color-mix(in srgb, var(--app-accent) 8%, transparent),
       transparent 31%
     ),
     linear-gradient(
@@ -331,7 +331,7 @@ html[data-site-video='ready'] .stars-bg {
     ),
     radial-gradient(
       circle at 86% 46%,
-      color-mix(in srgb, var(--app-copper) 6%, transparent),
+      color-mix(in srgb, var(--app-accent) 6%, transparent),
       transparent 28%
     ),
     color-mix(in srgb, var(--app-ink) 8%, transparent) !important;
@@ -352,7 +352,7 @@ html[data-site-video='ready'] .stars-bg {
     ),
     radial-gradient(
       circle at 15% 68%,
-      color-mix(in srgb, var(--app-copper) 5%, transparent),
+      color-mix(in srgb, var(--app-accent) 5%, transparent),
       transparent 32%
     ) !important;
 }
@@ -364,7 +364,7 @@ html[data-site-video='ready'] .stars-bg {
 
 .app-shell[data-palette] .section {
   --section-accent-a: color-mix(in srgb, var(--app-steel) 10%, transparent);
-  --section-accent-b: color-mix(in srgb, var(--app-copper) 7%, transparent);
+  --section-accent-b: color-mix(in srgb, var(--app-accent) 7%, transparent);
   --section-base-a: color-mix(in srgb, var(--app-ink) 17%, transparent);
   --section-base-b: color-mix(in srgb, var(--app-charcoal) 11%, transparent);
 }

@@ -1,25 +1,25 @@
-import type { LocalizedContent } from "../data/siteContent";
+import type { LanguageCode, LocalizedContent } from "../data/siteContent";
 import { getServiceSlugForProductId } from "../data/serviceRoutes";
 import { trackEmailClick, trackWhatsAppClick } from "../utils/analytics";
+import { articleCardTranslationsEn } from "../data/articleTranslations";
+import type { ArticleRouteSlug } from "../data/articleRoutes";
 
 type FooterProps = {
   content: LocalizedContent;
+  language: LanguageCode;
 };
 
-const featuredGuideLinks = [
-  {
-    label: 'Costo de chatbot WhatsApp',
-    href: '/guias/cuanto-cuesta-chatbot-whatsapp-ecuador/',
-  },
-  {
-    label: 'Web para negocio pequeño',
-    href: '/guias/pagina-web-negocio-pequeno-quito/',
-  },
-  {
-    label: 'Inventario para pymes',
-    href: '/guias/software-inventario-pymes-quito/',
-  },
+const featuredGuideSlugs: ArticleRouteSlug[] = [
+  'cuanto-cuesta-chatbot-whatsapp-ecuador',
+  'pagina-web-negocio-pequeno-quito',
+  'software-inventario-pymes-quito',
 ];
+
+const featuredGuideLinksEs: Record<ArticleRouteSlug, string> = {
+  'cuanto-cuesta-chatbot-whatsapp-ecuador': 'Costo de chatbot WhatsApp',
+  'pagina-web-negocio-pequeno-quito': 'Web para negocio pequeño',
+  'software-inventario-pymes-quito': 'Inventario para pymes',
+} as Record<ArticleRouteSlug, string>;
 
 function FooterIcon({ type }: { type: 'email' | 'whatsapp' | 'instagram' }) {
   if (type === 'email') {
@@ -46,7 +46,7 @@ function FooterIcon({ type }: { type: 'email' | 'whatsapp' | 'instagram' }) {
 }
 
 /** Site footer: brand column, navigation columns, social links and copyright bar. */
-export function Footer({ content }: FooterProps) {
+export function Footer({ content, language }: FooterProps) {
   const whatsappChannel = content.contact.channels.find(
     (channel) => channel.label === 'WhatsApp',
   );
@@ -58,9 +58,7 @@ export function Footer({ content }: FooterProps) {
   );
   const whatsappHref = `${
     whatsappChannel?.href ?? 'https://wa.me/593963092859'
-  }?text=${encodeURIComponent(
-    'Hola Maiatesta, vi su web y quiero cotizar una solución digital para mi negocio en Quito.',
-  )}`;
+  }?text=${encodeURIComponent(content.footer.whatsappPrefillMessage)}`;
 
   return (
     <footer className="site-footer" aria-labelledby="footer-brand">
@@ -76,17 +74,17 @@ export function Footer({ content }: FooterProps) {
               target="_blank"
               rel="noreferrer"
             >
-              Cotizar por WhatsApp
+              {content.hero.primaryCta}
             </a>
             <a className="site-footer__text-link" href="/guias/">
-              Ver guías
+              {content.footer.allGuidesLabel}
             </a>
           </div>
         </section>
 
-        <nav className="site-footer__nav" aria-label="Servicios">
-          <h2>Servicios</h2>
-          <a href="/desarrollo-de-software-quito/">Desarrollo de software en Quito</a>
+        <nav className="site-footer__nav" aria-label={content.footer.servicesHeading}>
+          <h2>{content.footer.servicesHeading}</h2>
+          <a href="/desarrollo-de-software-quito/">{content.footer.softwareLinkLabel}</a>
           {content.products.map((product) => {
             const serviceSlug = getServiceSlugForProductId(product.id);
 
@@ -102,37 +100,39 @@ export function Footer({ content }: FooterProps) {
           })}
         </nav>
 
-        <nav className="site-footer__nav" aria-label="Recursos">
-          <h2>Recursos</h2>
-          <a href="/guias/">Todas las guías</a>
-          {featuredGuideLinks.map((link) => (
-            <a href={link.href} key={link.href}>
-              {link.label}
+        <nav className="site-footer__nav" aria-label={content.footer.resourcesHeading}>
+          <h2>{content.footer.resourcesHeading}</h2>
+          <a href="/guias/">{content.footer.allGuidesLabel}</a>
+          {featuredGuideSlugs.map((slug) => (
+            <a href={`/guias/${slug}/`} key={slug}>
+              {language === 'en'
+                ? articleCardTranslationsEn[slug].title
+                : featuredGuideLinksEs[slug]}
             </a>
           ))}
         </nav>
 
-        <section className="site-footer__contact" aria-label="Contacto">
-          <h2>Contacto</h2>
+        <section className="site-footer__contact" aria-label={content.footer.contactHeading}>
+          <h2>{content.footer.contactHeading}</h2>
           <a href={whatsappHref} target="_blank" rel="noreferrer" onClick={() => trackWhatsAppClick({ ctaLocation: 'footer' })}>
             {whatsappChannel?.value ?? '+593 963 092 859'}
           </a>
           <a href={emailChannel?.href ?? 'mailto:maiatesta@gmail.com'} onClick={() => trackEmailClick('footer')}>
             {emailChannel?.value ?? 'maiatesta@gmail.com'}
           </a>
-          <div className="site-footer__socials" aria-label="Redes y canales">
+          <div className="site-footer__socials" aria-label={content.footer.socialsAriaLabel}>
             <a
               href={whatsappHref}
               target="_blank"
               rel="noreferrer"
-              aria-label="Contactar a Maiatesta por WhatsApp"
+              aria-label={content.footer.whatsappIconAriaLabel}
               onClick={() => trackWhatsAppClick({ ctaLocation: 'footer-icon' })}
             >
               <FooterIcon type="whatsapp" />
             </a>
             <a
               href={emailChannel?.href ?? 'mailto:ventas@maiatesta.com'}
-              aria-label="Enviar email a Maiatesta"
+              aria-label={content.footer.emailIconAriaLabel}
               onClick={() => trackEmailClick('footer-icon')}
             >
               <FooterIcon type="email" />
@@ -142,7 +142,7 @@ export function Footer({ content }: FooterProps) {
                 href={instagramChannel.href}
                 target="_blank"
                 rel="noreferrer"
-                aria-label="Ver Instagram de Maiatesta"
+                aria-label={content.footer.instagramIconAriaLabel}
               >
                 <FooterIcon type="instagram" />
               </a>
@@ -155,16 +155,16 @@ export function Footer({ content }: FooterProps) {
         <span>
           {new Date().getFullYear()} {content.footer.rights}
         </span>
-        <a href="/politica-de-privacidad/">Política de Privacidad</a>
-        <a href="/terminos/">Términos</a>
-        <a href="/eliminacion-de-datos/">Eliminación de datos</a>
-        <a href="/sitemap.xml">Sitemap</a>
+        <a href="/politica-de-privacidad/">{content.footer.privacyLinkLabel}</a>
+        <a href="/terminos/">{content.footer.termsLinkLabel}</a>
+        <a href="/eliminacion-de-datos/">{content.footer.dataDeletionLinkLabel}</a>
+        <a href="/sitemap.xml">{content.footer.sitemapLinkLabel}</a>
         <a
           href="https://www.vecteezy.com/video/10367035-awesome-night-sky-time-lapse-with-milky-way-galaxy"
           target="_blank"
           rel="noreferrer"
         >
-          Video de fondo: Vecteezy
+          {content.footer.videoCreditLabel}
         </a>
       </div>
     </footer>
