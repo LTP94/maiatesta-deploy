@@ -7,7 +7,7 @@ Fecha final: 2026-09-29. Entorno: Node, PostgreSQL 16 y Redis 7 locales aislados
 | Verificación | Resultado |
 |---|---|
 | `npx prisma validate` | PASS |
-| migración desde cero (`prisma migrate reset`, DB efímera) | PASS, 6 migraciones |
+| migración desde cero (`prisma migrate reset`, DB efímera) | PASS, 7 migraciones |
 | `npm run typecheck` | PASS |
 | `npm run build` | PASS |
 | unitarias | 60/60 PASS |

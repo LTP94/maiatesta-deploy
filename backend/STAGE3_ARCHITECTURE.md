@@ -64,6 +64,8 @@ Cada claim incrementa intentos y crea un lease de 30 segundos. Un `PROCESSING` c
 
 `src/worker-index.ts` es un proceso independiente (`npm run start:worker`). Los futuros adaptadores se inyectan como `EventProcessor`; deben usar `idempotencyKey` porque la garantía interna es al menos una vez, no exactamente una vez.
 
+Cada vuelta del worker actualiza `webhook_worker_heartbeats`. `/health` marca el heartbeat más reciente como `STALE` después de 30 segundos y obtiene conteos globales agregados mediante `webhook_queue_metrics()`; esa función no devuelve tenant IDs ni payloads.
+
 ## Suscripciones Coexistence
 
 `ensureWabaSubscription` verifica bajo RLS que la WABA tenga autorización activa, descifra su credencial, consulta `/{WABA-ID}/subscribed_apps`, evita POST duplicado y registra el resultado. Las pruebas usan Graph simulado. No se ejecutó ninguna suscripción real ni sync real.

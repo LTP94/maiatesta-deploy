@@ -110,7 +110,7 @@ El diagnóstico anterior se conserva como evidencia del estado inicial. Al compl
 - `waba_routes` quedó revocada a `app_runtime` y sustituida por funciones estrechas;
 - BullMQ parcial fue retirado del flujo: PostgreSQL es el inbox durable y Redis no condiciona el webhook;
 - se agregaron migraciones separadas para enum y esquema/funciones;
-- una reconstrucción desde cero aplicó las seis migraciones correctamente;
+- una reconstrucción desde cero aplicó las siete migraciones correctamente;
 - suite final: **144/144 aprobadas, 0 fallidas, 0 omitidas**.
 
 El resultado final y las limitaciones reales se detallan en `STAGE3_TEST_REPORT.md` y `STAGE3_META_VERIFICATION_PENDING.md`.

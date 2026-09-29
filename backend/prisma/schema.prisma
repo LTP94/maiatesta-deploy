@@ -378,6 +378,18 @@ model WabaWebhookSubscription {
   @@map("waba_webhook_subscriptions")
 }
 
+model WebhookWorkerHeartbeat {
+  workerId       String   @id
+  status         String
+  startedAt      DateTime
+  lastSeenAt     DateTime
+  processedCount Int      @default(0)
+  lastErrorCode  String?
+
+  @@index([lastSeenAt])
+  @@map("webhook_worker_heartbeats")
+}
+
 // ---------------------------------------------------------------------------
 // Estado de automatización por conversación (sección 8 del pedido de la
 // Etapa 3: "desactivación de respuestas automáticas cuando un agente humano

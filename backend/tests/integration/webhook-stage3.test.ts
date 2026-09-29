@@ -112,6 +112,7 @@ async function seedTenant(label: string): Promise<Fixture> {
 }
 
 async function cleanDatabase() {
+  await owner.webhookWorkerHeartbeat.deleteMany();
   await owner.webhookQuarantineEvent.deleteMany();
   await owner.wabaWebhookSubscription.deleteMany();
   await owner.conversationAutomationState.deleteMany();
@@ -307,6 +308,9 @@ describe('Grupos E/G y E2E — worker, recuperación y equidad', () => {
     expect(effects).toHaveLength(2);
     expect(events[0]!.normalizedPayload).toBeTruthy();
     expect(events.every((event) => !event.encryptedPayload.includes('synthetic hello'))).toBe(true);
+    expect(await owner.webhookWorkerHeartbeat.findUnique({ where: { workerId: 'e2e-worker' } })).toMatchObject({
+      status: 'RUNNING', processedCount: 2,
+    });
   });
 
   it('una conversación bajo control humano deshabilita automatización', async () => {

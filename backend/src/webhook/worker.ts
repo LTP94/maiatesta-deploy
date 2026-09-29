@@ -39,6 +39,7 @@ export class PermanentWebhookError extends Error {
 
 export class WebhookWorker {
   readonly workerId: string;
+  private readonly startedAt = new Date();
 
   constructor(
     private readonly prisma: PrismaClient,
@@ -135,15 +136,41 @@ export class WebhookWorker {
   }
 
   async runOnce(limit = 10): Promise<number> {
-    const claims: ClaimedEvent[] = [];
-    // Cada claim toma como máximo uno por tenant. Repetir rondas llena el
-    // lote sin sacrificar equidad cuando hay varios tenants activos.
-    while (claims.length < limit) {
-      const round = await this.claim(limit - claims.length);
-      if (round.length === 0) break;
-      claims.push(...round);
+    try {
+      await this.prisma.webhookWorkerHeartbeat.upsert({
+        where: { workerId: this.workerId },
+        create: { workerId: this.workerId, status: 'RUNNING', startedAt: this.startedAt, lastSeenAt: new Date() },
+        update: { status: 'RUNNING', lastSeenAt: new Date(), lastErrorCode: null },
+      });
+      const claims: ClaimedEvent[] = [];
+      // Cada claim toma como máximo uno por tenant. Repetir rondas llena el
+      // lote sin sacrificar equidad cuando hay varios tenants activos.
+      while (claims.length < limit) {
+        const round = await this.claim(limit - claims.length);
+        if (round.length === 0) break;
+        claims.push(...round);
+      }
+      await Promise.all(claims.map((claim) => this.processClaim(claim)));
+      await this.prisma.webhookWorkerHeartbeat.update({
+        where: { workerId: this.workerId },
+        data: { lastSeenAt: new Date(), processedCount: { increment: claims.length } },
+      });
+      return claims.length;
+    } catch (error) {
+      await this.prisma.webhookWorkerHeartbeat
+        .upsert({
+          where: { workerId: this.workerId },
+          create: {
+            workerId: this.workerId,
+            status: 'DEGRADED',
+            startedAt: this.startedAt,
+            lastSeenAt: new Date(),
+            lastErrorCode: 'WORKER_LOOP_FAILURE',
+          },
+          update: { status: 'DEGRADED', lastSeenAt: new Date(), lastErrorCode: 'WORKER_LOOP_FAILURE' },
+        })
+        .catch(() => undefined);
+      throw error;
     }
-    await Promise.all(claims.map((claim) => this.processClaim(claim)));
-    return claims.length;
   }
 }

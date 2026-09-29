@@ -11,7 +11,7 @@ Ambos usan `RUNTIME_DATABASE_URL`. Solo migraciones usan `DATABASE_URL`. El work
 
 ## Diagnóstico
 
-- `GET /health`: conectividad DB y contadores locales de recibidos, almacenados, duplicados, cuarentena, errores, procesados y reintentos.
+- `GET /health`: conectividad DB, heartbeat durable (`RUNNING`, `STALE`, `DEGRADED` o `NOT_STARTED`), backlog agregado y contadores locales de recepción. No expone tenants ni contenido.
 - Consultar por tenant, siempre bajo `TenantScope`: `processingState`, `processingAttempts`, `nextAttemptAt`, `lastErrorCode`, `leaseExpiresAt`.
 - Backlog: `PENDING`/`RETRY_PENDING`; abandonado: `PROCESSING` con lease vencido; atención: `QUARANTINED`/`MANUAL_INTERVENTION`.
 - Nunca copiar payload cifrado, firmas, tokens o contenido a tickets/logs.
