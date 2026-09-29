@@ -1,0 +1,33 @@
+# Overlay de bases de datos AISLADAS para pruebas automatizadas — puertos y
+# nombres distintos de docker-compose.yml para que correr la suite de tests
+# nunca pueda tocar los datos de desarrollo por accidente.
+name: maiatesta-whatsapp-backend
+
+services:
+  postgres-test:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: maiatesta_test
+      POSTGRES_PASSWORD: test_only_password_never_use_in_prod
+      POSTGRES_DB: maiatesta_whatsapp_test
+    ports:
+      - '55563:5432'
+    tmpfs:
+      - /var/lib/postgresql/data # nunca persiste entre corridas — cada test run empieza limpio
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U maiatesta_test -d maiatesta_whatsapp_test']
+      interval: 3s
+      timeout: 3s
+      retries: 15
+
+  redis-test:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - '55564:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 3s
+      timeout: 3s
+      retries: 15

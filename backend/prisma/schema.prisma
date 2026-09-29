@@ -1,0 +1,296 @@
+// Esquema de datos para el backend de WhatsApp Business App Coexistence.
+//
+// Principio de diseño rector (sección 7 del pedido): un usuario de Facebook
+// NO es un tenant, NO es una WABA, NO es un número. La cadena de relación
+// explícita, ya documentada en docs/meta-whatsapp-embedded-signup.md antes
+// de que este backend existiera, se modela aquí exactamente:
+//
+//   Tenant -> MetaAuthorization -> WhatsappBusinessAccount -> PhoneNumber
+//
+// Cada tabla que pertenece a un tenant tiene tenantId como columna directa
+// (no solo alcanzable por join), precisamente para que las pruebas de
+// aislamiento multiempresa (tests/integration/tenant-isolation.test.ts)
+// puedan verificar el filtro al nivel de la propia query, no confiar en
+// que la aplicación "se acuerde" de filtrar.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Tenant y usuarios administrativos
+// ---------------------------------------------------------------------------
+
+model Tenant {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  status    TenantStatus @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  adminUsers          AdminUser[]
+  onboardingSessions  OnboardingSession[]
+  metaAuthorizations  MetaAuthorization[]
+  auditLogs           AuditLog[]
+
+  @@map("tenants")
+}
+
+enum TenantStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+model AdminUser {
+  id        String   @id @default(uuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  email     String
+  role      AdminRole @default(OWNER)
+  createdAt DateTime @default(now())
+
+  // Un mismo email de administrador no puede repetirse dentro del mismo
+  // tenant, pero el mismo email SÍ puede administrar tenants distintos
+  // (agencia gestionando varios clientes) — por eso el unique es compuesto,
+  // no solo sobre email.
+  @@unique([tenantId, email])
+  @@index([tenantId])
+  @@map("admin_users")
+}
+
+enum AdminRole {
+  OWNER
+  OPERATOR
+}
+
+// ---------------------------------------------------------------------------
+// Onboarding — sesiones efímeras, nunca confían en un tenantId enviado
+// libremente desde el navegador (sección 6 del pedido)
+// ---------------------------------------------------------------------------
+
+model OnboardingSession {
+  id            String   @id @default(uuid())
+  tenantId      String
+  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  adminUserId   String
+  // Nonce opaco de un solo uso, entregado al frontend y devuelto en
+  // /onboarding/session y /onboarding/complete — el tenantId real se resuelve
+  // en el servidor a partir de ESTE nonce, nunca de un campo del body.
+  nonce         String   @unique
+  state         OnboardingState @default(INITIATED)
+  metaSessionInfo Json?  // business_id/waba_id/phone_number_id recibidos vía postMessage (sección Recepción de Meta)
+  failureReason String?
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  metaAuthorization MetaAuthorization?
+
+  @@index([tenantId])
+  @@index([expiresAt])
+  @@map("onboarding_sessions")
+}
+
+// Estados de la sección 13 del pedido, adaptados a nombres de columna.
+enum OnboardingState {
+  INITIATED
+  AWAITING_AUTHORIZATION
+  AUTHORIZED_BY_META
+  CREDENTIALS_VERIFIED
+  INTERNAL_CONFIG_PENDING
+  OPERATIONAL
+  RECOVERABLE_ERROR
+  CANCELLED
+  EXPIRED
+  DISCONNECTED
+}
+
+// ---------------------------------------------------------------------------
+// Autorización de Meta — UNA fila por (tenant, app-scoped Meta user).
+// Esta es la tabla que el P0 ya documentado en el repo Vercel dice que debe
+// existir antes de conectar los stubs de deauthorize/data-deletion a algo
+// real. metaUserId es el identificador que Meta manda en signed_request —
+// nunca se asume que es el mismo valor entre apps ni que identifica a un
+// tenant por sí solo (de ahí que la relación sea explícita, no implícita).
+// ---------------------------------------------------------------------------
+
+model MetaAuthorization {
+  id                  String   @id @default(uuid())
+  tenantId            String
+  tenant              Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  onboardingSessionId String   @unique
+  onboardingSession   OnboardingSession @relation(fields: [onboardingSessionId], references: [id])
+  metaUserId          String   // app-scoped user id de Meta (payload.user_id de signed_request)
+  status              AuthorizationStatus @default(ACTIVE)
+  revokedAt           DateTime?
+  revokedReason       String?  // 'deauthorize_callback' | 'data_deletion_callback' | 'manual', nunca inferido
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  whatsappBusinessAccounts WhatsappBusinessAccount[]
+  credentials              Credential[]
+
+  // Un mismo usuario de Meta autorizando el mismo tenant dos veces reutiliza
+  // la fila (no crea duplicados silenciosos) — pero el mismo metaUserId SÍ
+  // puede aparecer en tenants distintos (una persona administra dos negocios).
+  @@unique([tenantId, metaUserId])
+  @@index([metaUserId])
+  @@map("meta_authorizations")
+}
+
+enum AuthorizationStatus {
+  ACTIVE
+  REVOKED
+}
+
+// ---------------------------------------------------------------------------
+// WABA y números — la relación real que la sección 7 del pedido exige no
+// asumir 1:1: una WABA puede tener más de un número, un tenant puede tener
+// más de una WABA (multi-marca).
+// ---------------------------------------------------------------------------
+
+model WhatsappBusinessAccount {
+  id                  String   @id @default(uuid())
+  metaAuthorizationId String
+  metaAuthorization   MetaAuthorization @relation(fields: [metaAuthorizationId], references: [id], onDelete: Cascade)
+  wabaId              String   @unique // ID real de Meta — global, nunca reutilizado entre tenants
+  businessName        String?
+  createdAt           DateTime @default(now())
+
+  phoneNumbers PhoneNumber[]
+
+  @@map("whatsapp_business_accounts")
+}
+
+model PhoneNumber {
+  id                        String   @id @default(uuid())
+  whatsappBusinessAccountId String
+  whatsappBusinessAccount   WhatsappBusinessAccount @relation(fields: [whatsappBusinessAccountId], references: [id], onDelete: Cascade)
+  phoneNumberId             String   @unique // Phone Number ID de Meta — global; el UNIQUE es la defensa técnica contra "número ya asociado a otro cliente" (sección 6 del pedido)
+  displayPhoneNumber        String?
+  connectionState           ConnectionState @default(PENDING_INTERNAL_SETUP)
+  connectedAt               DateTime?
+  disconnectedAt            DateTime?
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  integrationConfig IntegrationConfig?
+  messageEvents     MessageEvent[]
+
+  @@map("phone_numbers")
+}
+
+enum ConnectionState {
+  PENDING_INTERNAL_SETUP
+  OPERATIONAL
+  ERROR
+  DISCONNECTED
+}
+
+// ---------------------------------------------------------------------------
+// Credenciales cifradas — NUNCA texto plano. Ver src/crypto/tokenCipher.ts
+// (AES-256-GCM, autenticado). El App Secret de Meta NUNCA se reutiliza como
+// clave de cifrado (instrucción explícita del pedido) — esta tabla se cifra
+// con META_TOKEN_ENCRYPTION_KEY, una variable completamente independiente.
+// ---------------------------------------------------------------------------
+
+model Credential {
+  id                  String   @id @default(uuid())
+  metaAuthorizationId String
+  metaAuthorization   MetaAuthorization @relation(fields: [metaAuthorizationId], references: [id], onDelete: Cascade)
+  kind                CredentialKind
+  // Ciphertext + IV + auth tag, todo en un solo string serializado (ver
+  // tokenCipher.ts) — nunca hay una columna "value" en texto plano aquí.
+  encryptedValue      String
+  createdAt           DateTime @default(now())
+  rotatedAt           DateTime?
+
+  @@index([metaAuthorizationId])
+  @@map("credentials")
+}
+
+enum CredentialKind {
+  SYSTEM_USER_ACCESS_TOKEN
+  WHATSAPP_ACCESS_TOKEN
+}
+
+// ---------------------------------------------------------------------------
+// Configuración de integración con la infraestructura de mensajería —
+// deliberadamente laxa (JSON) en esta etapa porque los adaptadores reales de
+// Evolution/Chatwoot/Typebot/n8n son la Etapa 4, todavía no aprobada.
+// ---------------------------------------------------------------------------
+
+model IntegrationConfig {
+  id                  String   @id @default(uuid())
+  phoneNumberId       String   @unique
+  phoneNumber         PhoneNumber @relation(fields: [phoneNumberId], references: [id], onDelete: Cascade)
+  evolutionInstanceId String?
+  chatwootAccountId   String?
+  chatwootInboxId     String?
+  typebotFlowId       String?
+  n8nWorkflowId       String?
+  provisionedAt       DateTime?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("integration_configs")
+}
+
+// ---------------------------------------------------------------------------
+// Eventos de mensaje — clasificación explícita (sección 11 del pedido) y
+// deduplicación de eventos de webhook (sección 8: "prevención de duplicados").
+// metaEventId es el identificador de deduplicación real: el mismo evento
+// reenviado por Meta (reintento) debe producir la MISMA fila, no una nueva.
+// ---------------------------------------------------------------------------
+
+model MessageEvent {
+  id            String   @id @default(uuid())
+  phoneNumberId String
+  phoneNumber   PhoneNumber @relation(fields: [phoneNumberId], references: [id], onDelete: Cascade)
+  metaEventId   String   // clave de deduplicación — ver webhook/classify.ts
+  direction     MessageDirection
+  origin        MessageOrigin
+  waMessageId   String?
+  contactWaId   String?
+  receivedAt    DateTime @default(now())
+  rawPayloadHash String  // hash del payload crudo, nunca el payload completo con contenido de conversación
+
+  @@unique([phoneNumberId, metaEventId])
+  @@index([phoneNumberId, receivedAt])
+  @@map("message_events")
+}
+
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum MessageOrigin {
+  CUSTOMER          // mensaje real de un cliente externo
+  BUSINESS_APP_ECHO // enviado manualmente desde WhatsApp Business por un empleado
+  API_SENT          // enviado por nuestra infraestructura vía la API
+  STATUS_UPDATE      // confirmaciones de entrega/lectura, no es un mensaje
+}
+
+// ---------------------------------------------------------------------------
+// Auditoría — append-only, tenant-scoped, nunca contiene tokens/códigos.
+// ---------------------------------------------------------------------------
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  tenantId  String?
+  tenant    Tenant?  @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  actor     String   // 'system' | 'meta_callback' | admin user id
+  action    String   // ej. 'onboarding.started', 'authorization.revoked'
+  metadata  Json?    // nunca tokens/códigos/PII de conversación — solo IDs y estados
+  createdAt DateTime @default(now())
+
+  @@index([tenantId, createdAt])
+  @@map("audit_logs")
+}

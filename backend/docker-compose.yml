@@ -1,0 +1,35 @@
+# Entorno de desarrollo local — completamente aislado, sin ningún contacto
+# con Hostinger ni con producción. Ver ARCHITECTURE_DECISION.md.
+name: maiatesta-whatsapp-backend
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: maiatesta_dev
+      POSTGRES_PASSWORD: dev_only_password_never_use_in_prod
+      POSTGRES_DB: maiatesta_whatsapp_dev
+    ports:
+      - '55561:5432'
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U maiatesta_dev -d maiatesta_whatsapp_dev']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - '55562:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-dev-data:

@@ -15,3 +15,8 @@ assets-source/images-raw/
 test-results/
 .visual-checks/
 .tmp-test-build/
+.env
+.env.*
+!.env.example
+backend/dist/
+backend/.tmp-test-build/
