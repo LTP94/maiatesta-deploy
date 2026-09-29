@@ -39,6 +39,99 @@ El frontend de Vercel (`/whatsapp/connect/`) seguirá llamando a `GET /api/meta/
 | Cifrado | AES-256-GCM (Node `crypto` nativo) | Cifrado autenticado, sin dependencias externas nuevas, misma filosofía que `server/meta/facebook/signed-request.ts` ya usa en el repo Vercel (HMAC nativo, sin librerías de terceros). |
 | Contenedores | Docker Compose (dev/test) | Pedido explícito del usuario ("Utiliza Docker Compose cuando corresponda"); permite levantar Postgres+Redis+backend en un comando, sin tocar nada de Hostinger todavía. |
 
-## Riesgo abierto explícito
+## Riesgo abierto — actualizado con el diagnóstico real de Hostinger
 
-Esta decisión asume que Hostinger puede alojar un cuarto servicio Node.js persistente (además de Evolution/Chatwoot/Typebot/n8n) con recursos suficientes (RAM/CPU) y que existe (o se puede crear) una forma de exponerlo públicamente con HTTPS. **Ninguna de las dos cosas está confirmada** — es exactamente lo primero que `HOSTINGER_INTEGRATION_GUIDE.md` pedirá diagnosticar, de solo lectura, antes de cualquier instalación real.
+El diagnóstico ya realizado (2 vCPU, ~8 GB RAM, ~4.7 GB disponibles al medir, 69 GB libres, Evolution API 2.3.7 vía Docker Compose, Nginx Proxy Manager disponible, red compartida `npm_network`, Chatwoot en otro servidor sin asumir Docker) **confirma que la Alternativa B es viable** — hay margen real de recursos para un cuarto servicio Node.js persistente con los límites conservadores de `docker-compose.hostinger.yml` (0.5 vCPU / 512 MB para el backend, 0.5/512 MB para Postgres, 0.25/256 MB para Redis — ver ese archivo). Lo que sigue sin confirmarse porque requiere acceso real al VPS, no lectura de este repositorio:
+
+- Que `maiatesta_whatsapp_isolated` (la red nueva y aislada de `docker-compose.hostinger.yml`) no colisione con subredes ya asignadas a `npm_network` u otros proyectos Docker del mismo host.
+- Que el usuario del sistema que ejecutará `docker compose` tenga permiso para crear una red Docker nueva sin afectar las existentes.
+- Que Nginx Proxy Manager pueda efectivamente alcanzar un contenedor de otro proyecto Docker Compose vía `docker network connect` (técnicamente sí, es un mecanismo estándar de Docker, pero no probado en este VPS específico).
+
+Estos tres puntos son exactamente lo que `HOSTINGER_INTEGRATION_GUIDE.md` (entregable de la etapa final) pedirá diagnosticar de solo lectura, antes de la primera instalación real — nada de esto se ejecuta en esta revisión.
+
+---
+
+# Revisión de seguridad y arquitectura — 4 puntos previos a la Etapa 2
+
+Esta sección documenta la respuesta a los cuatro puntos pedidos antes de aprobar el proceso real de autorización de Meta. Cada punto tiene código real y probado detrás, no solo la descripción — ver la sección "Evidencia" de cada uno.
+
+## Punto 1 — Comunicación segura Vercel ↔ Hostinger
+
+**Regla de fondo:** Vercel nunca habla con Postgres ni Redis directamente — ni hoy, ni en ningún diseño de este backend. Vercel solo hace peticiones HTTPS al backend de Hostinger, exactamente como ya hace hoy con sus propios 3 endpoints (`/api/meta/whatsapp/config` es la prueba de que el patrón "Vercel llama, backend responde JSON" ya funciona en producción).
+
+**Mecanismo de autorización previa del tenant — token de invitación.** Implementado y probado en `src/access/invitationToken.ts` (9 pruebas, todas en verde). Responde directamente a "la página pública de conexión no debe permitir que alguien asocie arbitrariamente una cuenta de Meta con otro cliente":
+
+1. Un administrador de Maiatesta (herramienta interna, fuera de esta revisión) llama `issueInvitationToken({ tenantId, adminUserId })` — genera un token HMAC-SHA256 firmado, con el mismo patrón que `server/meta/facebook/data-deletion-status-token.ts` del repo Vercel: `<firma>.<payload-base64url>`, verificación en tiempo constante, expiración de 7 días por defecto.
+2. El token se entrega al cliente **fuera de banda** — email o WhatsApp enviado por Maiatesta. No existe ninguna forma de que un visitante del sitio genere uno por sí mismo; no hay endpoint público que emita tokens de invitación.
+3. El cliente visita `/whatsapp/connect/?invite=<token>` en Vercel (la página ya existe; leer el query param es un cambio menor de la Etapa 2, no implementado todavía).
+4. El frontend envía el token al backend de Hostinger. El backend llama `verifyInvitationToken(token, secret)` — el `tenantId` de la sesión de onboarding sale **del token verificado**, nunca de un campo del body que el navegador podría manipular. Un token para el tenant A no puede usarse para crear una sesión del tenant B — probado explícitamente (`rejects a tampered tenantId`).
+5. Cada token tiene un `jti` único de un solo uso. Marcarlo como consumido requiere estado compartido (Redis) — eso se implementa junto con el endpoint real de la Etapa 2, no en este primitivo puro (que deliberadamente no toca red ni base de datos, para poder probarse de forma determinista).
+
+**Autenticación/sesión para el resto de la comunicación pública:** los endpoints públicos de onboarding (`onboarding/start`, `/session`, `/complete` — todavía sin implementar, Etapa 2) se autentican por posesión del token de invitación o, en pasos posteriores del mismo flujo, por el `nonce` de la `OnboardingSession` ya creada (ver `prisma/schema.prisma`, `OnboardingSession.nonce`, único). No hay cookies de sesión de navegador en ningún punto de este flujo.
+
+**CSRF:** no aplica en el sentido tradicional a estos endpoints — CSRF explota que el navegador adjunta cookies automáticamente entre orígenes; un modelo de token-en-el-body (como el de invitación, o Meta's propio `signed_request`) no tiene esa superficie. Si una futura Etapa 4+ agrega un panel de administración con sesión de cookie para el staff de Maiatesta, esa superficie sí necesitará tokens CSRF — se documenta como pendiente, no se implementa ahora porque no hay endpoint de admin con cookies en el alcance actual.
+
+**Restricciones de acceso concretas para la Etapa 2** (documentadas aquí para que la implementación las siga, no inventadas en el momento):
+- CORS: `Access-Control-Allow-Origin: https://www.maiatesta.com` exclusivamente, nunca `*`, nunca un patrón con comodín.
+- Rate limiting en `onboarding/start` específicamente (es el endpoint alcanzable sin ningún estado previo) — `express-rate-limit` ya está en `package.json` desde la Etapa 1, sin configurar todavía.
+- Todas las respuestas de error genéricas, sin distinguir "token inválido" de "token expirado" de "tenant no existe" en el mensaje público — mismo principio que `errorResponseForSignedRequestError` del repo Vercel.
+
+## Punto 2 — Aislamiento multiempresa: dos capas independientes, no una
+
+La preocupación era válida: `TenantScope` (Etapa 1) es una convención de código — nada impedía, hasta esta revisión, que un desarrollador futuro escribiera `prisma.phoneNumber.findMany()` sin pasar por `TenantScope` y obtuviera filas de todos los tenants. Eso ya no es cierto.
+
+**Capa 2 nueva: Row-Level Security de Postgres**, migración `prisma/migrations/20260929180000_enable_row_level_security/migration.sql`. Resumen de lo que hace, con la explicación de por qué cada pieza es necesaria:
+
+- Crea un rol `app_runtime` **que no es dueño de ninguna tabla** y tiene `NOBYPASSRLS` explícito. Esto es la pieza crítica que casi siempre se olvida: en Postgres, el dueño de una tabla y los superusuarios **ignoran RLS por defecto**, incluso con políticas activas. El servidor Express se conecta con este rol (`RUNTIME_DATABASE_URL`, `src/db/client.ts`) — las migraciones siguen usando el rol dueño (`DATABASE_URL`), que solo `prisma migrate` y `scripts/bootstrap-db-roles.sh` tocan.
+- `ENABLE ROW LEVEL SECURITY` + `FORCE ROW LEVEL SECURITY` en las 9 tablas que son de un tenant (directa o transitivamente): `tenants`, `admin_users`, `onboarding_sessions`, `meta_authorizations`, `audit_logs` (filtro directo por `tenantId`), y `whatsapp_business_accounts`, `phone_numbers`, `credentials`, `integration_configs`, `message_events` (filtro por subquery que atraviesa la misma cadena `tenant → autorización → WABA → número` que ya usa `TenantScope`).
+- Las políticas comparan contra `current_setting('app.current_tenant_id', true)` — una variable de **sesión de transacción**, fijada por `TenantScope.withSession()` (`src/tenancy/isolation.ts`) antes de cada operación vía `SELECT set_config('app.current_tenant_id', $1, true)` (el `true` final es el equivalente de `SET LOCAL`: se revierte solo al terminar la transacción, nunca se filtra a otra petición).
+- **Fail-closed, no fail-open:** si nunca se fijó `app.current_tenant_id`, `current_setting(..., true)` devuelve `NULL`, y `tenantId = NULL` nunca es verdadero en SQL — así que una consulta sin contexto de tenant no ve absolutamente ninguna fila, no "todas por accidente".
+
+**Identificador de Meta con unicidad global** (la otra mitad del Punto 2): `PhoneNumber.phoneNumberId` tiene `@unique` en `prisma/schema.prisma` — es el Phone Number ID real de Meta, global, y la restricción vive en la base de datos, no solo en la aplicación. `WhatsappBusinessAccount.wabaId` tiene la misma restricción a nivel de WABA. Esto significa que aunque `onboarding/complete` (Etapa 2, todavía sin escribir) tenga un bug y no verifique "este número ya está conectado a otro tenant" antes de insertar, el `INSERT` en sí mismo fallará con una violación de restricción única — la base de datos es la última línea de defensa, no solo la primera.
+
+**Evidencia — 21 pruebas nuevas, todas ejecutadas, todas en verde:**
+
+| Archivo | Qué prueba | Resultado |
+|---|---|---|
+| `tests/integration/tenant-isolation.test.ts` (ya existía, Etapa 1) | Capa 1 — `TenantScope` filtra correctamente vía `where` | 9/9 |
+| `tests/integration/row-level-security.test.ts` (nuevo) | Capa 2 — RLS bloquea incluso una query **sin pasar por TenantScope en absoluto**, usando el rol `app_runtime` real | 7/7 |
+| `tests/integration/key-rotation.test.ts` (nuevo, ver Punto 4) | La rotación de claves nunca mezcla credenciales entre tenants | incluido abajo |
+
+El archivo de RLS es la prueba directa que se pidió: conecta como `app_runtime` (el mismo rol que usa producción), ejecuta `runtime.onboardingSession.findMany()` **sin ningún `where`**, y confirma que (a) sin contexto de tenant fijado, devuelve cero filas; (b) fijando el tenant A, devuelve solo las de A; (c) fijando B, solo las de B; (d) un `where: { tenantId: tenantB.id }` ejecutado mientras la sesión está fijada en A devuelve cero filas — RLS se aplica *después* del `where` de la aplicación, no en su lugar; (e) lo mismo para `phone_numbers`, la tabla alcanzada solo por relación; (f) el rol `app_runtime` no puede hacer `ALTER TABLE` ni `TRUNCATE` — confirma que los permisos son estrictamente DML.
+
+## Punto 3 — Despliegue aislado en Hostinger
+
+`docker-compose.hostinger.yml` (nuevo) — plantilla completa, no ejecutada contra el VPS real:
+
+- Red propia `maiatesta_whatsapp_isolated`, **no** `npm_network`. Postgres y Redis solo tienen interfaz en esa red aislada.
+- Postgres y Redis **sin ningún puerto publicado al host** (ni siquiera `127.0.0.1`) — solo alcanzables por el contenedor `backend` dentro de la misma red Docker.
+- El backend se publica únicamente en `127.0.0.1:4000` del propio VPS — nunca en `0.0.0.0` — para que Nginx Proxy Manager (que corre en el mismo host) pueda alcanzarlo sin que el puerto quede expuesto a Internet directamente.
+- Límites de recursos explícitos por servicio (`deploy.resources.limits`): backend 0.5 vCPU/512 MB, Postgres 0.5 vCPU/512 MB, Redis 0.25 vCPU/256 MB — conservador frente a los ~4.7 GB disponibles medidos, dejando margen para Evolution API y el resto del stack existente.
+- La publicación pública vía HTTPS queda **documentada, no ejecutada**: el archivo explica los 4 pasos futuros (conectar *solo* el contenedor `backend` — nunca Postgres/Redis — a `npm_network` como red adicional, crear un Proxy Host nuevo en NPM apuntando a ese contenedor) sin modificar ninguna configuración de NPM ni de ningún servicio existente en este paso.
+
+`.env.hostinger.example` documenta cada variable que ese compose necesita, sin ningún valor real — los secretos reales se generan en el propio VPS, nunca en esta conversación ni en git.
+
+## Punto 4 — Protección y administración de credenciales
+
+**Generación de la clave:** `openssl rand -hex 32` (64 caracteres hex / 256 bits) — igual que `META_DATA_DELETION_STATUS_SECRET` ya hace en el repo Vercel. Documentado en `.env.example`/`.env.hostinger.example`, nunca generado por este agente con un valor real destinado a producción.
+
+**Almacenamiento:** variable de entorno del proceso backend en Hostinger, nunca en un archivo versionado — `.gitignore` del repositorio ya excluye `.env`, `.env.*` (con excepción explícita solo de los `*.example`, que no contienen secretos reales). El proceso backend es el único lugar que necesita leerla; Postgres/Redis nunca la ven (solo almacenan el ciphertext ya cifrado).
+
+**Backup — la regla que evita que el cifrado sea teatro:** la clave de cifrado **nunca debe respaldarse junto con el dump de la base de datos**. Si ambos terminan en el mismo backup (mismo bucket, mismo disco, mismo archivo), cualquiera con acceso a ese backup tiene tanto el ciphertext como la clave — el cifrado deja de proteger nada. Recomendación concreta: el respaldo de la clave vive en un gestor de secretos separado (o, como mínimo, un archivo cifrado distinto con distinto control de acceso) del respaldo de la base de datos.
+
+**Rotación — implementada y probada, no solo documentada.** `src/crypto/rotateKey.ts` + `scripts/rotate-encryption-key.ts` (CLI, toma las claves de variables de entorno, nunca de argumentos de línea de comandos — mismo principio que `bootstrap-db-roles.sh`). Cómo funciona: itera tenant por tenant (nunca una operación masiva sin scope), usando `TenantScope` para leer y re-escribir cada credencial — la rotación de claves respeta el mismo modelo de aislamiento que el resto del sistema, no es una vía de acceso especial. Una credencial que falla al descifrar con la clave vieja se reporta y se deja intacta, nunca se sobreescribe a ciegas ni aborta toda la rotación.
+
+5 pruebas en `tests/integration/key-rotation.test.ts`, todas en verde: re-cifra correctamente todas las credenciales de todos los tenants; nunca mezcla credenciales entre tenants durante la rotación; reporta (sin lanzar excepción global) una credencial corrupta y la deja sin tocar; rechaza rotar a la misma clave; maneja el caso de cero tenants/credenciales sin error.
+
+**Tokens fuera de logs/respuestas/archivos versionados:** `pino` en `src/index.ts` ya redacta headers de autorización/cookies; los handlers de la Etapa 2 (todavía sin escribir) deberán seguir el mismo patrón que `api/meta/facebook/deauthorize.ts` del repo Vercel — errores genéricos sin el valor que falló, nunca el código de autorización ni el token en el cuerpo de una respuesta de error.
+
+## Resumen de pruebas — estado tras esta revisión
+
+**40/40 pruebas pasando** (10 cifrado + 9 aislamiento por aplicación + 7 Row-Level Security + 5 rotación de clave + 9 token de invitación), más las verificaciones de la Etapa 1 (health endpoint end-to-end, `tsc --noEmit` limpio).
+
+## Problemas pendientes tras esta revisión
+
+- Los 3 puntos de la sección "Riesgo abierto" arriba (colisión de red Docker, permisos del usuario del sistema en el VPS, alcance real de `docker network connect` con NPM) — requieren acceso real al VPS, se resuelven en `HOSTINGER_INTEGRATION_GUIDE.md`.
+- El `jti` de un solo uso del token de invitación necesita Redis para marcarse como consumido — no implementado todavía porque no hay endpoint real que lo consuma (Etapa 2).
+- Rate limiting y CORS están documentados con el valor exacto a usar, pero no configurados en código todavía — `src/index.ts` no tiene ninguna ruta pública de onboarding que proteger hasta la Etapa 2.
+- La rotación de clave (`rotateEncryptionKey`) no está expuesta como endpoint HTTP — es deliberadamente solo CLI, para que rotar una clave de producción requiera acceso directo al servidor, no una petición de red.

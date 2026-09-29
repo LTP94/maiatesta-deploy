@@ -38,6 +38,16 @@ export function getDatabaseUrl(): string {
   return requireEnv('DATABASE_URL');
 }
 
+/**
+ * URL de conexión para el rol de aplicación `app_runtime` — NOBYPASSRLS, no
+ * dueño de tablas (ver prisma/migrations/20260929180000_enable_row_level_security).
+ * Es la URL que usa el servidor Express en runtime; DATABASE_URL (rol dueño)
+ * solo la usan las migraciones.
+ */
+export function getRuntimeDatabaseUrl(): string {
+  return requireEnv('RUNTIME_DATABASE_URL');
+}
+
 export function getRedisUrl(): string {
   return requireEnv('REDIS_URL');
 }

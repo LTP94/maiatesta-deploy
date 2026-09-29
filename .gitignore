@@ -18,5 +18,6 @@ test-results/
 .env
 .env.*
 !.env.example
+!.env.hostinger.example
 backend/dist/
 backend/.tmp-test-build/
