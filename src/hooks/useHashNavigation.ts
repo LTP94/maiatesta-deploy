@@ -20,12 +20,23 @@ export function useHashNavigation(
       return;
     }
 
-    if (!window.location.hash) {
+    const rawHash = window.location.hash;
+    // The WhatsApp invitation is application state, not an in-page anchor.
+    // It is consumed and removed by useWhatsappEmbeddedSignup.
+    if (!rawHash || rawHash.startsWith('#invite=')) {
       return;
     }
 
+    let targetId: string;
+    try {
+      targetId = decodeURIComponent(rawHash.slice(1));
+    } catch {
+      return;
+    }
+    if (!targetId) return;
+
     const scrollToHash = () => {
-      const target = document.querySelector(window.location.hash);
+      const target = document.getElementById(targetId);
 
       if (!target) {
         return;

@@ -9,12 +9,18 @@ import {
   applyTimeout,
   createSignupAttempt,
   deriveSignupState,
+  extractEmbeddedSignupSessionInfo,
   isAllowedSignupMessageOrigin,
   isRetryableSignupState,
   isTerminalSignupState,
   markLaunched,
   parseEmbeddedSignupMessage,
 } from '../.tmp-test-build/metaEmbeddedSignup.js';
+import {
+  createWhatsappOnboardingApi,
+  EmbeddedSignupCoordinator,
+  readInvitationTokenFromHash,
+} from '../.tmp-test-build/whatsappOnboardingClient.js';
 
 let passed = 0;
 let failed = 0;
@@ -33,7 +39,12 @@ const coexistenceMessage = {
   type: 'WA_EMBEDDED_SIGNUP',
   event: 'FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING',
   version: 3,
-  data: { waba_id: 'test-waba-id' },
+  data: {
+    business_id: 'test-business-id',
+    waba_id: 'test-waba-id',
+    phone_number_id: 'test-phone-id',
+    access_token: 'must-be-discarded',
+  },
 };
 
 // ---- origin allowlist -------------------------------------------------
@@ -80,6 +91,28 @@ const coexistenceMessage = {
 {
   const parsed = parseEmbeddedSignupMessage(42);
   record('number payload rejected', parsed === null);
+}
+{
+  const sessionInfo = extractEmbeddedSignupSessionInfo(coexistenceMessage);
+  record(
+    'extracts only validated Session Info identifiers',
+    JSON.stringify(sessionInfo) ===
+      JSON.stringify({
+        wabaId: 'test-waba-id',
+        businessId: 'test-business-id',
+        phoneNumberId: 'test-phone-id',
+      }),
+  );
+}
+{
+  const incomplete = {
+    type: 'WA_EMBEDDED_SIGNUP',
+    event: 'FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING',
+    data: { business_id: 'business-without-waba' },
+  };
+  record('rejects FINISH missing waba_id', extractEmbeddedSignupSessionInfo(incomplete) === null);
+  const attempt = applySignupMessage(markLaunched(createSignupAttempt()), incomplete);
+  record('incomplete FINISH becomes FAILED', deriveSignupState('ready', attempt) === 'FAILED');
 }
 
 // ---- attempt accumulator: both orderings converge ---------------------
@@ -188,6 +221,65 @@ const coexistenceMessage = {
     'input attempt objects are never mutated',
     JSON.stringify(original) === JSON.stringify(originalSnapshot),
   );
+}
+
+// ---- invitation transport and backend coordinator -------------------------
+{
+  record(
+    'reads invitation only from the URL fragment',
+    readInvitationTokenFromHash('#invite=signed.token') === 'signed.token',
+  );
+  record('does not read an invitation from a query string', readInvitationTokenFromHash('?invite=signed.token') === null);
+}
+{
+  let rejected = false;
+  try {
+    createWhatsappOnboardingApi({ baseUrl: 'http://api.example.com' });
+  } catch {
+    rejected = true;
+  }
+  record('rejects non-HTTPS remote backend URLs', rejected);
+}
+{
+  const calls = [];
+  const fakeApi = {
+    async start() {
+      throw new Error('not used');
+    },
+    async recordSessionInfo(_sessionToken, sessionInfo) {
+      calls.push(['session', sessionInfo.wabaId]);
+    },
+    async complete(_sessionToken, authorizationCode) {
+      calls.push(['complete', authorizationCode]);
+      return { wabaId: 'waba-order', phoneNumberId: 'phone-order', displayPhoneNumber: '+593000000000' };
+    },
+  };
+  const coordinator = new EmbeddedSignupCoordinator(fakeApi);
+  coordinator.beginSession({ sessionToken: 'memory-only-session', expiresAt: new Date(Date.now() + 60_000).toISOString() });
+  const beforeSession = await coordinator.acceptAuthorizationCode('memory-only-code');
+  const completed = await coordinator.acceptSessionInfo({ wabaId: 'waba-order' });
+  record('CODE -> SESSION waits for both signals', beforeSession.status === 'waiting');
+  record('CODE -> SESSION records Session Info before completing', calls[0]?.[0] === 'session' && calls[1]?.[0] === 'complete');
+  record('CODE -> SESSION reaches connected', completed.status === 'connected');
+}
+{
+  let completeCalls = 0;
+  const fakeApi = {
+    async start() {
+      throw new Error('not used');
+    },
+    async recordSessionInfo() {},
+    async complete() {
+      completeCalls += 1;
+      return { wabaId: 'w', phoneNumberId: 'p', displayPhoneNumber: 'd' };
+    },
+  };
+  const coordinator = new EmbeddedSignupCoordinator(fakeApi);
+  coordinator.beginSession({ sessionToken: 'memory-only-session', expiresAt: new Date(Date.now() + 60_000).toISOString() });
+  await coordinator.acceptAuthorizationCode('discard-on-cancel');
+  coordinator.cancelAttempt();
+  await coordinator.acceptSessionInfo({ wabaId: 'waba-after-cancel' });
+  record('cancellation discards a previously received code', completeCalls === 0);
 }
 
 console.log(`\n${passed} passed, ${failed} failed`);

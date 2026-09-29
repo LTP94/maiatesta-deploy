@@ -2,7 +2,7 @@
 
 Backend de onboarding, persistencia multiempresa y webhooks para conectar números de WhatsApp Business de clientes vía **Coexistence**. Las integraciones con Evolution/Chatwoot/Typebot/n8n siguen reservadas para Etapa 4.
 
-**Estado: Etapa 3 completa en pruebas locales (144/144).** Webhook, clasificación, inbox PostgreSQL, worker y recuperación están implementados. Nada fue desplegado ni probado con Meta real. Ver `STAGE3_ARCHITECTURE.md`, `STAGE3_TEST_REPORT.md` y las advertencias al final.
+**Estado: Etapa 3 cerrada en pruebas locales (146/146); preparación Hostinger validada localmente (suite actual 149/149).** Webhook, clasificación, inbox PostgreSQL, worker, recuperación y retención están implementados. Nada fue desplegado ni probado con Meta real. Ver `STAGE3_ARCHITECTURE.md`, `HOSTINGER_INTEGRATION_GUIDE.md`, `HOSTINGER_LOCAL_TEST_REPORT.md` y las advertencias al final.
 
 ## Requisitos
 
@@ -105,7 +105,7 @@ backend/
 │   └── index.ts
 ├── tests/
 │   ├── unit/                        ← 60 casos
-│   ├── integration/                 ← 78 casos, PostgreSQL/Redis reales y E2E HTTP
+│   ├── integration/                 ← 83 casos, PostgreSQL/Redis reales y E2E HTTP
 │   └── security/                    ← 6 casos de firma, cifrado y fail-closed
 ```
 
@@ -118,7 +118,7 @@ backend/
 
 ## Estado real — qué está probado y qué sigue pendiente de verificación
 
-- **STAGE 3 COMPLETE — LOCAL TESTS PASSED**: 144/144 pruebas (60 unitarias + 78 de integración + 6 de seguridad), cero omitidas y `tsc`/build limpios. PostgreSQL/Redis fueron contenedores locales aislados y Graph API fue simulada.
+- **STAGE 3 COMPLETE — LOCAL TESTS PASSED**: cierre de Etapa 3 en 146/146; suite actual 149/149 (60 unitarias + 83 de integración + 6 de seguridad) tras añadir retención para Hostinger. Cero omitidas y `tsc`/build limpios. PostgreSQL/Redis fueron contenedores locales aislados y Graph API fue simulada.
 - **HOSTINGER VALIDATION PENDING**: nada de este backend se ha ejecutado contra el Hostinger real — ni el despliegue, ni una conexión desde el dominio público de Vercel, ni Postgres/Redis de producción.
 - **META COEXISTENCE TEST PENDING**: ninguna llamada de este backend a Meta Graph API ha sido contra la API real. `getAuthorizingUserId` (`/me`), la forma exacta de la respuesta de `exchangeCodeForAccessToken`, y la respuesta de `subscribeAppToWaba` están verificadas solo contra la documentación oficial y respuestas simuladas — ver `docs/META_V4_COMPATIBILITY.md` para el detalle de qué se confirmó por lectura de documentación y qué sigue pendiente de una prueba real controlada (Fase C, con un número de prueba, nunca uno de cliente).
 

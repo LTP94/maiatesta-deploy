@@ -4,6 +4,8 @@ import { decryptToken } from '../crypto/tokenCipher.js';
 import { TenantScope } from '../tenancy/isolation.js';
 import { classifyChange, computeEligibleForAutomation } from './classify.js';
 import { incrementWebhookMetric } from './observability.js';
+import { receiveWebhookPayload } from './receiver.js';
+import { purgeExpiredWebhookData, type RetentionPurgeResult } from './retention.js';
 import { webhookEnvelopeSchema } from './schema.js';
 
 export const EVENT_CONTRACT_VERSION = 1;
@@ -30,6 +32,7 @@ export type NormalizedWebhookEvent = {
 export type EventProcessor = (event: NormalizedWebhookEvent) => Promise<void>;
 
 type ClaimedEvent = { eventId: string; tenantId: string };
+type ClaimedQuarantine = { quarantineId: string; encryptedPayload: string; recoveryAttempts: number };
 
 export class PermanentWebhookError extends Error {
   constructor(public readonly code: string, message: string) {
@@ -40,6 +43,7 @@ export class PermanentWebhookError extends Error {
 export class WebhookWorker {
   readonly workerId: string;
   private readonly startedAt = new Date();
+  private nextRetentionRunAt = 0;
 
   constructor(
     private readonly prisma: PrismaClient,
@@ -47,8 +51,32 @@ export class WebhookWorker {
     private readonly processor: EventProcessor = async () => undefined,
     workerId = `worker-${randomUUID()}`,
     private readonly processorTimeoutMs = 10_000,
+    private readonly retentionIntervalMs = 900_000,
+    private readonly retentionBatchSize = 500,
   ) {
     this.workerId = workerId;
+  }
+
+  async runRetentionIfDue(now = Date.now()): Promise<RetentionPurgeResult> {
+    if (now < this.nextRetentionRunAt) return { messageEventsDeleted: 0, quarantineEventsDeleted: 0 };
+
+    try {
+      const totals: RetentionPurgeResult = { messageEventsDeleted: 0, quarantineEventsDeleted: 0 };
+      for (let batch = 0; batch < 10; batch += 1) {
+        const result = await purgeExpiredWebhookData(this.prisma, this.retentionBatchSize);
+        totals.messageEventsDeleted += result.messageEventsDeleted;
+        totals.quarantineEventsDeleted += result.quarantineEventsDeleted;
+        if (result.messageEventsDeleted < this.retentionBatchSize && result.quarantineEventsDeleted < this.retentionBatchSize) break;
+      }
+      this.nextRetentionRunAt = now + this.retentionIntervalMs;
+      return totals;
+    } catch (error) {
+      // Un fallo de housekeeping no debe bloquear webhooks ni provocar un
+      // restart loop. Se reintenta como máximo una vez por minuto y se deja
+      // visible en el heartbeat para alertamiento operativo.
+      this.nextRetentionRunAt = now + Math.min(this.retentionIntervalMs, 60_000);
+      throw error;
+    }
   }
 
   async claim(limit = 10, leaseSeconds = 30): Promise<ClaimedEvent[]> {
@@ -58,6 +86,86 @@ export class WebhookWorker {
       limit,
       leaseSeconds,
     );
+  }
+
+  async claimRecoverableQuarantine(limit = 10, leaseSeconds = 30): Promise<ClaimedQuarantine[]> {
+    return this.prisma.$queryRawUnsafe<ClaimedQuarantine[]>(
+      'SELECT * FROM claim_recoverable_webhook_quarantine($1, $2::integer, $3::integer)',
+      this.workerId,
+      limit,
+      leaseSeconds,
+    );
+  }
+
+  private async finishQuarantineRecovery(quarantineId: string, recoveredCount: number): Promise<void> {
+    await this.prisma.$queryRawUnsafe(
+      'SELECT complete_webhook_quarantine_recovery($1, $2, $3::integer)',
+      quarantineId,
+      this.workerId,
+      recoveredCount,
+    );
+  }
+
+  private async retryQuarantineRecovery(claim: ClaimedQuarantine, errorCode: string): Promise<void> {
+    const delayMs = Math.min(60_000, 1000 * 2 ** Math.max(0, claim.recoveryAttempts - 1));
+    await this.prisma.$queryRawUnsafe(
+      'SELECT retry_webhook_quarantine_recovery($1, $2, $3, $4::timestamptz::timestamp)',
+      claim.quarantineId,
+      this.workerId,
+      errorCode,
+      new Date(Date.now() + delayMs),
+    );
+  }
+
+  private async deferQuarantineRecovery(quarantineId: string, errorCode: string): Promise<void> {
+    await this.prisma.$queryRawUnsafe(
+      'SELECT defer_webhook_quarantine_recovery($1, $2, $3, $4::timestamptz::timestamp)',
+      quarantineId,
+      this.workerId,
+      errorCode,
+      new Date(Date.now() + 30_000),
+    );
+  }
+
+  async recoverQuarantine(limit = 10): Promise<number> {
+    const claims = await this.claimRecoverableQuarantine(limit);
+    await Promise.all(
+      claims.map(async (claim) => {
+        try {
+          const source = JSON.parse(decryptToken(claim.encryptedPayload, this.payloadEncryptionKey)) as {
+            entryId?: unknown;
+            entryTime?: unknown;
+            change?: unknown;
+          };
+          if (typeof source.entryId !== 'string' || !source.change || typeof source.change !== 'object') {
+            await this.retryQuarantineRecovery(claim, 'RECOVERY_PAYLOAD_INVALID');
+            return;
+          }
+          const rawBody = Buffer.from(
+            JSON.stringify({
+              object: 'whatsapp_business_account',
+              entry: [{ id: source.entryId, time: source.entryTime, changes: [source.change] }],
+            }),
+          );
+          const result = await receiveWebhookPayload({
+            prisma: this.prisma,
+            rawBody,
+            payloadEncryptionKey: this.payloadEncryptionKey,
+            countAsReceived: false,
+            persistQuarantine: false,
+          });
+          const recoveredCount = result.accepted + result.duplicates;
+          if (result.quarantined === 0 && recoveredCount > 0) {
+            await this.finishQuarantineRecovery(claim.quarantineId, recoveredCount);
+          } else {
+            await this.deferQuarantineRecovery(claim.quarantineId, 'ROUTE_NOT_READY');
+          }
+        } catch {
+          await this.retryQuarantineRecovery(claim, 'RECOVERY_PROCESSING_FAILED');
+        }
+      }),
+    );
+    return claims.length;
   }
 
   async processClaim(claim: ClaimedEvent): Promise<void> {
@@ -140,8 +248,20 @@ export class WebhookWorker {
       await this.prisma.webhookWorkerHeartbeat.upsert({
         where: { workerId: this.workerId },
         create: { workerId: this.workerId, status: 'RUNNING', startedAt: this.startedAt, lastSeenAt: new Date() },
-        update: { status: 'RUNNING', lastSeenAt: new Date(), lastErrorCode: null },
+        update: { status: 'RUNNING', lastSeenAt: new Date() },
       });
+      const retentionWasDue = Date.now() >= this.nextRetentionRunAt;
+      let retentionSucceeded = false;
+      try {
+        await this.runRetentionIfDue();
+        retentionSucceeded = retentionWasDue;
+      } catch {
+        await this.prisma.webhookWorkerHeartbeat.update({
+          where: { workerId: this.workerId },
+          data: { lastSeenAt: new Date(), lastErrorCode: 'RETENTION_CLEANUP_FAILED' },
+        });
+      }
+      await this.recoverQuarantine(limit);
       const claims: ClaimedEvent[] = [];
       // Cada claim toma como máximo uno por tenant. Repetir rondas llena el
       // lote sin sacrificar equidad cuando hay varios tenants activos.
@@ -153,7 +273,11 @@ export class WebhookWorker {
       await Promise.all(claims.map((claim) => this.processClaim(claim)));
       await this.prisma.webhookWorkerHeartbeat.update({
         where: { workerId: this.workerId },
-        data: { lastSeenAt: new Date(), processedCount: { increment: claims.length } },
+        data: {
+          lastSeenAt: new Date(),
+          processedCount: { increment: claims.length },
+          ...(retentionSucceeded ? { lastErrorCode: null } : {}),
+        },
       });
       return claims.length;
     } catch (error) {

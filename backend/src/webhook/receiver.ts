@@ -52,6 +52,8 @@ export async function receiveWebhookPayload(params: {
   rawBody: Buffer;
   payloadEncryptionKey: Buffer;
   now?: Date;
+  countAsReceived?: boolean;
+  persistQuarantine?: boolean;
 }): Promise<ReceiveResult> {
   let raw: unknown;
   try {
@@ -67,7 +69,7 @@ export async function receiveWebhookPayload(params: {
     throw new WebhookPayloadError('INVALID_STRUCTURE');
   }
 
-  incrementWebhookMetric('received');
+  if (params.countAsReceived !== false) incrementWebhookMetric('received');
   const now = params.now ?? new Date();
   const result: ReceiveResult = { accepted: 0, duplicates: 0, quarantined: 0 };
 
@@ -75,7 +77,9 @@ export async function receiveWebhookPayload(params: {
     for (const change of entry.changes) {
       const classified = classifyChange(entry, change);
       if (classified.length === 0) {
-        await quarantine(params.prisma, params.payloadEncryptionKey, entry, change, 'EMPTY_OR_UNSUPPORTED_CHANGE', now);
+        if (params.persistQuarantine !== false) {
+          await quarantine(params.prisma, params.payloadEncryptionKey, entry, change, 'EMPTY_OR_UNSUPPORTED_CHANGE', now);
+        }
         result.quarantined += 1;
         continue;
       }
@@ -84,7 +88,9 @@ export async function receiveWebhookPayload(params: {
         const event = classified[eventIndex]!;
         const resolution = await resolveWebhookRoute(params.prisma, entry.id, event.routing);
         if (!resolution.tenantId || (!resolution.phoneRowId && needsPhone(event)) || !['ROUTED', 'ROUTED_ADMIN'].includes(resolution.resultCode)) {
-          await quarantine(params.prisma, params.payloadEncryptionKey, entry, change, resolution.resultCode, now);
+          if (params.persistQuarantine !== false) {
+            await quarantine(params.prisma, params.payloadEncryptionKey, entry, change, resolution.resultCode, now);
+          }
           result.quarantined += 1;
           continue;
         }

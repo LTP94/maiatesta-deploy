@@ -316,6 +316,7 @@ model MessageEvent {
   @@index([tenantId, processingState, nextAttemptAt])
   @@index([phoneNumberId, receivedAt])
   @@index([processingState, nextAttemptAt])
+  @@index([retentionExpiresAt])
   @@map("message_events")
 }
 
@@ -347,18 +348,28 @@ enum ProcessingState {
 }
 
 model WebhookQuarantineEvent {
-  id                 String   @id @default(uuid())
-  wabaId             String?
-  rawPayloadHash     String
-  encryptedPayload   String
-  reasonCode         String
-  receivedAt         DateTime @default(now())
-  lastReceivedAt     DateTime @default(now())
-  duplicateCount     Int      @default(0)
-  retentionExpiresAt DateTime
+  id                  String    @id @default(uuid())
+  wabaId              String?
+  rawPayloadHash      String
+  encryptedPayload    String
+  reasonCode          String
+  receivedAt          DateTime  @default(now())
+  lastReceivedAt      DateTime  @default(now())
+  duplicateCount      Int       @default(0)
+  retentionExpiresAt  DateTime
+  recoveryState       String    @default("PENDING")
+  recoveryAttempts    Int       @default(0)
+  nextRecoveryAt      DateTime  @default(now())
+  recoveryLeaseOwner  String?
+  recoveryLeaseUntil  DateTime?
+  lastRecoveryError   String?
+  recoveredAt         DateTime?
+  recoveredEventCount Int?
 
   @@unique([wabaId, rawPayloadHash, reasonCode])
   @@index([reasonCode, receivedAt])
+  @@index([recoveryState, nextRecoveryAt])
+  @@index([retentionExpiresAt])
   @@map("webhook_quarantine_events")
 }
 

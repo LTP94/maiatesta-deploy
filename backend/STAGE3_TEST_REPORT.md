@@ -7,13 +7,13 @@ Fecha final: 2026-09-29. Entorno: Node, PostgreSQL 16 y Redis 7 locales aislados
 | Verificación | Resultado |
 |---|---|
 | `npx prisma validate` | PASS |
-| migración desde cero (`prisma migrate reset`, DB efímera) | PASS, 7 migraciones |
+| migración desde cero (`prisma migrate reset`, DB efímera) | PASS, 8 migraciones |
 | `npm run typecheck` | PASS |
 | `npm run build` | PASS |
 | unitarias | 60/60 PASS |
-| integración PostgreSQL/Redis | 78/78 PASS |
+| integración PostgreSQL/Redis | 80/80 PASS |
 | seguridad | 6/6 PASS |
-| suite total | **144/144 PASS, 0 fallidas, 0 omitidas** |
+| suite total | **146/146 PASS, 0 fallidas, 0 omitidas** |
 
 ## Cobertura por grupo exigido
 
@@ -22,6 +22,7 @@ Fecha final: 2026-09-29. Entorno: Node, PostgreSQL 16 y Redis 7 locales aislados
 - C: dos tenants, WABA/número desconocidos, cruce, desconectado, varios números (regresión), RLS directo, pool concurrente y ruta restringida.
 - D: duplicado secuencial, diez concurrentes, persistencia, estados distintos/repetidos, eco/historial, dos números y dos workers.
 - E: DB indisponible, Redis no requerido, reinicio/lease, error transitorio/permanente, timeout, agotamiento, recuperación y reproceso scoped.
+- Ventana de onboarding: `history`, `smb_app_state_sync`, `smb_message_echoes` y mensaje nuevo llegan antes de `OPERATIONAL`, se deduplican en cuarentena, se promueven automáticamente y producen cuatro efectos únicos. Otro caso cubre un evento anterior al commit visible de `WabaRoute` (`UNKNOWN_WABA`).
 - F: todas las categorías no-customer son `automationEligible=false`; customer pausado también.
 - G: HTTP responde tras persistir sin integraciones; lotes concurrentes, backlog, equidad y recuperación.
 - H: todas las pruebas de Etapas 1–2 pasan con runtime RLS; cero skips.

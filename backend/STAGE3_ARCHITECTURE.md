@@ -40,12 +40,15 @@ worker independiente
 - `upsert_waba_route(waba, tenant)`: solo funciona si el contexto RLS actual coincide y la WABA ya pertenece a ese tenant.
 - `store_webhook_quarantine(...)`: registra un evento auténtico no enrutable sin dar acceso de lectura global.
 - `claim_webhook_events(...)`: reclama como máximo un evento por tenant y ronda.
+- `claim_recoverable_webhook_quarantine(...)`: entrega al worker, mediante lease, cambios cifrados cuya WABA ya tiene una autorización activa; las funciones de finalización/reintento solo aceptan el mismo `workerId` que posee el lease.
 
 Tras resolver, toda lectura/escritura ordinaria usa `TenantScope` y `SET LOCAL app.current_tenant_id`. `message_events` tiene `tenantId` directo y RLS `USING/WITH CHECK`.
 
 ## Durabilidad, idempotencia y privacidad
 
 La respuesta exitosa ocurre después de que cada subevento quede persistido o en cuarentena durable. Un fallo de almacenamiento devuelve `503`, haciendo que Meta pueda reintentar.
+
+`completeAuthorization` publica WABA, número `OPERATIONAL` y `WabaRoute` en una sola transacción. Por ello un webhook concurrente ve todo el conjunto o todavía ve `UNKNOWN_WABA`; no existe una ruta parcialmente confirmada. En ambos casos el payload auténtico queda cifrado. El worker revisa cuarentenas recuperables cuando la ruta aparece, vuelve a ejecutar el mismo parser/idempotencia y marca la cuarentena `RECOVERED`. También cubre registros legítimos temporalmente `PENDING_INTERNAL_SETUP`: una ruta aún no lista se difiere sin consumir los cinco intentos de fallo ni volver a almacenar el mismo payload. Un lease vencido permite recuperar una promoción interrumpida.
 
 La clave SHA-256 combina WABA, identidad oficial de ruta y clave del subevento. Los eventos sin ID natural usan JSON canónico. `createMany(..., skipDuplicates)` materializa `INSERT ... ON CONFLICT DO NOTHING`, por lo que la carrera no aborta la transacción. `duplicateCount` es diagnóstico; solo existe una fila/efecto procesable.
 

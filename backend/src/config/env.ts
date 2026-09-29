@@ -67,10 +67,34 @@ export function getPort(): number {
  */
 export function getAllowedOrigins(): string[] {
   const raw = process.env.ALLOWED_ORIGINS ?? '';
-  return raw
+  const origins = raw
     .split(',')
     .map((origin) => origin.trim())
     .filter((origin) => origin.length > 0);
+
+  for (const origin of origins) {
+    if (origin === '*') {
+      throw new ConfigError('ALLOWED_ORIGINS must contain exact origins; wildcard is forbidden.');
+    }
+    let parsed: URL;
+    try {
+      parsed = new URL(origin);
+    } catch {
+      throw new ConfigError('ALLOWED_ORIGINS contains an invalid origin.');
+    }
+    const localDevelopmentOrigin =
+      parsed.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(parsed.hostname);
+    if (
+      (parsed.protocol !== 'https:' && !localDevelopmentOrigin) ||
+      parsed.origin !== origin ||
+      parsed.username ||
+      parsed.password
+    ) {
+      throw new ConfigError('ALLOWED_ORIGINS must contain exact HTTPS origins (HTTP is local-only).');
+    }
+  }
+
+  return [...new Set(origins)];
 }
 
 export function getMetaAppId(): string {
@@ -133,4 +157,25 @@ export function getInvitationTokenSecret(): string {
  */
 export function getAdminApiKey(): string {
   return requireEnv('ADMIN_API_KEY');
+}
+
+export function getHealthcheckToken(): string {
+  return requireEnv('HEALTHCHECK_TOKEN');
+}
+
+function getBoundedInteger(name: string, defaultValue: number, minimum: number, maximum: number): number {
+  const raw = process.env[name];
+  const value = raw === undefined ? defaultValue : Number(raw);
+  if (!Number.isInteger(value) || value < minimum || value > maximum) {
+    throw new ConfigError(`${name} must be an integer between ${minimum} and ${maximum}.`);
+  }
+  return value;
+}
+
+export function getWebhookRetentionCleanupIntervalMs(): number {
+  return getBoundedInteger('WEBHOOK_RETENTION_CLEANUP_INTERVAL_MS', 900_000, 60_000, 86_400_000);
+}
+
+export function getWebhookRetentionBatchSize(): number {
+  return getBoundedInteger('WEBHOOK_RETENTION_BATCH_SIZE', 500, 1, 5000);
 }

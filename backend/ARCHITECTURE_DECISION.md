@@ -21,7 +21,7 @@ Coincide con tu preferencia inicial, pero la justificación real es técnica:
 
 ## Cómo se comunican los endpoints públicos con este backend (requisito explícito del punto 5)
 
-El frontend de Vercel (`/whatsapp/connect/`) seguirá llamando a `GET /api/meta/whatsapp/config` (sin cambios). El nuevo flujo de onboarding real (cuando el usuario apruebe la Etapa 2) necesitará que el navegador, tras `FB.login`, llame a un endpoint público de **este** backend (p. ej. `https://backend.maiatesta.com/whatsapp/onboarding/session` y `/complete`), no a Vercel — porque el intercambio de código por token y la persistencia ocurren aquí, no en Vercel. Eso implica:
+El frontend de Vercel (`/whatsapp/connect/`) sigue llamando a `GET /api/meta/whatsapp/config`. El flujo de onboarding implementado llama desde el navegador a los endpoints públicos de **este** backend (`https://whatsapp-api.maiatesta.com/onboarding/start`, `/session` y `/complete`), no a Vercel — porque el intercambio de código por token y la persistencia ocurren aquí, no en Vercel. Eso implica:
 
 - Un subdominio/puerto público para este backend, servido con HTTPS (Hostinger + reverse proxy, a definir en la guía de integración).
 - CORS explícito y restringido a `https://www.maiatesta.com` únicamente — nunca `*`.
@@ -63,11 +63,11 @@ Esta sección documenta la respuesta a los cuatro puntos pedidos antes de aproba
 
 1. Un administrador de Maiatesta (herramienta interna, fuera de esta revisión) llama `issueInvitationToken({ tenantId, adminUserId })` — genera un token HMAC-SHA256 firmado, con el mismo patrón que `server/meta/facebook/data-deletion-status-token.ts` del repo Vercel: `<firma>.<payload-base64url>`, verificación en tiempo constante, expiración de 7 días por defecto.
 2. El token se entrega al cliente **fuera de banda** — email o WhatsApp enviado por Maiatesta. No existe ninguna forma de que un visitante del sitio genere uno por sí mismo; no hay endpoint público que emita tokens de invitación.
-3. El cliente visita `/whatsapp/connect/?invite=<token>` en Vercel (la página ya existe; leer el query param es un cambio menor de la Etapa 2, no implementado todavía).
+3. El cliente visita `/whatsapp/connect/#invite=<token>` en Vercel. El fragmento no se envía por HTTP y el frontend lo elimina inmediatamente de la URL y del historial antes de llamar al backend.
 4. El frontend envía el token al backend de Hostinger. El backend llama `verifyInvitationToken(token, secret)` — el `tenantId` de la sesión de onboarding sale **del token verificado**, nunca de un campo del body que el navegador podría manipular. Un token para el tenant A no puede usarse para crear una sesión del tenant B — probado explícitamente (`rejects a tampered tenantId`).
 5. Cada token tiene un `jti` único de un solo uso. Marcarlo como consumido requiere estado compartido (Redis) — eso se implementa junto con el endpoint real de la Etapa 2, no en este primitivo puro (que deliberadamente no toca red ni base de datos, para poder probarse de forma determinista).
 
-**Autenticación/sesión para el resto de la comunicación pública:** los endpoints públicos de onboarding (`onboarding/start`, `/session`, `/complete` — todavía sin implementar, Etapa 2) se autentican por posesión del token de invitación o, en pasos posteriores del mismo flujo, por el `nonce` de la `OnboardingSession` ya creada (ver `prisma/schema.prisma`, `OnboardingSession.nonce`, único). No hay cookies de sesión de navegador en ningún punto de este flujo.
+**Autenticación/sesión para el resto de la comunicación pública:** los endpoints públicos de onboarding (`onboarding/start`, `/session`, `/complete`) se autentican por posesión del token de invitación o, en pasos posteriores del mismo flujo, por el token firmado de la `OnboardingSession` ya creada (ver `src/access/sessionToken.ts`). No hay cookies de sesión de navegador en ningún punto de este flujo.
 
 **CSRF:** no aplica en el sentido tradicional a estos endpoints — CSRF explota que el navegador adjunta cookies automáticamente entre orígenes; un modelo de token-en-el-body (como el de invitación, o Meta's propio `signed_request`) no tiene esa superficie. Si una futura Etapa 4+ agrega un panel de administración con sesión de cookie para el staff de Maiatesta, esa superficie sí necesitará tokens CSRF — se documenta como pendiente, no se implementa ahora porque no hay endpoint de admin con cookies en el alcance actual.
 

@@ -23,6 +23,7 @@ Ambos usan `RUNTIME_DATABASE_URL`. Solo migraciones usan `DATABASE_URL`. El work
 3. Si Redis cae, el webhook/worker continúan; el onboarding de Etapa 2 sí puede degradarse.
 4. Si se agotan cinco intentos, investigar `lastErrorCode` sin exponer contenido.
 5. Reprocesar con `reprocessWebhookEvent(prisma, tenantIdAutenticado, eventId)`. Una combinación cruzada actualiza cero filas y el tenant almacenado nunca cambia.
+6. Las cuarentenas por `UNKNOWN_WABA` o número aún no operacional se reclaman automáticamente cuando aparece una autorización/ruta activa. Tras cinco fallos quedan en `MANUAL_INTERVENTION`; no deben borrarse para desbloquear la cola.
 
 No reprocesar una operación de inicio de sync de historial/contactos: son operaciones separadas, condicionadas por consentimiento y potencialmente de una sola ejecución.
 

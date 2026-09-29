@@ -1,137 +1,222 @@
-# Plantilla de despliegue para Hostinger — AISLADA de npm_network y de
-# cualquier servicio existente (Evolution API, Chatwoot, etc.). No se ha
-# ejecutado nunca contra el VPS real; este archivo es la propuesta a
-# revisar/aprobar antes de cualquier `docker compose up` en producción.
-#
-# Recursos reales del VPS (diagnóstico del usuario): 2 vCPU, ~8 GB RAM,
-# ~4.7 GB disponibles al momento de medir, 69 GB libres en disco. Los
-# límites de abajo son deliberadamente conservadores — Evolution API y el
-# resto del stack ya comparten esa misma máquina y no deben verse
-# presionados por este backend nuevo.
-#
-# Red: `maiatesta_whatsapp_isolated` es una red Docker PROPIA, distinta de
-# `npm_network`. Postgres y Redis viven solo en esta red — no tienen
-# ninguna ruta hacia npm_network ni hacia Internet. Ver la sección
-# "Publicación futura vía HTTPS" al final de este archivo para cómo el
-# backend (no la base de datos) se conectará a Nginx Proxy Manager más
-# adelante, sin tocar la configuración de NPM en este paso.
+# Plantilla del piloto Hostinger. No publica puertos al host y no usa
+# npm_network. La única entrada es la red externa dedicada `ingress`, que
+# debe contener exclusivamente Nginx Proxy Manager y este backend.
 name: maiatesta-whatsapp-hostinger
+
+x-logging: &bounded-logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: '3'
+
+x-app-environment: &app-environment
+  RUNTIME_DATABASE_URL: postgresql://app_runtime:${APP_RUNTIME_DB_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+  REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+  NODE_ENV: production
+  META_APP_ID: ${META_APP_ID}
+  META_APP_SECRET: ${META_APP_SECRET}
+  META_GRAPH_API_VERSION: ${META_GRAPH_API_VERSION}
+  META_WHATSAPP_WEBHOOK_VERIFY_TOKEN: ${META_WHATSAPP_WEBHOOK_VERIFY_TOKEN}
+  META_TOKEN_ENCRYPTION_KEY: ${META_TOKEN_ENCRYPTION_KEY}
+  META_WEBHOOK_PAYLOAD_ENCRYPTION_KEY: ${META_WEBHOOK_PAYLOAD_ENCRYPTION_KEY}
+  META_ONBOARDING_SESSION_SECRET: ${META_ONBOARDING_SESSION_SECRET}
+  META_INVITATION_TOKEN_SECRET: ${META_INVITATION_TOKEN_SECRET}
+  ADMIN_API_KEY: ${ADMIN_API_KEY}
+  HEALTHCHECK_TOKEN: ${HEALTHCHECK_TOKEN}
 
 services:
   postgres:
     image: postgres:16-alpine
+    container_name: maiatesta-whatsapp-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_OWNER_USER}
       POSTGRES_PASSWORD: ${POSTGRES_OWNER_PASSWORD}
-      POSTGRES_DB: maiatesta_whatsapp
-    # SIN publicación de puertos al host — ni siquiera 127.0.0.1. Solo
-    # alcanzable desde otros contenedores de esta misma red aislada.
+      POSTGRES_DB: ${POSTGRES_DB}
     expose:
       - '5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ${BACKUP_DIR}:/backups
     networks:
-      - isolated
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
+      - private
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_OWNER_USER} -d maiatesta_whatsapp']
-      interval: 5s
+      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 20s
+    cpus: 0.60
+    mem_limit: 768m
+    mem_reservation: 256m
+    pids_limit: 200
+    shm_size: 128m
+    stop_grace_period: 60s
+    logging: *bounded-logging
 
   redis:
     image: redis:7-alpine
+    container_name: maiatesta-whatsapp-redis
     restart: unless-stopped
-    # Igual que Postgres: sin puertos publicados al host.
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    command:
+      - redis-server
+      - --appendonly
+      - 'yes'
+      - --appendfsync
+      - everysec
+      - --maxmemory
+      - 192mb
+      - --maxmemory-policy
+      - noeviction
+      - --requirepass
+      - ${REDIS_PASSWORD}
     expose:
       - '6379'
     volumes:
       - redis-data:/data
     networks:
-      - isolated
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 256M
+      - private
     healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-      interval: 5s
+      test: ['CMD-SHELL', 'redis-cli -a "$${REDIS_PASSWORD}" --no-auth-warning ping | grep -q PONG']
+      interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 10s
+    cpus: 0.20
+    mem_limit: 256m
+    mem_reservation: 64m
+    pids_limit: 100
+    stop_grace_period: 30s
+    logging: *bounded-logging
 
   backend:
+    image: maiatesta-whatsapp-backend:${BACKEND_IMAGE_TAG}
+    container_name: maiatesta-whatsapp-backend
     build:
       context: .
       dockerfile: Dockerfile
+      target: runtime
     restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    security_opt:
+      - no-new-privileges:true
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_OWNER_USER}:${POSTGRES_OWNER_PASSWORD}@postgres:5432/maiatesta_whatsapp?schema=public
-      RUNTIME_DATABASE_URL: postgresql://app_runtime:${APP_RUNTIME_DB_PASSWORD}@postgres:5432/maiatesta_whatsapp?schema=public
-      REDIS_URL: redis://redis:6379
+      <<: *app-environment
       PORT: '4000'
-      ALLOWED_ORIGINS: https://www.maiatesta.com
-      NODE_ENV: production
-      META_APP_ID: ${META_APP_ID}
-      META_APP_SECRET: ${META_APP_SECRET}
-      META_GRAPH_API_VERSION: ${META_GRAPH_API_VERSION}
-      META_WHATSAPP_WEBHOOK_VERIFY_TOKEN: ${META_WHATSAPP_WEBHOOK_VERIFY_TOKEN}
-      META_TOKEN_ENCRYPTION_KEY: ${META_TOKEN_ENCRYPTION_KEY}
-      META_ONBOARDING_SESSION_SECRET: ${META_ONBOARDING_SESSION_SECRET}
-    # Publicado SOLO en loopback del propio VPS (127.0.0.1), nunca en
-    # 0.0.0.0 — Nginx Proxy Manager (que corre en el mismo host) puede
-    # alcanzarlo así sin que el puerto quede accesible desde Internet
-    # directamente. Ver nota de publicación HTTPS abajo antes de
-    # habilitar esto en un despliegue real.
-    ports:
-      - '127.0.0.1:4000:4000'
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+    expose:
+      - '4000'
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     networks:
-      - isolated
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
+      - private
+      - ingress
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- --header="Authorization: Bearer $${HEALTHCHECK_TOKEN}" http://127.0.0.1:4000/health >/dev/null']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    cpus: 0.45
+    mem_limit: 384m
+    mem_reservation: 128m
+    pids_limit: 150
+    stop_grace_period: 30s
+    logging: *bounded-logging
+
+  worker:
+    image: maiatesta-whatsapp-backend:${BACKEND_IMAGE_TAG}
+    container_name: maiatesta-whatsapp-worker
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    security_opt:
+      - no-new-privileges:true
+    command: ['node', 'dist/worker-index.js']
+    environment:
+      RUNTIME_DATABASE_URL: postgresql://app_runtime:${APP_RUNTIME_DB_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      META_WEBHOOK_PAYLOAD_ENCRYPTION_KEY: ${META_WEBHOOK_PAYLOAD_ENCRYPTION_KEY}
+      WORKER_ID: hostinger-worker-1
+      WEBHOOK_RETENTION_CLEANUP_INTERVAL_MS: ${WEBHOOK_RETENTION_CLEANUP_INTERVAL_MS}
+      WEBHOOK_RETENTION_BATCH_SIZE: ${WEBHOOK_RETENTION_BATCH_SIZE}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - private
+    healthcheck:
+      test: ['CMD', 'node', 'dist/worker-healthcheck.js']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    cpus: 0.35
+    mem_limit: 384m
+    mem_reservation: 128m
+    pids_limit: 150
+    stop_grace_period: 60s
+    logging: *bounded-logging
+
+  migrate:
+    image: maiatesta-whatsapp-operations:${BACKEND_IMAGE_TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: operations
+    profiles: ['operations']
+    restart: 'no'
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_OWNER_USER}:${POSTGRES_OWNER_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+    command: ['npx', 'prisma', 'migrate', 'deploy']
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - private
+    cpus: 0.50
+    mem_limit: 512m
+    pids_limit: 150
+    logging: *bounded-logging
+
+  bootstrap-role:
+    image: maiatesta-whatsapp-operations:${BACKEND_IMAGE_TAG}
+    profiles: ['operations']
+    restart: 'no'
+    environment:
+      OWNER_DATABASE_URL: postgresql://${POSTGRES_OWNER_USER}:${POSTGRES_OWNER_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      RUNTIME_DATABASE_URL: postgresql://app_runtime:${APP_RUNTIME_DB_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      APP_RUNTIME_DB_PASSWORD: ${APP_RUNTIME_DB_PASSWORD}
+    command: ['sh', 'scripts/bootstrap-db-roles.sh']
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - private
+    cpus: 0.20
+    mem_limit: 128m
+    pids_limit: 50
+    logging: *bounded-logging
 
 networks:
-  isolated:
-    name: maiatesta_whatsapp_isolated
-    # Red interna dedicada — NO es npm_network, NO tiene salida directa a
-    # Internet más allá de lo que el propio contenedor `backend` necesite
-    # para hablar con Meta Graph API.
+  private:
+    name: maiatesta_whatsapp_private
+    internal: true
+  ingress:
+    name: ${BACKEND_INGRESS_NETWORK}
+    external: true
 
 volumes:
   postgres-data:
+    name: maiatesta_whatsapp_postgres_data
   redis-data:
-
-# -----------------------------------------------------------------------------
-# Publicación futura vía HTTPS (NO ejecutado, solo documentado)
-# -----------------------------------------------------------------------------
-#
-# Cuando se apruebe exponer el backend públicamente:
-#
-# 1. Diagnóstico de solo lectura primero (ver HOSTINGER_INTEGRATION_GUIDE.md,
-#    entregable de la etapa final) — confirmar que `maiatesta_whatsapp_isolated`
-#    y `npm_network` pueden coexistir sin conflicto de nombres/subredes.
-# 2. Conectar ÚNICAMENTE el servicio `backend` (nunca `postgres` ni `redis`)
-#    a `npm_network`, como red ADICIONAL, no en reemplazo de `isolated`:
-#      docker network connect npm_network maiatesta-whatsapp-hostinger-backend-1
-#    Esto NO requiere modificar el docker-compose.yml de Nginx Proxy Manager
-#    ni de ningún otro servicio existente.
-# 3. Crear un nuevo Proxy Host en NPM apuntando al nombre de contenedor
-#    `backend` (o su IP en npm_network), puerto interno 4000, con SSL real.
-# 4. Confirmar que `postgres`/`redis` siguen siendo inalcanzables desde
-#    npm_network — no tienen ninguna interfaz ahí, por diseño de este archivo.
-#
-# Ninguno de estos 4 pasos se ejecuta en esta etapa. Requieren aprobación
-# explícita y acceso real al VPS, que este entorno de desarrollo no tiene.
+    name: maiatesta_whatsapp_redis_data

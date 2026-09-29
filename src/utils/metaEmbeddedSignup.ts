@@ -33,10 +33,16 @@ export function createSignupAttempt(): SignupAttempt {
 }
 
 export type SignupState =
+  | 'INVITATION_REQUIRED'
+  | 'PREPARING_SESSION'
   | 'SDK_LOADING'
   | 'SDK_READY'
   | 'WAITING_FOR_META'
   | 'READY_FOR_BACKEND'
+  | 'BACKEND_PROCESSING'
+  | 'CONNECTED'
+  | 'SESSION_EXPIRED'
+  | 'BACKEND_FAILED'
   | 'WRONG_FLOW_VARIANT'
   | 'CANCELLED'
   | 'SDK_FAILED'
@@ -103,6 +109,45 @@ export type EmbeddedSignupMessage = {
   data?: Record<string, unknown>;
 };
 
+export type EmbeddedSignupSessionInfo = {
+  businessId?: string;
+  wabaId: string;
+  phoneNumberId?: string;
+};
+
+const META_ID_PATTERN = /^[A-Za-z0-9_-]{1,256}$/;
+
+function readMetaId(data: Record<string, unknown>, snakeCaseKey: string): string | undefined {
+  const value = data[snakeCaseKey];
+  return typeof value === 'string' && META_ID_PATTERN.test(value) ? value : undefined;
+}
+
+/**
+ * Extracts only the identifiers required by our backend from Meta's
+ * Coexistence FINISH event. Unknown fields are deliberately discarded and
+ * a WABA id is mandatory, because /onboarding/complete cannot safely resolve
+ * the authorized account without it.
+ */
+export function extractEmbeddedSignupSessionInfo(
+  message: EmbeddedSignupMessage,
+): EmbeddedSignupSessionInfo | null {
+  if (message.event !== COEXISTENCE_FINISH_EVENT || !message.data) {
+    return null;
+  }
+
+  const wabaId = readMetaId(message.data, 'waba_id');
+  if (!wabaId) {
+    return null;
+  }
+
+  const sessionInfo: EmbeddedSignupSessionInfo = { wabaId };
+  const businessId = readMetaId(message.data, 'business_id');
+  const phoneNumberId = readMetaId(message.data, 'phone_number_id');
+  if (businessId) sessionInfo.businessId = businessId;
+  if (phoneNumberId) sessionInfo.phoneNumberId = phoneNumberId;
+  return sessionInfo;
+}
+
 /**
  * Accepts event.data as either an already-parsed object or a JSON string
  * (Meta's docs show both forms in the wild). Rejects anything malformed or
@@ -166,7 +211,9 @@ export function applySignupMessage(
   message: EmbeddedSignupMessage,
 ): SignupAttempt {
   if (message.event === COEXISTENCE_FINISH_EVENT) {
-    return { ...attempt, sessionFinished: true };
+    return extractEmbeddedSignupSessionInfo(message)
+      ? { ...attempt, sessionFinished: true }
+      : { ...attempt, failureCode: 'INCOMPLETE_SESSION_INFO' };
   }
 
   if (message.event.startsWith('FINISH')) {
@@ -215,6 +262,8 @@ export function applyTimeout(attempt: SignupAttempt): SignupAttempt {
 
 const TERMINAL_STATES = new Set<SignupState>([
   'READY_FOR_BACKEND',
+  'CONNECTED',
+  'SESSION_EXPIRED',
   'WRONG_FLOW_VARIANT',
   'CANCELLED',
   'SDK_FAILED',
@@ -227,6 +276,7 @@ export function isTerminalSignupState(state: SignupState): boolean {
 }
 
 const RETRYABLE_STATES = new Set<SignupState>([
+  'BACKEND_FAILED',
   'WRONG_FLOW_VARIANT',
   'CANCELLED',
   'TIMED_OUT',

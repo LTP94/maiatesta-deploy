@@ -10,19 +10,17 @@ import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
  * estilo que server/meta/facebook/data-deletion-status-token.ts del repo de
  * Vercel (HMAC-SHA256 firmado, comparación en tiempo constante).
  *
- * IMPORTANTE — esto todavía NO está conectado a ningún endpoint. La Etapa 2
- * (onboarding/start, session, complete) es la que usaría este primitivo
- * para resolver el tenantId de una sesión de onboarding a partir de un
- * token, en vez de confiar en un tenantId que el navegador envíe
- * libremente. No se implementa esa ruta en esta revisión — solo el bloque
- * de construcción, ya probado.
+ * Este primitivo está conectado a POST /onboarding/start, que resuelve el
+ * tenantId de una sesión únicamente desde la invitación firmada, nunca desde
+ * un tenantId que el navegador pueda enviar libremente.
  *
  * Flujo previsto (documentado en ARCHITECTURE_DECISION.md, Punto 1):
  *  1. Un administrador de Maiatesta (fuera de esta app, herramienta interna
  *     futura) llama `issueInvitationToken({ tenantId, adminUserId })`.
  *  2. El token resultante se entrega al cliente FUERA de banda (email,
  *     WhatsApp) — nunca hay una forma de auto-generarlo desde el navegador.
- *  3. El cliente visita /whatsapp/connect/?invite=<token> en Vercel.
+ *  3. El cliente visita /whatsapp/connect/#invite=<token> en Vercel. El
+ *     fragmento no viaja al servidor y el frontend lo elimina al consumirlo.
  *  4. El frontend envía el token al backend de Hostinger en
  *     POST /onboarding/start.
  *  5. El backend llama `verifyInvitationToken(token)` — el tenantId de la
@@ -30,9 +28,8 @@ import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
  *     body que el navegador podría manipular.
  *  6. El `jti` del token se marca consumido (Redis, con TTL = tiempo
  *     restante hasta la expiración) — un token usado dos veces se rechaza,
- *     incluso si su firma sigue siendo válida. Esa parte requiere Redis y
- *     por tanto se implementa junto con el endpoint real en la Etapa 2, no
- *     aquí (este módulo no depende de infraestructura).
+ *     incluso si su firma sigue siendo válida. Esa operación vive en
+ *     invitationTokenStore.ts; este módulo permanece como primitivo puro.
  *
  * Por qué no hay CSRF tradicional que mitigar aquí: la autenticación no usa
  * cookies de sesión ambientales — es un token que el cliente posee y envía

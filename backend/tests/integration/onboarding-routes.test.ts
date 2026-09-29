@@ -8,6 +8,11 @@ import { issueInvitationToken } from '../../src/access/invitationToken.js';
 import { MetaGraphClient } from '../../src/meta/graphClient.js';
 import { createOnboardingRouter } from '../../src/onboarding/routes.js';
 import type { OnboardingDeps } from '../../src/onboarding/service.js';
+import {
+  createWhatsappOnboardingApi,
+  EmbeddedSignupCoordinator,
+  OnboardingApiError,
+} from '../../../src/utils/whatsappOnboardingClient.js';
 
 /**
  * Pruebas a nivel HTTP de las rutas de onboarding — confirman los códigos de
@@ -257,5 +262,98 @@ describe('flujo completo vía HTTP: start -> session -> complete', () => {
       body: JSON.stringify({ sessionToken }),
     });
     expect(res.status).toBe(400);
+  });
+});
+
+describe('integración frontend -> backend con Meta Graph simulado', () => {
+  it.each(['SESSION_INFO_THEN_CODE', 'CODE_THEN_SESSION_INFO'] as const)(
+    'completa y asocia al tenant autorizado cuando Meta entrega %s',
+    async (deliveryOrder) => {
+      const api = createWhatsappOnboardingApi({ baseUrl });
+      const coordinator = new EmbeddedSignupCoordinator(api);
+      const session = await api.start(invite());
+      coordinator.beginSession(session);
+
+      const sessionInfo = {
+        businessId: 'business-frontend-test',
+        wabaId: `waba-${deliveryOrder.toLowerCase()}`,
+        phoneNumberId: 'phone-route-1',
+      };
+
+      let outcome;
+      if (deliveryOrder === 'SESSION_INFO_THEN_CODE') {
+        expect(await coordinator.acceptSessionInfo(sessionInfo)).toEqual({ status: 'waiting' });
+        outcome = await coordinator.acceptAuthorizationCode('authorization-code-from-meta');
+      } else {
+        expect(await coordinator.acceptAuthorizationCode('authorization-code-from-meta')).toEqual({ status: 'waiting' });
+        outcome = await coordinator.acceptSessionInfo(sessionInfo);
+      }
+
+      expect(outcome).toEqual({
+        status: 'connected',
+        result: {
+          wabaId: sessionInfo.wabaId,
+          phoneNumberId: 'phone-route-1',
+          displayPhoneNumber: '+593955555555',
+        },
+      });
+
+      const storedSession = await prisma.onboardingSession.findFirstOrThrow({
+        where: { tenantId: tenant.id },
+      });
+      expect(storedSession.state).toBe('OPERATIONAL');
+      expect(storedSession.metaSessionInfo).toEqual(sessionInfo);
+
+      const authorization = await prisma.metaAuthorization.findFirstOrThrow({
+        where: { onboardingSessionId: storedSession.id },
+      });
+      expect(authorization.tenantId).toBe(tenant.id);
+      expect(
+        await prisma.credential.count({ where: { metaAuthorizationId: authorization.id } }),
+      ).toBe(1);
+    },
+  );
+
+  it('la cancelación elimina el código en memoria y no completa con Session Info posterior', async () => {
+    const api = createWhatsappOnboardingApi({ baseUrl });
+    const coordinator = new EmbeddedSignupCoordinator(api);
+    const session = await api.start(invite());
+    coordinator.beginSession(session);
+
+    expect(await coordinator.acceptAuthorizationCode('authorization-code-that-must-be-discarded')).toEqual({
+      status: 'waiting',
+    });
+    coordinator.cancelAttempt();
+    expect(
+      await coordinator.acceptSessionInfo({
+        wabaId: 'waba-after-cancel',
+        phoneNumberId: 'phone-route-1',
+      }),
+    ).toEqual({ status: 'waiting' });
+
+    expect(await prisma.metaAuthorization.count()).toBe(0);
+    expect(await prisma.credential.count()).toBe(0);
+    const storedSession = await prisma.onboardingSession.findFirstOrThrow({
+      where: { tenantId: tenant.id },
+    });
+    expect(storedSession.state).toBe('AWAITING_AUTHORIZATION');
+  });
+
+  it('propaga una sesión vencida sin enviar el authorization code a Meta', async () => {
+    const api = createWhatsappOnboardingApi({ baseUrl });
+    const coordinator = new EmbeddedSignupCoordinator(api);
+    const session = await api.start(invite());
+    coordinator.beginSession(session);
+
+    await prisma.onboardingSession.updateMany({
+      where: { tenantId: tenant.id },
+      data: { expiresAt: new Date(Date.now() - 1_000) },
+    });
+
+    await expect(
+      coordinator.acceptSessionInfo({ wabaId: 'waba-expired', phoneNumberId: 'phone-route-1' }),
+    ).rejects.toMatchObject<Partial<OnboardingApiError>>({ code: 'SESSION_EXPIRED', status: 410 });
+    expect(await prisma.metaAuthorization.count()).toBe(0);
+    expect(await prisma.credential.count()).toBe(0);
   });
 });

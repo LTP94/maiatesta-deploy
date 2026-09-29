@@ -86,6 +86,49 @@ function echoPayload(fixture: Fixture, id = 'wamid.echo.1') {
   };
 }
 
+function transitionWindowPayload(fixture: Fixture) {
+  const metadata = { display_phone_number: '15550000000', phone_number_id: fixture.phoneExternalId };
+  return {
+    object: 'whatsapp_business_account',
+    entry: [
+      {
+        id: fixture.wabaId,
+        time: 1_799_999_999,
+        changes: [
+          {
+            field: 'messages',
+            value: {
+              metadata,
+              messages: [{ from: '15551112222', id: 'wamid.transition.inbound', timestamp: '1799999999', type: 'text', text: { body: 'during onboarding' } }],
+            },
+          },
+          {
+            field: 'smb_message_echoes',
+            value: {
+              metadata,
+              message_echoes: [{ from: '15550000000', to: '15551112222', id: 'wamid.transition.echo', timestamp: '1799999999', type: 'text' }],
+            },
+          },
+          {
+            field: 'smb_app_state_sync',
+            value: {
+              metadata,
+              state_sync: [{ type: 'contact', action: 'add', contact: { phone_number: '15551112222' }, metadata: { timestamp: '1799999999' } }],
+            },
+          },
+          {
+            field: 'history',
+            value: {
+              metadata,
+              history: [{ threads: [{ id: '15551112222', messages: [{ from: '15551112222', id: 'wamid.transition.history', timestamp: '1799999998', type: 'text' }] }] }],
+            },
+          },
+        ],
+      },
+    ],
+  };
+}
+
 async function seedTenant(label: string): Promise<Fixture> {
   const suffix = randomBytes(5).toString('hex');
   const tenant = await owner.tenant.create({ data: { name: `Tenant ${label}`, slug: `tenant-${label}-${suffix}` } });
@@ -256,6 +299,71 @@ describe('Grupos B/C/D/F — clasificación, tenant e idempotencia', () => {
     const rows = await owner.webhookQuarantineEvent.findMany();
     expect(rows).toHaveLength(1);
     expect(rows[0]!.duplicateCount).toBe(1);
+  });
+
+  it('recupera history, contactos, ecos y mensajes recibidos antes de OPERATIONAL sin duplicar efectos', async () => {
+    await owner.phoneNumber.update({
+      where: { id: tenantA.phoneRowId },
+      data: { connectionState: 'PENDING_INTERNAL_SETUP' },
+    });
+    const payload = transitionWindowPayload(tenantA);
+
+    const first = await send(payload);
+    const repeatedWhilePending = await send(payload);
+    expect(first.status).toBe(200);
+    expect(await first.json()).toMatchObject({ accepted: 0, quarantined: 4 });
+    expect(repeatedWhilePending.status).toBe(200);
+    expect(await owner.messageEvent.count()).toBe(0);
+    const held = await owner.webhookQuarantineEvent.findMany();
+    expect(held).toHaveLength(4);
+    expect(held.every((event) => event.recoveryState === 'PENDING' && event.duplicateCount === 1)).toBe(true);
+
+    const effects: string[] = [];
+    const worker = new WebhookWorker(runtime, PAYLOAD_KEY, async (event) => effects.push(event.classification), 'transition-worker');
+    expect(await worker.runOnce(10)).toBe(0);
+    const deferred = await owner.webhookQuarantineEvent.findMany();
+    expect(deferred.every((event) => event.recoveryState === 'RETRY_PENDING' && event.recoveryAttempts === 0)).toBe(true);
+    expect(deferred.every((event) => event.duplicateCount === 1)).toBe(true);
+
+    await owner.phoneNumber.update({
+      where: { id: tenantA.phoneRowId },
+      data: { connectionState: 'OPERATIONAL', connectedAt: new Date() },
+    });
+    await owner.webhookQuarantineEvent.updateMany({ data: { nextRecoveryAt: new Date(0) } });
+    expect(await worker.runOnce(10)).toBe(4);
+
+    const recovered = await owner.messageEvent.findMany();
+    expect(recovered).toHaveLength(4);
+    expect(new Set(recovered.map((event) => event.eventCategory))).toEqual(
+      new Set(['CUSTOMER_INBOUND', 'BUSINESS_APP_ECHO', 'CONTACT_SYNC', 'HISTORY_SYNC']),
+    );
+    expect(recovered.every((event) => event.processingState === 'PROCESSED')).toBe(true);
+    expect(recovered.find((event) => event.eventCategory === 'CUSTOMER_INBOUND')?.eligibleForAutomation).toBe(true);
+    expect(recovered.filter((event) => event.eventCategory !== 'CUSTOMER_INBOUND').every((event) => !event.eligibleForAutomation)).toBe(true);
+    expect(effects).toHaveLength(4);
+    expect((await owner.webhookQuarantineEvent.findMany()).every((event) => event.recoveryState === 'RECOVERED')).toBe(true);
+
+    const retryAfterOperational = await send(payload);
+    expect(await retryAfterOperational.json()).toMatchObject({ accepted: 0, duplicates: 4, quarantined: 0 });
+    expect(await owner.messageEvent.count()).toBe(4);
+  });
+
+  it('recupera un evento que llegó antes de que la transacción de onboarding publicara WabaRoute', async () => {
+    await owner.wabaRoute.delete({ where: { wabaId: tenantA.wabaId } });
+    const payload = messagePayload(tenantA, 'wamid.before-route-commit');
+    expect(await (await send(payload)).json()).toMatchObject({ accepted: 0, quarantined: 1 });
+    expect(await owner.messageEvent.count()).toBe(0);
+    expect(await owner.webhookQuarantineEvent.findFirstOrThrow()).toMatchObject({ reasonCode: 'UNKNOWN_WABA', recoveryState: 'PENDING' });
+
+    // Simula el commit atómico de completeAuthorization: la ruta se vuelve
+    // visible junto con el número ya OPERATIONAL.
+    await owner.wabaRoute.create({ data: { wabaId: tenantA.wabaId, tenantId: tenantA.tenantId } });
+    const worker = new WebhookWorker(runtime, PAYLOAD_KEY, undefined, 'pre-commit-window-worker');
+    expect(await worker.runOnce()).toBe(1);
+    expect(await owner.messageEvent.findFirstOrThrow()).toMatchObject({
+      waMessageId: 'wamid.before-route-commit', processingState: 'PROCESSED',
+    });
+    expect(await owner.webhookQuarantineEvent.findFirstOrThrow()).toMatchObject({ recoveryState: 'RECOVERED', recoveredEventCount: 1 });
   });
 
   it('acepta evento administrativo sin número, pero nunca como entrante', async () => {
