@@ -1,5 +1,8 @@
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 
+// Single-use enforcement (Redis-backed) vive en ./invitationTokenStore.ts —
+// este archivo sigue siendo el primitivo puro, sin red, deliberadamente.
+
 /**
  * Token de invitación — el mecanismo que responde a "no debe permitir que
  * alguien asocie arbitrariamente una cuenta de Meta con otro cliente" (Punto
@@ -93,6 +96,31 @@ export function issueInvitationToken(
   const signature = createHmac('sha256', secret).update(encodedPayload).digest('base64url');
 
   return `${signature}.${encodedPayload}`;
+}
+
+/**
+ * Emisión "exclusivamente mediante una operación administrativa
+ * autenticada" (condición 1 de la Etapa 2): requiere un `adminApiKey` que
+ * se compara en tiempo constante contra `expectedAdminApiKey` (proviene de
+ * una variable de entorno separada, `ADMIN_API_KEY` — ver
+ * src/config/env.ts —, independiente de `META_ONBOARDING_SESSION_SECRET`
+ * que firma el token en sí). Sin esta credencial, `issueInvitationToken`
+ * de arriba sigue siendo llamable directamente por cualquier código que
+ * importe el módulo — por eso la Etapa 2 debe usar SOLO esta función desde
+ * cualquier herramienta administrativa, nunca la de abajo sin el guard.
+ */
+export function issueInvitationTokenAsAdmin(
+  params: { tenantId: string; adminUserId: string; ttlSeconds?: number; adminApiKey: string },
+  secrets: { tokenSecret: string; expectedAdminApiKey: string },
+): string {
+  const provided = Buffer.from(params.adminApiKey, 'utf8');
+  const expected = Buffer.from(secrets.expectedAdminApiKey, 'utf8');
+
+  if (provided.length !== expected.length || !timingSafeEqual(provided, expected)) {
+    throw new InvitationTokenError('Not authorized to issue invitation tokens.');
+  }
+
+  return issueInvitationToken(params, secrets.tokenSecret);
 }
 
 function isValidPayloadShape(value: unknown): value is InvitationTokenPayload {

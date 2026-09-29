@@ -174,6 +174,12 @@ model PhoneNumber {
   whatsappBusinessAccount   WhatsappBusinessAccount @relation(fields: [whatsappBusinessAccountId], references: [id], onDelete: Cascade)
   phoneNumberId             String   @unique // Phone Number ID de Meta — global; el UNIQUE es la defensa técnica contra "número ya asociado a otro cliente" (sección 6 del pedido)
   displayPhoneNumber        String?
+  // Campos del modelo de cuentas v4 — ver docs/META_V4_COMPATIBILITY.md §4.
+  // isOnBizApp confirma, contra la respuesta real de Graph API, que la
+  // conexión sigue siendo Coexistence (número dual) y no una migración
+  // completa — no se asume, se verifica y se persiste.
+  isOnBizApp                Boolean?
+  platformType              String?
   connectionState           ConnectionState @default(PENDING_INTERNAL_SETUP)
   connectedAt               DateTime?
   disconnectedAt            DateTime?

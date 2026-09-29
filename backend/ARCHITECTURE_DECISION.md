@@ -132,6 +132,72 @@ El archivo de RLS es la prueba directa que se pidió: conecta como `app_runtime`
 ## Problemas pendientes tras esta revisión
 
 - Los 3 puntos de la sección "Riesgo abierto" arriba (colisión de red Docker, permisos del usuario del sistema en el VPS, alcance real de `docker network connect` con NPM) — requieren acceso real al VPS, se resuelven en `HOSTINGER_INTEGRATION_GUIDE.md`.
-- El `jti` de un solo uso del token de invitación necesita Redis para marcarse como consumido — no implementado todavía porque no hay endpoint real que lo consuma (Etapa 2).
-- Rate limiting y CORS están documentados con el valor exacto a usar, pero no configurados en código todavía — `src/index.ts` no tiene ninguna ruta pública de onboarding que proteger hasta la Etapa 2.
+
+---
+
+# Etapa 2 — onboarding real, con 3 condiciones técnicas verificadas antes de implementar
+
+Esta sección documenta la respuesta a las 3 condiciones exigidas antes de aprobar la Etapa 2, en el mismo formato de evidencia que la revisión anterior, y luego el resumen de lo implementado.
+
+## Condición 1 — Compatibilidad con Meta Embedded Signup v4
+
+**Verificado contra documentación oficial vigente** (fetch directo a `developers.facebook.com`, no memoria) — ver `docs/META_V4_COMPATIBILITY.md` para las 6 citas textuales completas. Resumen:
+
+- `feature_type: 'whatsapp_business_app_onboarding'` sigue siendo el mecanismo correcto de v4 para Coexistence — **el frontend ya desplegado no necesita cambios**.
+- El evento `FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING` del `postMessage` mantiene exactamente la forma que el código de Vercel ya espera.
+- **Dos campos nuevos del modelo de cuentas v4** no estaban en el esquema original: `is_on_biz_app` (booleano) y `platform_type` (string) — se agregaron a `PhoneNumber` (migración `20260929180006_add_meta_v4_account_fields`) y se verifican explícitamente en `completeOnboarding` antes de persistir cualquier conexión (`src/onboarding/service.ts`, sección "Verificación explícita del modelo de cuentas v4").
+- **Hallazgo no documentado previamente en este proyecto:** la documentación oficial advierte explícitamente contra llamar a la API de Deregister en un número en uso dual (Coexistence). Esto refuerza, con la fuente primaria de Meta, la decisión ya tomada en `src/meta/graphClient.ts` de que la clase `MetaGraphClient` **no tiene ningún método `/register` ni `/deregister`** — no por convención, por ausencia estructural. `tests/unit/graphClient.test.ts` incluye una prueba dedicada (`listGraphClientMethodNames` no contiene "register" en ningún nombre) que falla si alguien agrega ese método en el futuro sin darse cuenta de esta regla.
+- `sessionInfoVersion` sigue sin confirmarse en documentación estática (Meta lo gatea detrás de una herramienta interactiva en el dashboard) — se mantiene el manejo defensivo ya existente en el repo de Vercel; queda en la lista de verificación empírica pendiente (Fase C).
+
+**Garantía contra un registro/migración accidental:** `completeOnboarding` (`src/onboarding/service.ts`) nunca llama a ningún método de registro — no puede, porque `MetaGraphClient` no expone uno. Adicionalmente, si el número autorizado no tiene `is_on_biz_app: true`, la conexión se rechaza explícitamente (`NOT_COEXISTENCE`) **antes** de persistir nada, en vez de asumir éxito silenciosamente.
+
+## Condición 2 — Seguridad transaccional de PostgreSQL bajo concurrencia real
+
+**Las pruebas de una sola consulta ya existentes (`row-level-security.test.ts`) NO se consideraron suficientes**, tal como se pidió explícitamente. Prueba nueva: `tests/integration/concurrency.test.ts` (6 casos), diseñada específicamente para forzar reutilización real de conexiones físicas bajo contención:
+
+- Un cliente Prisma separado con `connection_limit=3` (3 conexiones físicas compartidas) y **12 tenants** ejecutando operaciones simultáneas vía `Promise.all` — con solo 3 conexiones para 12 tenants concurrentes, el pool de Prisma *tiene* que reutilizar conexiones entre tenants distintos dentro de la ventana de la prueba; no es una simulación, es la condición real que se pidió probar.
+- Se confirma, bajo esa contención real: lecturas concurrentes de 12 tenants nunca devuelven filas de otro tenant; creaciones concurrentes nunca escriben bajo el `tenantId` equivocado; actualizaciones y eliminaciones concurrentes respetan el mismo aislamiento; y una operación sin `app.current_tenant_id` fijado sigue fallando cerrado (cero filas) incluso mientras otras transacciones concurrentes sí tienen su contexto fijado — descartando que el fail-closed dependiera de que no hubiera contención.
+- Esto prueba directamente lo pedido: "el contexto del tenant se establece dentro de la transacción correspondiente" (cada operación usa `TenantScope.withSession`, que fija `set_config` y ejecuta la consulta en la misma `$transaction`), "las consultas utilizan la conexión y transacción correctas" (forzado por `connection_limit=3`), "no existe contaminación entre solicitudes concurrentes", "las operaciones de lectura, creación, actualización y eliminación respetan el aislamiento", y "las consultas fallan de forma segura cuando falta el contexto".
+
+## Condición 3 — Seguridad de los tokens de invitación, verificada antes de implementar los endpoints públicos
+
+Cada propiedad exigida, con su prueba correspondiente:
+
+| Propiedad exigida | Mecanismo | Prueba |
+|---|---|---|
+| Se emiten exclusivamente mediante operación administrativa autenticada | `issueInvitationTokenAsAdmin` exige `adminApiKey` comparado en tiempo constante contra `ADMIN_API_KEY` (env var independiente) | `tests/unit/invitationToken.test.ts` — 4 casos (`issueInvitationTokenAsAdmin`) |
+| Caducidad limitada | TTL por defecto 7 días, configurable, verificado en `verifyInvitationToken` | `tests/unit/invitationToken.test.ts` — expiración + "acepta hasta el instante justo antes de expirar" |
+| Identificador único verificable | `jti` de 16 bytes aleatorios por token, parte del payload firmado | `tests/unit/invitationToken.test.ts` — "cada token emitido tiene un jti único" |
+| No pueden usarse más de una vez para iniciar conexiones independientes | `redeemInvitationToken` (Redis, `SET NX EX` atómico sobre el `jti`) | `tests/integration/invitation-token-redemption.test.ts` — incluye una prueba de **redención concurrente** (`Promise.allSettled`) que confirma que de N intentos simultáneos con el mismo token, exactamente uno tiene éxito |
+| No permiten cambiar el tenant | El `tenantId` de la `OnboardingSession` creada en `/onboarding/start` sale única y exclusivamente del payload verificado del token — nunca de un campo del body | `tests/integration/onboarding-service.test.ts` — `startOnboarding crea una sesión scoped al tenant del token` |
+| No exponen información sensible en logs | `pino` redacta headers de autorización/cookies; los mensajes de error de `/onboarding/start` son genéricos e idénticos sin importar la causa real (expirado, ya usado, firma inválida) | `tests/unit/invitationToken.test.ts` (mensajes de error) + `tests/integration/onboarding-routes.test.ts` (`un token con firma inválida produce EXACTAMENTE la misma respuesta HTTP que uno reutilizado`) |
+| No permiten reutilizar una autorización anterior | Una `OnboardingSession` en estado `OPERATIONAL` rechaza tanto `recordSessionInfo` como un segundo `completeOnboarding` (`SESSION_ALREADY_COMPLETED`) | `tests/integration/onboarding-service.test.ts` — `una sesión ya completada rechaza un segundo intento` |
+
+## Etapa 2 — resumen de lo implementado
+
+**Flujo de dos tokens** (documentado en detalle en los comentarios de `src/access/sessionToken.ts`): el `invitationToken` (admin-emitido, Redis-de-un-solo-uso) resuelve el `tenantId` en `POST /onboarding/start` y entrega un `sessionToken` autoemitido de corta duración (`{tenantId, nonce}` firmado) que autoriza `POST /onboarding/session` y `POST /onboarding/complete`. Ningún paso del flujo necesita nunca una consulta a la base de datos sin contexto de tenant fijado (lo cual violaría Row-Level Security por diseño).
+
+**`POST /onboarding/complete`** (`src/onboarding/service.ts:completeOnboarding`) hace, en orden, con manejo explícito de fallo en cada paso (la sesión se marca `RECOVERABLE_ERROR` con una razón específica, nunca se pierde silenciosamente):
+1. Intercambia el código de autorización por un access token (`MetaGraphClient.exchangeCodeForAccessToken`).
+2. Resuelve el usuario de Meta que autorizó (`getAuthorizingUserId`, vía `/me`).
+3. Lista los números de la WABA autorizada y localiza el número esperado — por `phoneNumberId` explícito si el frontend lo reportó en el Session Info, o el único marcado `is_on_biz_app` en caso contrario (nunca "el primero de la lista" sin verificar).
+4. Rechaza explícitamente (`NOT_COEXISTENCE`) si el número encontrado no tiene `is_on_biz_app: true` — la garantía central de que este flujo nunca completa una conexión que en realidad migró el número.
+5. Persiste de forma transaccional (`TenantScope.metaAuthorizations().completeAuthorization`): autorización + WABA + número + credencial cifrada (AES-256-GCM, misma clave que Etapa 1). Si el número ya pertenece a otro tenant, la restricción `@unique` de la base de datos lo rechaza y se traduce a un error genérico (`PhoneAlreadyConnectedError`) que nunca revela a qué tenant pertenece.
+6. Suscribe la app a los eventos de la WABA (`subscribeAppToWaba`) — un fallo aquí no deshace la conexión ya persistida (es recuperable, no destructivo).
+
+**Archivos nuevos:** `src/meta/graphClient.ts`, `src/access/invitationTokenStore.ts`, `src/access/sessionToken.ts`, `src/redis/client.ts`, `src/onboarding/service.ts`, `src/onboarding/routes.ts`, `docs/META_V4_COMPATIBILITY.md`, más las migraciones `20260929180006_add_meta_v4_account_fields`, y `tests/unit/graphClient.test.ts`, `tests/integration/concurrency.test.ts`, `tests/integration/invitation-token-redemption.test.ts`, `tests/integration/onboarding-service.test.ts`, `tests/integration/onboarding-routes.test.ts`.
+
+**Archivos modificados:** `src/tenancy/isolation.ts` (nuevo `onboardingSessions().updateByNonce`, `metaAuthorizations().completeAuthorization`, `PhoneAlreadyConnectedError`), `src/access/invitationToken.ts` (`issueInvitationTokenAsAdmin`), `src/config/env.ts` (`getAdminApiKey`, `getInvitationTokenSecret`), `src/index.ts` (monta el router de onboarding), `prisma/schema.prisma` (`isOnBizApp`, `platformType`), `.env.example`, `.env.hostinger.example`.
+
+## Qué sigue sin verificarse contra la API real de Meta (simulada únicamente hasta ahora)
+
+- La forma exacta de la respuesta de `/oauth/access_token`, `/me`, `/{waba-id}/phone_numbers` y `/{waba-id}/subscribed_apps` — verificada contra la documentación pública y contra respuestas simuladas en las pruebas, nunca contra una llamada real.
+- El objeto `extras` exacto que entrega `FB.login()` en v4 — ya documentado como una limitación conocida del repo de Vercel, no resuelta por esta etapa (Meta lo gatea detrás de una herramienta interactiva del dashboard).
+- Que el popup real de Meta, para una app en modo Coexistence, efectivamente ofrezca esa opción y no una migración — sigue siendo la Fase C ya documentada, prerrequisito del propietario, no de ingeniería.
+
+## Riesgos pendientes explícitos
+
+- Rate limiting en `/onboarding/start` usa un límite fijo (20 solicitudes / 15 min) sin distinguir por IP de forma más granular que el `keyGenerator` por defecto de `express-rate-limit` — suficiente para esta etapa, pero debe revisarse si el patrón de tráfico real de Hostinger lo justifica.
+- `sessionInfoVersion` (campo del Session Info del SDK de Meta) sigue sin confirmarse contra documentación oficial estática — se mantiene el manejo ya existente en el repo Vercel, sin cambios de esta etapa.
+- Ningún endpoint de esta etapa está desplegado en Hostinger ni conectado a Vercel — `LOCAL TESTS PASSED`, `HOSTINGER VALIDATION PENDING`, `META COEXISTENCE TEST PENDING` (ver README.md).
 - La rotación de clave (`rotateEncryptionKey`) no está expuesta como endpoint HTTP — es deliberadamente solo CLI, para que rotar una clave de producción requiera acceso directo al servidor, no una petición de red.

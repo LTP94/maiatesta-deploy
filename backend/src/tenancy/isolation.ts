@@ -1,4 +1,13 @@
-import type { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, type PrismaClient } from '@prisma/client';
+
+export class PhoneAlreadyConnectedError extends Error {
+  constructor() {
+    // Mensaje deliberadamente genérico — nunca revela a qué tenant
+    // pertenece el número en conflicto.
+    super('This phone number is already connected to an account.');
+    this.name = 'PhoneAlreadyConnectedError';
+  }
+}
 
 /**
  * Aislamiento multiempresa en DOS capas independientes, no una:
@@ -59,6 +68,9 @@ export class TenantScope {
         ),
       create: (data: Omit<Prisma.OnboardingSessionUncheckedCreateInput, 'tenantId'>) =>
         this.withSession((tx) => tx.onboardingSession.create({ data: { ...data, tenantId: this.tenantId } })),
+      /** Actualiza una sesión identificada por su `nonce` — siempre acotado a este tenant. */
+      updateByNonce: (nonce: string, data: Prisma.OnboardingSessionUpdateInput) =>
+        this.withSession((tx) => tx.onboardingSession.updateMany({ where: { nonce, tenantId: this.tenantId }, data })),
     };
   }
 
@@ -72,6 +84,97 @@ export class TenantScope {
         this.withSession((tx) =>
           tx.metaAuthorization.findFirst({ ...args, where: { ...args?.where, tenantId: this.tenantId } }),
         ),
+      /**
+       * Persiste el resultado de un onboarding completado: autorización +
+       * WABA + número + credencial cifrada, todo en una sola transacción
+       * (ya scoped por tenant vía `withSession`).
+       *
+       * Protección explícita contra "número ya conectado a otro tenant"
+       * (sección 6 del pedido original, ya probada a nivel de esquema en
+       * Etapa 1): primero se busca el número SOLO dentro de este tenant
+       * (RLS ya impide ver filas de otros tenants, así que un `findFirst`
+       * aquí NUNCA encuentra la fila de otro tenant — ni con qué comparar).
+       * Si no existe para este tenant, se intenta crear; si esa creación
+       * choca con la restricción `@unique` de `phoneNumberId` porque el
+       * número YA pertenece a otro tenant, se traduce a
+       * `PhoneAlreadyConnectedError` — sin revelar a qué tenant pertenece
+       * (privacidad entre clientes, no solo bloqueo técnico).
+       */
+      completeAuthorization: (params: {
+        metaUserId: string;
+        onboardingSessionId: string;
+        wabaId: string;
+        businessName?: string;
+        phoneNumberId: string;
+        displayPhoneNumber: string;
+        isOnBizApp: boolean;
+        platformType: string;
+        encryptedAccessToken: string;
+      }) =>
+        this.withSession(async (tx) => {
+          const authorization = await tx.metaAuthorization.upsert({
+            where: { tenantId_metaUserId: { tenantId: this.tenantId, metaUserId: params.metaUserId } },
+            create: {
+              tenant: { connect: { id: this.tenantId } },
+              metaUserId: params.metaUserId,
+              onboardingSession: { connect: { id: params.onboardingSessionId } },
+            },
+            update: {}, // re-autorización del mismo tenant+usuario: conservar la fila existente, no reescribirla a ciegas
+          });
+
+          const waba = await tx.whatsappBusinessAccount.upsert({
+            where: { wabaId: params.wabaId },
+            create: { metaAuthorizationId: authorization.id, wabaId: params.wabaId, businessName: params.businessName },
+            update: { businessName: params.businessName },
+          });
+
+          const existingOwnPhone = await tx.phoneNumber.findFirst({
+            where: { phoneNumberId: params.phoneNumberId, whatsappBusinessAccount: { metaAuthorization: { tenantId: this.tenantId } } },
+          });
+
+          let phoneNumber;
+          if (existingOwnPhone) {
+            phoneNumber = await tx.phoneNumber.update({
+              where: { id: existingOwnPhone.id },
+              data: {
+                displayPhoneNumber: params.displayPhoneNumber,
+                isOnBizApp: params.isOnBizApp,
+                platformType: params.platformType,
+                connectionState: 'OPERATIONAL',
+                connectedAt: new Date(),
+              },
+            });
+          } else {
+            try {
+              phoneNumber = await tx.phoneNumber.create({
+                data: {
+                  whatsappBusinessAccountId: waba.id,
+                  phoneNumberId: params.phoneNumberId,
+                  displayPhoneNumber: params.displayPhoneNumber,
+                  isOnBizApp: params.isOnBizApp,
+                  platformType: params.platformType,
+                  connectionState: 'OPERATIONAL',
+                  connectedAt: new Date(),
+                },
+              });
+            } catch (error) {
+              if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+                throw new PhoneAlreadyConnectedError();
+              }
+              throw error;
+            }
+          }
+
+          const credential = await tx.credential.create({
+            data: {
+              metaAuthorizationId: authorization.id,
+              kind: 'WHATSAPP_ACCESS_TOKEN',
+              encryptedValue: params.encryptedAccessToken,
+            },
+          });
+
+          return { authorization, waba, phoneNumber, credential };
+        }),
     };
   }
 

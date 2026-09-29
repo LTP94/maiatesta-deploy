@@ -2,11 +2,13 @@ import { describe, expect, it } from 'vitest';
 import {
   InvitationTokenError,
   issueInvitationToken,
+  issueInvitationTokenAsAdmin,
   verifyInvitationToken,
 } from '../../src/access/invitationToken.js';
 
 const SECRET = 'test-onboarding-session-secret-do-not-use-in-prod';
 const OTHER_SECRET = 'a-completely-different-secret';
+const ADMIN_API_KEY = 'test-admin-api-key-do-not-use-in-prod';
 
 describe('invitationToken', () => {
   it('issues a token that verifies back to the same tenantId/adminUserId', () => {
@@ -68,5 +70,64 @@ describe('invitationToken', () => {
     const token = issueInvitationToken({ tenantId: 'super-secret-tenant-slug', adminUserId: 'admin-a' }, SECRET);
     expect(token).not.toContain('super-secret-tenant-slug');
     expect(token).not.toContain('{');
+  });
+
+  it('no error message ever embeds the raw token, secret, or payload contents — condición "no exponen información sensible en logs"', () => {
+    const token = issueInvitationToken({ tenantId: 'tenant-a', adminUserId: 'admin-a' }, SECRET);
+    const errors: string[] = [];
+    try {
+      verifyInvitationToken(token, OTHER_SECRET);
+    } catch (error) {
+      if (error instanceof Error) errors.push(error.message);
+    }
+    try {
+      verifyInvitationToken('garbage', SECRET);
+    } catch (error) {
+      if (error instanceof Error) errors.push(error.message);
+    }
+    for (const message of errors) {
+      expect(message).not.toContain(token);
+      expect(message).not.toContain('tenant-a');
+      expect(message).not.toContain(SECRET);
+    }
+    expect(errors.length).toBeGreaterThan(0);
+  });
+});
+
+describe('issueInvitationTokenAsAdmin — condición "emitido exclusivamente mediante una operación administrativa autenticada"', () => {
+  it('issues a valid token when the admin API key is correct', () => {
+    const token = issueInvitationTokenAsAdmin(
+      { tenantId: 'tenant-a', adminUserId: 'admin-a', adminApiKey: ADMIN_API_KEY },
+      { tokenSecret: SECRET, expectedAdminApiKey: ADMIN_API_KEY },
+    );
+    const payload = verifyInvitationToken(token, SECRET);
+    expect(payload.tenantId).toBe('tenant-a');
+  });
+
+  it('refuses to issue a token with the wrong admin API key', () => {
+    expect(() =>
+      issueInvitationTokenAsAdmin(
+        { tenantId: 'tenant-a', adminUserId: 'admin-a', adminApiKey: 'wrong-key' },
+        { tokenSecret: SECRET, expectedAdminApiKey: ADMIN_API_KEY },
+      ),
+    ).toThrow(InvitationTokenError);
+  });
+
+  it('refuses to issue a token with an empty admin API key', () => {
+    expect(() =>
+      issueInvitationTokenAsAdmin(
+        { tenantId: 'tenant-a', adminUserId: 'admin-a', adminApiKey: '' },
+        { tokenSecret: SECRET, expectedAdminApiKey: ADMIN_API_KEY },
+      ),
+    ).toThrow(InvitationTokenError);
+  });
+
+  it('refuses a key that is a prefix of the real one (no partial-match leakage)', () => {
+    expect(() =>
+      issueInvitationTokenAsAdmin(
+        { tenantId: 'tenant-a', adminUserId: 'admin-a', adminApiKey: ADMIN_API_KEY.slice(0, 5) },
+        { tokenSecret: SECRET, expectedAdminApiKey: ADMIN_API_KEY },
+      ),
+    ).toThrow(InvitationTokenError);
   });
 });

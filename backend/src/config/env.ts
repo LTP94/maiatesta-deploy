@@ -108,3 +108,24 @@ export function getTokenEncryptionKey(): Buffer {
 export function getOnboardingSessionSecret(): string {
   return requireEnv('META_ONBOARDING_SESSION_SECRET');
 }
+
+/**
+ * Firma los tokens de invitación (src/access/invitationToken.ts).
+ * Deliberadamente independiente de META_ONBOARDING_SESSION_SECRET — son
+ * primitivos distintos con ciclos de vida distintos (invitación: días;
+ * sesión: minutos) y comprometer uno no debe comprometer el otro.
+ */
+export function getInvitationTokenSecret(): string {
+  return requireEnv('META_INVITATION_TOKEN_SECRET');
+}
+
+/**
+ * Credencial administrativa exigida para emitir tokens de invitación
+ * (src/access/invitationToken.ts:issueInvitationTokenAsAdmin) — deliberadamente
+ * independiente de META_ONBOARDING_SESSION_SECRET (esa firma el token; esta
+ * autoriza a quien lo pide). Sin esto, cualquier código con acceso al
+ * proceso podría emitir un token válido para cualquier tenant.
+ */
+export function getAdminApiKey(): string {
+  return requireEnv('ADMIN_API_KEY');
+}
