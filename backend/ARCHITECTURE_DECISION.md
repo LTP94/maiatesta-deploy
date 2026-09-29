@@ -35,7 +35,7 @@ El frontend de Vercel (`/whatsapp/connect/`) seguirá llamando a `GET /api/meta/
 | Runtime | Node.js 20 + TypeScript | Coherente con el resto del ecosistema del proyecto (Vite/React/TS ya en uso); n8n y Typebot también son Node — reduce la superficie de herramientas nuevas que el equipo de Hostinger tiene que aprender. |
 | Framework HTTP | Express | Maduro, sin magia, fácil de auditar línea por línea — apropiado para un backend que maneja secretos y tokens de clientes. |
 | Base de datos | PostgreSQL (vía Prisma) | Ya es parte del stack declarado (`PostgreSQL y Redis, según los servicios correspondientes`); Prisma da migraciones reproducibles y tipado end-to-end, exactamente lo que pide el punto 7 ("migraciones reproducibles"). |
-| Caché/colas | Redis (vía BullMQ) | Ya es parte del stack declarado; BullMQ da colas persistentes reales para el webhook (punto 8: "la confirmación HTTP debe producirse únicamente después de garantizar la aceptación duradera del evento... por ejemplo mediante una cola persistente"). |
+| Caché/colas | PostgreSQL inbox + Redis para onboarding | Etapa 3 adoptó PostgreSQL como cola durable autoritativa; Redis no condiciona la recepción de webhooks y continúa cubriendo tokens de un solo uso de Etapa 2. |
 | Cifrado | AES-256-GCM (Node `crypto` nativo) | Cifrado autenticado, sin dependencias externas nuevas, misma filosofía que `server/meta/facebook/signed-request.ts` ya usa en el repo Vercel (HMAC nativo, sin librerías de terceros). |
 | Contenedores | Docker Compose (dev/test) | Pedido explícito del usuario ("Utiliza Docker Compose cuando corresponda"); permite levantar Postgres+Redis+backend en un comando, sin tocar nada de Hostinger todavía. |
 
@@ -87,7 +87,7 @@ La preocupación era válida: `TenantScope` (Etapa 1) es una convención de cód
 - Las políticas comparan contra `current_setting('app.current_tenant_id', true)` — una variable de **sesión de transacción**, fijada por `TenantScope.withSession()` (`src/tenancy/isolation.ts`) antes de cada operación vía `SELECT set_config('app.current_tenant_id', $1, true)` (el `true` final es el equivalente de `SET LOCAL`: se revierte solo al terminar la transacción, nunca se filtra a otra petición).
 - **Fail-closed, no fail-open:** si nunca se fijó `app.current_tenant_id`, `current_setting(..., true)` devuelve `NULL`, y `tenantId = NULL` nunca es verdadero en SQL — así que una consulta sin contexto de tenant no ve absolutamente ninguna fila, no "todas por accidente".
 
-**Identificador de Meta con unicidad global** (la otra mitad del Punto 2): `PhoneNumber.phoneNumberId` tiene `@unique` en `prisma/schema.prisma` — es el Phone Number ID real de Meta, global, y la restricción vive en la base de datos, no solo en la aplicación. `WhatsappBusinessAccount.wabaId` tiene la misma restricción a nivel de WABA. Esto significa que aunque `onboarding/complete` (Etapa 2, todavía sin escribir) tenga un bug y no verifique "este número ya está conectado a otro tenant" antes de insertar, el `INSERT` en sí mismo fallará con una violación de restricción única — la base de datos es la última línea de defensa, no solo la primera.
+**Identificador de Meta con unicidad global** (la otra mitad del Punto 2): `PhoneNumber.phoneNumberId` tiene `@unique` en `prisma/schema.prisma` — es el Phone Number ID real de Meta, global, y la restricción vive en la base de datos, no solo en la aplicación. `WhatsappBusinessAccount.wabaId` tiene la misma restricción a nivel de WABA. Esto significa que aunque `onboarding/complete` tenga un bug y no verifique "este número ya está conectado a otro tenant" antes de insertar, el `INSERT` en sí mismo fallará con una violación de restricción única — la base de datos es la última línea de defensa, no solo la primera.
 
 **Evidencia — 21 pruebas nuevas, todas ejecutadas, todas en verde:**
 
@@ -123,7 +123,7 @@ El archivo de RLS es la prueba directa que se pidió: conecta como `app_runtime`
 
 5 pruebas en `tests/integration/key-rotation.test.ts`, todas en verde: re-cifra correctamente todas las credenciales de todos los tenants; nunca mezcla credenciales entre tenants durante la rotación; reporta (sin lanzar excepción global) una credencial corrupta y la deja sin tocar; rechaza rotar a la misma clave; maneja el caso de cero tenants/credenciales sin error.
 
-**Tokens fuera de logs/respuestas/archivos versionados:** `pino` en `src/index.ts` ya redacta headers de autorización/cookies; los handlers de la Etapa 2 (todavía sin escribir) deberán seguir el mismo patrón que `api/meta/facebook/deauthorize.ts` del repo Vercel — errores genéricos sin el valor que falló, nunca el código de autorización ni el token en el cuerpo de una respuesta de error.
+**Tokens fuera de logs/respuestas/archivos versionados:** `pino` en `src/app.ts` redacta headers de autorización/cookies/firma y bodies; los handlers devuelven errores genéricos sin el valor que falló, nunca el código de autorización ni el token.
 
 ## Resumen de pruebas — estado tras esta revisión
 
@@ -201,3 +201,13 @@ Cada propiedad exigida, con su prueba correspondiente:
 - `sessionInfoVersion` (campo del Session Info del SDK de Meta) sigue sin confirmarse contra documentación oficial estática — se mantiene el manejo ya existente en el repo Vercel, sin cambios de esta etapa.
 - Ningún endpoint de esta etapa está desplegado en Hostinger ni conectado a Vercel — `LOCAL TESTS PASSED`, `HOSTINGER VALIDATION PENDING`, `META COEXISTENCE TEST PENDING` (ver README.md).
 - La rotación de clave (`rotateEncryptionKey`) no está expuesta como endpoint HTTP — es deliberadamente solo CLI, para que rotar una clave de producción requiera acceso directo al servidor, no una petición de red.
+
+---
+
+# Etapa 3 — inbox PostgreSQL y worker recuperable
+
+Se eligió PostgreSQL como fuente de verdad y cola durable. Redis no es la cola primaria: confirmar un webhook después de escribir solo en Redis habría exigido demostrar persistencia/configuración productiva que esta etapa no puede verificar. El receptor confirma `200` exclusivamente después del commit en `message_events` o cuarentena.
+
+La resolución previa a RLS usa funciones PostgreSQL de capacidad limitada, no acceso global a tablas. Una vez resuelto WABA+número, `tenantId` directo y RLS gobiernan inbox, worker, suscripciones y reproceso. Claims con `FOR UPDATE SKIP LOCKED`, leases, backoff y rondas por tenant proporcionan recuperación y equidad en una VPS pequeña sin agregar infraestructura.
+
+Los payloads recuperables usan AES-256-GCM y clave propia; el contrato v1 minimizado no expone contenido. La entrega futura a adaptadores es al menos una vez y requiere idempotencia del consumidor. Detalle y evidencia: `STAGE3_ARCHITECTURE.md`, `STAGE3_SECURITY.md`, `STAGE3_EVENT_CONTRACT.md` y `STAGE3_TEST_REPORT.md`.

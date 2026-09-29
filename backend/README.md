@@ -1,8 +1,8 @@
 # maiatesta-whatsapp-backend
 
-Backend de onboarding, persistencia multiempresa y (en etapas futuras) webhook + integraciones para conectar números de WhatsApp Business de clientes vía **Coexistence**. Ver `ARCHITECTURE_DECISION.md` para el porqué de este servicio separado del repo principal (Vercel) y para el detalle de la revisión de seguridad/arquitectura (comunicación Vercel↔Hostinger, aislamiento multiempresa en dos capas, despliegue aislado, gestión de claves).
+Backend de onboarding, persistencia multiempresa y webhooks para conectar números de WhatsApp Business de clientes vía **Coexistence**. Las integraciones con Evolution/Chatwoot/Typebot/n8n siguen reservadas para Etapa 4.
 
-**Estado: Etapa 2 completa (endpoints de onboarding implementados y probados contra Postgres/Redis reales y una Meta Graph API simulada). En espera de aprobación explícita antes de la Etapa 3 (webhook + clasificación de mensajes).** Nada de esto está desplegado — ver `LOCAL TESTS PASSED / HOSTINGER VALIDATION PENDING / META COEXISTENCE TEST PENDING` al final de este README.
+**Estado: Etapa 3 completa en pruebas locales (144/144).** Webhook, clasificación, inbox PostgreSQL, worker y recuperación están implementados. Nada fue desplegado ni probado con Meta real. Ver `STAGE3_ARCHITECTURE.md`, `STAGE3_TEST_REPORT.md` y las advertencias al final.
 
 ## Requisitos
 
@@ -14,7 +14,7 @@ Backend de onboarding, persistencia multiempresa y (en etapas futuras) webhook +
 ```bash
 cd backend
 cp .env.example .env
-# Genera valores propios para META_TOKEN_ENCRYPTION_KEY / META_ONBOARDING_SESSION_SECRET
+# Genera valores propios para META_TOKEN_ENCRYPTION_KEY / META_WEBHOOK_PAYLOAD_ENCRYPTION_KEY / META_ONBOARDING_SESSION_SECRET
 # / META_INVITATION_TOKEN_SECRET / META_WHATSAPP_WEBHOOK_VERIFY_TOKEN / ADMIN_API_KEY
 # con: openssl rand -hex 32
 
@@ -31,6 +31,7 @@ docker exec -e PGPASSWORD=dev_only_password_never_use_in_prod \
 # Copia esa misma contraseña a RUNTIME_DATABASE_URL en tu .env
 
 npm run dev                   # servidor en :4000 con recarga en caliente
+npm run start:worker          # tras npm run build: worker durable independiente
 ```
 
 ```bash
@@ -84,7 +85,7 @@ backend/
 ├── src/
 │   ├── config/env.ts                ← loaders de env vars, fail-closed
 │   ├── db/client.ts                 ← Prisma conectado como app_runtime (no como dueño)
-│   ├── redis/client.ts              ← cliente Redis singleton (consumo de tokens de invitación, colas futuras)
+│   ├── redis/client.ts              ← cliente Redis singleton (tokens de invitación; no cola del webhook)
 │   ├── crypto/
 │   │   ├── tokenCipher.ts           ← AES-256-GCM para credenciales en reposo
 │   │   └── rotateKey.ts             ← rotación de clave, tenant por tenant
@@ -97,16 +98,19 @@ backend/
 │   ├── onboarding/
 │   │   ├── service.ts               ← orquesta start/session/complete
 │   │   └── routes.ts                ← POST /onboarding/{start,session,complete}, con rate limiting en /start
+│   ├── webhook/                    ← firma, parser, receiver, routing, worker y reproceso
 │   ├── routes/health.ts
+│   ├── app.ts                      ← monta el webhook raw antes del parser JSON
+│   ├── worker-index.ts             ← proceso worker independiente
 │   └── index.ts
 ├── tests/
-│   ├── unit/                        ← cifrado, token de invitación, cliente Graph API simulado (36 casos)
-│   └── integration/                 ← aislamiento por aplicación, Row-Level Security, concurrencia real de pool, rotación de clave, consumo de tokens, flujo de onboarding start→session→complete a nivel de servicio y HTTP (58 casos, Postgres+Redis reales)
+│   ├── unit/                        ← 60 casos
+│   ├── integration/                 ← 78 casos, PostgreSQL/Redis reales y E2E HTTP
+│   └── security/                    ← 6 casos de firma, cifrado y fail-closed
 ```
 
-## Lo que NO existe todavía (por diseño, en espera de aprobación)
+## Lo que NO existe todavía (por diseño)
 
-- Webhook de Meta + clasificación de mensajes (cliente vs. eco de empleado vs. API) — Etapa 3.
 - Adaptadores de Evolution API / Chatwoot / Typebot / n8n — Etapa 4.
 - Cualquier despliegue real a Hostinger — `docker-compose.hostinger.yml` es una plantilla, nunca se ejecutó. `HOSTINGER_INTEGRATION_GUIDE.md` (se escribe al final) empieza con diagnóstico de solo lectura.
 - Cualquier número de WhatsApp real conectado, y cualquier llamada real (no simulada) a Meta Graph API — ver "Estado real" abajo.
@@ -114,7 +118,7 @@ backend/
 
 ## Estado real — qué está probado y qué sigue pendiente de verificación
 
-- **LOCAL TESTS PASSED**: 94/94 pruebas (36 unitarias + 58 de integración contra Postgres/Redis Dockerizados reales), `tsc --noEmit` limpio. Cubre aislamiento multiempresa en dos capas, concurrencia real del pool de conexiones, seguridad de tokens de invitación/sesión, y el flujo completo de onboarding con Meta Graph API simulada.
+- **STAGE 3 COMPLETE — LOCAL TESTS PASSED**: 144/144 pruebas (60 unitarias + 78 de integración + 6 de seguridad), cero omitidas y `tsc`/build limpios. PostgreSQL/Redis fueron contenedores locales aislados y Graph API fue simulada.
 - **HOSTINGER VALIDATION PENDING**: nada de este backend se ha ejecutado contra el Hostinger real — ni el despliegue, ni una conexión desde el dominio público de Vercel, ni Postgres/Redis de producción.
 - **META COEXISTENCE TEST PENDING**: ninguna llamada de este backend a Meta Graph API ha sido contra la API real. `getAuthorizingUserId` (`/me`), la forma exacta de la respuesta de `exchangeCodeForAccessToken`, y la respuesta de `subscribeAppToWaba` están verificadas solo contra la documentación oficial y respuestas simuladas — ver `docs/META_V4_COMPATIBILITY.md` para el detalle de qué se confirmó por lectura de documentación y qué sigue pendiente de una prueba real controlada (Fase C, con un número de prueba, nunca uno de cliente).
 
