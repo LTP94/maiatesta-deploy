@@ -105,6 +105,11 @@ export function getTokenEncryptionKey(): Buffer {
   return requireHexKey('META_TOKEN_ENCRYPTION_KEY');
 }
 
+/** Clave separada para payloads de webhook con retención corta. */
+export function getWebhookPayloadEncryptionKey(): Buffer {
+  return requireHexKey('META_WEBHOOK_PAYLOAD_ENCRYPTION_KEY');
+}
+
 export function getOnboardingSessionSecret(): string {
   return requireEnv('META_ONBOARDING_SESSION_SECRET');
 }

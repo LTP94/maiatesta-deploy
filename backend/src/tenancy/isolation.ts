@@ -173,8 +173,160 @@ export class TenantScope {
             },
           });
 
+          // Mantiene la tabla de enrutamiento del webhook (Etapa 3, sin RLS
+          // — ver prisma/schema.prisma) sincronizada ATÓMICAMENTE con la
+          // conexión real: nunca puede quedar desactualizada porque se
+          // escribe en la misma transacción que la WABA/número reales.
+          await tx.$executeRaw`SELECT upsert_waba_route(${params.wabaId}, ${this.tenantId})`;
+
           return { authorization, waba, phoneNumber, credential };
         }),
+    };
+  }
+
+  /**
+   * Eventos de webhook (Etapa 3) — persistencia y transiciones de estado del
+   * procesamiento asíncrono. `createIfNew` distingue explícitamente
+   * "insertado ahora" de "ya existía" (deduplicación real, sección 5 del
+   * pedido) en vez de tratar un conflicto de unicidad como un error genérico.
+   */
+  messageEvents() {
+    return {
+      createIfNew: (data: Omit<Prisma.MessageEventUncheckedCreateInput, 'tenantId'>) =>
+        this.withSession(async (tx) => {
+          // INSERT .. ON CONFLICT DO NOTHING (createMany/skipDuplicates) no
+          // aborta la transacción; try/catch de P2002 no sirve en PostgreSQL
+          // porque deja la transacción completa en estado abortado.
+          const inserted = await tx.messageEvent.createMany({
+            data: [{ ...data, tenantId: this.tenantId }],
+            skipDuplicates: true,
+          });
+          if (inserted.count === 1) {
+            const event = await tx.messageEvent.findUniqueOrThrow({ where: { idempotencyKey: data.idempotencyKey } });
+            return { isNew: true as const, event };
+          }
+          const event = await tx.messageEvent.update({
+            where: { idempotencyKey: data.idempotencyKey },
+            data: { duplicateCount: { increment: 1 }, lastReceivedAt: new Date() },
+          });
+          return { isNew: false as const, event };
+        }),
+      findById: (id: string) =>
+        this.withSession((tx) =>
+          tx.messageEvent.findFirst({ where: { id, tenantId: this.tenantId } }),
+        ),
+      findMany: (args: Parameters<PrismaClient['messageEvent']['findMany']>[0] = {}) =>
+        this.withSession((tx) =>
+          tx.messageEvent.findMany({
+            ...args,
+            where: { ...args?.where, tenantId: this.tenantId },
+          }),
+        ),
+      markProcessed: (id: string, eligibleForAutomation: boolean, normalizedPayload: Prisma.InputJsonValue) =>
+        this.withSession((tx) =>
+          tx.messageEvent.updateMany({
+            where: { id, tenantId: this.tenantId, processingState: 'PROCESSING' },
+            data: {
+              processingState: 'PROCESSED',
+              processedAt: new Date(),
+              eligibleForAutomation,
+              normalizedPayload,
+              leaseOwner: null,
+              leaseExpiresAt: null,
+              lastProcessingError: null,
+              lastErrorCode: null,
+            },
+          }),
+        ),
+      scheduleRetry: (id: string, errorCode: string, errorMessage: string, nextAttemptAt: Date) =>
+        this.withSession((tx) =>
+          tx.messageEvent.updateMany({
+            where: { id, tenantId: this.tenantId, processingState: 'PROCESSING' },
+            data: {
+              processingState: 'RETRY_PENDING',
+              nextAttemptAt,
+              lastErrorCode: errorCode.slice(0, 80),
+              lastProcessingError: errorMessage.slice(0, 500),
+              leaseOwner: null,
+              leaseExpiresAt: null,
+            },
+          }),
+        ),
+      markManualIntervention: (id: string, errorCode: string, errorMessage: string) =>
+        this.withSession((tx) =>
+          tx.messageEvent.updateMany({
+            where: { id, tenantId: this.tenantId },
+            data: {
+              processingState: 'MANUAL_INTERVENTION',
+              lastErrorCode: errorCode.slice(0, 80),
+              lastProcessingError: errorMessage.slice(0, 500),
+              leaseOwner: null,
+              leaseExpiresAt: null,
+            },
+          }),
+        ),
+      quarantine: (id: string, errorCode: string, errorMessage: string) =>
+        this.withSession((tx) =>
+          tx.messageEvent.updateMany({
+            where: { id, tenantId: this.tenantId },
+            data: {
+              processingState: 'QUARANTINED',
+              lastErrorCode: errorCode.slice(0, 80),
+              lastProcessingError: errorMessage.slice(0, 500),
+              leaseOwner: null,
+              leaseExpiresAt: null,
+            },
+          }),
+        ),
+      reprocess: (id: string) =>
+        this.withSession((tx) =>
+          tx.messageEvent.updateMany({
+            where: {
+              id,
+              tenantId: this.tenantId,
+              processingState: { in: ['QUARANTINED', 'MANUAL_INTERVENTION', 'RETRY_PENDING'] },
+            },
+            data: {
+              processingState: 'PENDING',
+              nextAttemptAt: new Date(),
+              leaseOwner: null,
+              leaseExpiresAt: null,
+              lastProcessingError: null,
+              lastErrorCode: null,
+            },
+          }),
+        ),
+    };
+  }
+
+  /**
+   * Pausa/reanuda automatización por conversación (sección 8: "desactivación
+   * de respuestas automáticas cuando un agente humano está atendiendo la
+   * conversación"). Todavía nadie escribe aquí automáticamente — ver
+   * comentario del modelo en prisma/schema.prisma — pero la clasificación de
+   * eventos ya consulta este estado en cada mensaje de cliente.
+   */
+  conversationAutomationState() {
+    return {
+      get: (phoneNumberId: string, contactWaId: string) =>
+        this.withSession((tx) =>
+          tx.conversationAutomationState.findUnique({ where: { phoneNumberId_contactWaId: { phoneNumberId, contactWaId } } }),
+        ),
+      setPaused: (params: { phoneNumberId: string; contactWaId: string; paused: boolean; reason?: string; by?: string }) =>
+        this.withSession((tx) =>
+          tx.conversationAutomationState.upsert({
+            where: { phoneNumberId_contactWaId: { phoneNumberId: params.phoneNumberId, contactWaId: params.contactWaId } },
+            create: {
+              tenant: { connect: { id: this.tenantId } },
+              phoneNumber: { connect: { id: params.phoneNumberId } },
+              contactWaId: params.contactWaId,
+              automationPaused: params.paused,
+              pausedReason: params.reason,
+              pausedBy: params.by,
+            },
+            update: { automationPaused: params.paused, pausedReason: params.reason, pausedBy: params.by },
+          }),
+        ),
     };
   }
 
@@ -208,6 +360,32 @@ export class TenantScope {
             where: { metaAuthorization: { tenantId: this.tenantId } },
           }),
         ),
+      findSubscriptionContext: (wabaId: string) =>
+        this.withSession((tx) =>
+          tx.whatsappBusinessAccount.findFirst({
+            where: { wabaId, metaAuthorization: { tenantId: this.tenantId, status: 'ACTIVE' } },
+            include: {
+              metaAuthorization: {
+                include: { credentials: { where: { kind: 'WHATSAPP_ACCESS_TOKEN' }, orderBy: { createdAt: 'desc' }, take: 1 } },
+              },
+            },
+          }),
+        ),
+    };
+  }
+
+  webhookSubscriptions() {
+    return {
+      upsert: (wabaId: string, status: string, values: { checkedAt?: Date; subscribedAt?: Date; lastErrorCode?: string | null } = {}) =>
+        this.withSession((tx) =>
+          tx.wabaWebhookSubscription.upsert({
+            where: { wabaId },
+            create: { tenantId: this.tenantId, wabaId, status, ...values },
+            update: { status, ...values },
+          }),
+        ),
+      find: (wabaId: string) =>
+        this.withSession((tx) => tx.wabaWebhookSubscription.findFirst({ where: { tenantId: this.tenantId, wabaId } })),
     };
   }
 
@@ -232,6 +410,37 @@ export class TenantScope {
           tx.phoneNumber.findFirst({
             where: {
               id: phoneNumberRowId,
+              whatsappBusinessAccount: { metaAuthorization: { tenantId: this.tenantId } },
+            },
+          }),
+        ),
+      /**
+       * Resuelve el número por su Phone Number ID de Meta (externo) — usado
+       * por el webhook (Etapa 3) DESPUÉS de que `WabaRoute` ya resolvió el
+       * tenant, para encontrar la fila interna exacta de `phone_numbers` que
+       * corresponde a `value.metadata.phone_number_id` del payload.
+       */
+      findByExternalId: (phoneNumberId: string) =>
+        this.withSession((tx) =>
+          tx.phoneNumber.findFirst({
+            where: {
+              phoneNumberId,
+              whatsappBusinessAccount: { metaAuthorization: { tenantId: this.tenantId } },
+            },
+          }),
+        ),
+      /**
+       * Igual que `findByExternalId`, pero por el número de teléfono
+       * visible (`displayPhoneNumber`) — necesario específicamente para
+       * `account_update`, el único tipo de evento cuyo payload no incluye
+       * `phone_number_id` (solo `value.phone_number`, ver
+       * docs/WEBHOOK_EVENT_CONTRACT.md).
+       */
+      findByDisplayNumber: (displayPhoneNumber: string) =>
+        this.withSession((tx) =>
+          tx.phoneNumber.findFirst({
+            where: {
+              displayPhoneNumber,
               whatsappBusinessAccount: { metaAuthorization: { tenantId: this.tenantId } },
             },
           }),

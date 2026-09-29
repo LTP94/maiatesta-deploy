@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { getPrismaClient } from '../db/client.js';
+import { getWebhookMetrics } from '../webhook/observability.js';
 
 export const healthRouter = Router();
 
@@ -16,6 +17,7 @@ healthRouter.get('/health', async (_req, res) => {
     ok: dbOk,
     service: 'maiatesta-whatsapp-backend',
     database: dbOk ? 'connected' : 'unreachable',
+    webhook: getWebhookMetrics(),
     timestamp: new Date().toISOString(),
   });
 });

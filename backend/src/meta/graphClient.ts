@@ -79,6 +79,10 @@ export class MetaGraphClient {
     this.baseUrl = params.baseUrl ?? `https://graph.facebook.com/${this.graphApiVersion}`;
   }
 
+  get applicationId(): string {
+    return this.appId;
+  }
+
   private async request(path: string, init: RequestInit): Promise<unknown> {
     const response = await this.fetchImpl(`${this.baseUrl}${path}`, init);
     const body = await response.json().catch(() => null);
@@ -195,7 +199,19 @@ export class MetaGraphClient {
     }
 
     const params = new URLSearchParams({ access_token: accessToken });
-    await this.request(`/${wabaId}/subscribed_apps?${params.toString()}`, { method: 'POST' });
+    const body = (await this.request(`/${wabaId}/subscribed_apps?${params.toString()}`, { method: 'POST' })) as { success?: boolean };
+    if (body?.success !== true) throw new MetaGraphApiError('Graph API did not confirm the WABA subscription.', 502);
+  }
+
+  /** Lista apps ya suscritas para que la operación POST sea idempotente. */
+  async getSubscribedApps(wabaId: string, accessToken: string): Promise<string[]> {
+    assertSafeId(wabaId, 'wabaId');
+    if (!accessToken) throw new MetaGraphApiError('Missing access token.', 400);
+    const params = new URLSearchParams({ access_token: accessToken });
+    const body = (await this.request(`/${wabaId}/subscribed_apps?${params.toString()}`, { method: 'GET' })) as {
+      data?: Array<{ id?: string }>;
+    };
+    return (body.data ?? []).flatMap((entry) => (entry.id ? [entry.id] : []));
   }
 }
 

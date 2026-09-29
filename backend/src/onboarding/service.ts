@@ -6,6 +6,7 @@ import { issueSessionToken, verifySessionToken } from '../access/sessionToken.js
 import { scopeToTenant, PhoneAlreadyConnectedError } from '../tenancy/isolation.js';
 import { encryptToken } from '../crypto/tokenCipher.js';
 import { MetaGraphApiError, type MetaGraphClient } from '../meta/graphClient.js';
+import { ensureWabaSubscription } from '../meta/wabaSubscription.js';
 
 /**
  * Orquestación de la Etapa 2 — onboarding/start, /session, /complete.
@@ -245,7 +246,13 @@ export async function completeOnboarding(
 
   // --- 5. Suscribir la app a los eventos de la WABA -----------------------
   try {
-    await deps.graphClient.subscribeAppToWaba(sessionInfo.wabaId, accessToken);
+    await ensureWabaSubscription({
+      prisma: deps.prisma,
+      tenantId,
+      wabaId: sessionInfo.wabaId,
+      graphClient: deps.graphClient,
+      encryptionKey: deps.encryptionKey,
+    });
   } catch (error) {
     // La conexión YA se persistió — un fallo aquí es recuperable (se puede
     // reintentar la suscripción sin repetir el intercambio de código), no
