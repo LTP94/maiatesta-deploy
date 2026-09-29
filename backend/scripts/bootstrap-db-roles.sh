@@ -24,7 +24,19 @@ if [[ -z "${OWNER_DATABASE_URL:-}" ]]; then
   exit 1
 fi
 
-psql "${OWNER_DATABASE_URL}" -v ON_ERROR_STOP=1 <<SQL
+# OWNER_DATABASE_URL es, en todo el proyecto (docker-compose.hostinger.yml,
+# .env*), la misma URL estilo Prisma que usa `prisma migrate` — incluye
+# parámetros como "?schema=public" que Prisma entiende pero que libpq/psql
+# NO reconoce como parámetro de conexión válido ("invalid URI query
+# parameter: schema"). En vez de mantener una segunda variable de entorno
+# paralela solo para psql (dos fuentes de verdad que podrían desincronizarse),
+# este script descarta la query string completa antes de invocar psql: un
+# ALTER ROLE es una operación de ROL, a nivel de clúster, nunca de esquema,
+# así que ningún parámetro de query de Prisma es relevante para esta
+# operación en particular.
+OWNER_DATABASE_URL_PSQL="${OWNER_DATABASE_URL%%\?*}"
+
+psql "${OWNER_DATABASE_URL_PSQL}" -v ON_ERROR_STOP=1 <<SQL
 ALTER ROLE app_runtime WITH PASSWORD '${APP_RUNTIME_DB_PASSWORD}';
 SQL
 

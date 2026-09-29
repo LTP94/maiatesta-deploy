@@ -257,10 +257,13 @@ docker compose --env-file ../.env.hostinger -f docker-compose.hostinger.yml --pr
 ```
 
 **[LECTURA — contenedor temporal]** Verificar identidad, ausencia de bypass
-RLS y privilegios peligrosos:
+RLS y privilegios peligrosos. `RUNTIME_DATABASE_URL`/`OWNER_DATABASE_URL` son
+URLs estilo Prisma (llevan `?schema=public`) — `psql`/libpq no reconocen ese
+parámetro de query, así que aquí también se descarta antes de conectar
+(`%%\?*`, la misma técnica que usa `scripts/bootstrap-db-roles.sh`):
 
 ```bash
-docker compose --env-file ../.env.hostinger -f docker-compose.hostinger.yml --profile operations run --rm --entrypoint sh bootstrap-role -c 'psql "$RUNTIME_DATABASE_URL" -v ON_ERROR_STOP=1 -c "SELECT current_user, rolsuper, rolcreatedb, rolcreaterole, rolbypassrl FROM pg_roles WHERE rolname = current_user" -c "SELECT has_schema_privilege(current_user, '\''public'\'', '\''CREATE'\'') AS can_create, has_table_privilege(current_user, '\''message_events'\'', '\''TRUNCATE'\'') AS can_truncate" -c "SELECT count(*) AS rows_visible_without_tenant_context FROM tenants"'
+docker compose --env-file ../.env.hostinger -f docker-compose.hostinger.yml --profile operations run --rm --entrypoint sh bootstrap-role -c 'psql "${RUNTIME_DATABASE_URL%%\?*}" -v ON_ERROR_STOP=1 -c "SELECT current_user, rolsuper, rolcreatedb, rolcreaterole, rolbypassrls FROM pg_roles WHERE rolname = current_user" -c "SELECT has_schema_privilege(current_user, '\''public'\'', '\''CREATE'\'') AS can_create, has_table_privilege(current_user, '\''message_events'\'', '\''TRUNCATE'\'') AS can_truncate" -c "SELECT count(*) AS rows_visible_without_tenant_context FROM tenants"'
 ```
 
 Resultado exigido: `app_runtime`, todos los flags elevados en `false`,
