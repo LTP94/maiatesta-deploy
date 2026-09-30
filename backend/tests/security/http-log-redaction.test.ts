@@ -160,3 +160,77 @@ describe('registro HTTP — el token de verificación de Meta nunca aparece en e
     }
   });
 });
+
+describe('registro HTTP — datos de conexión (remoteAddress/remotePort) e IP real del cliente detrás de Nginx', () => {
+  /**
+   * Revisión posterior (2026-09-29): el serializer allow-list original leía
+   * `req.socket?.remoteAddress` — pero pino-http SIEMPRE envuelve un
+   * serializer `req` personalizado (`wrapRequestSerializer`, ver
+   * `pino-std-serializers/index.js`) para que reciba el resultado YA
+   * serializado por el serializer por defecto, nunca la petición HTTP
+   * cruda. Ese objeto no tiene `.socket` — por eso `remoteAddress`/
+   * `remotePort` nunca aparecían en el log real, en silencio, sin ningún
+   * error. Confirmado empíricamente con un script de reproducción aislado
+   * antes de tocar código (ver informe).
+   *
+   * Además: el peer TCP directo, en producción, es Nginx Proxy Manager —
+   * nunca el cliente real. Por eso este bloque distingue explícitamente
+   * `proxyRemoteAddress` (la conexión TCP directa) de `clientIp` (resuelto
+   * por Express vía `trust proxy`, que ya está configurado a `1` en
+   * `createApp()` — exactamente un salto, el de Nginx). `clientIp` nunca
+   * lee `X-Forwarded-For` directamente por su cuenta — delega en la
+   * resolución de Express, que solo confía en la cabecera hasta el número
+   * de saltos configurado, no en lo que el cliente decida enviar.
+   */
+  it('remoteAddress y remotePort del peer TCP directo SÍ aparecen en el log real (no solo en la prueba unitaria)', async () => {
+    const res = await fetch(`${baseUrl}/webhooks/meta/whatsapp?hub.mode=subscribe&hub.verify_token=${FAKE_VERIFY_TOKEN}&hub.challenge=x`);
+    expect(res.status).toBe(200);
+
+    const reqLine = stream.lines.find((line) => (line.req as { method?: string } | undefined)?.method === 'GET');
+    const req = reqLine!.req as { proxyRemoteAddress?: string; remotePort?: number };
+    expect(req.proxyRemoteAddress).toBeTruthy();
+    expect(typeof req.remotePort).toBe('number');
+  });
+
+  it('clientIp refleja X-Forwarded-For (resuelto por Express vía trust proxy), y es DISTINTO del peer TCP directo', async () => {
+    const res = await fetch(`${baseUrl}/webhooks/meta/whatsapp?hub.mode=subscribe&hub.verify_token=${FAKE_VERIFY_TOKEN}&hub.challenge=x`, {
+      headers: { 'X-Forwarded-For': '203.0.113.5' },
+    });
+    expect(res.status).toBe(200);
+
+    const reqLine = stream.lines.find((line) => (line.req as { method?: string } | undefined)?.method === 'GET');
+    const req = reqLine!.req as { clientIp?: string; proxyRemoteAddress?: string };
+    expect(req.clientIp).toBe('203.0.113.5');
+    // El peer TCP directo en esta prueba es el propio proceso de test (loopback) — nunca 203.0.113.5.
+    expect(req.proxyRemoteAddress).not.toBe('203.0.113.5');
+  });
+
+  it('con varios saltos en X-Forwarded-For, trust proxy=1 confía en EXACTAMENTE un salto (el propio) y resuelve al último añadido, nunca a uno más lejano sin verificar', async () => {
+    // Convención de X-Forwarded-For: cada proxy AÑADE al final la dirección
+    // de quien le conectó a ÉL. Con trust proxy=1, Express confía
+    // únicamente en la conexión TCP directa (un salto) y toma el último
+    // valor de la cabecera como el cliente resuelto — cualquier entrada
+    // MÁS a la izquierda (más lejana) se trata como no verificable y se
+    // ignora. Esto es exactamente "no confiar indiscriminadamente en
+    // cabeceras del cliente": un valor que alguien anteponga a la cabecera
+    // antes de llegar a Nginx nunca se toma como definitivo, solo el que
+    // corresponde al número de saltos realmente configurado.
+    const res = await fetch(`${baseUrl}/webhooks/meta/whatsapp?hub.mode=subscribe&hub.verify_token=${FAKE_VERIFY_TOKEN}&hub.challenge=x`, {
+      headers: { 'X-Forwarded-For': '203.0.113.5, 198.51.100.9' },
+    });
+    expect(res.status).toBe(200);
+
+    const reqLine = stream.lines.find((line) => (line.req as { method?: string } | undefined)?.method === 'GET');
+    const req = reqLine!.req as { clientIp?: string };
+    expect(req.clientIp).toBe('198.51.100.9');
+  });
+
+  it('sin cabecera X-Forwarded-For, clientIp cae de vuelta a la conexión directa — nunca queda undefined silenciosamente', async () => {
+    const res = await fetch(`${baseUrl}/webhooks/meta/whatsapp?hub.mode=subscribe&hub.verify_token=${FAKE_VERIFY_TOKEN}&hub.challenge=x`);
+    expect(res.status).toBe(200);
+
+    const reqLine = stream.lines.find((line) => (line.req as { method?: string } | undefined)?.method === 'GET');
+    const req = reqLine!.req as { clientIp?: string };
+    expect(req.clientIp).toBeTruthy();
+  });
+});
